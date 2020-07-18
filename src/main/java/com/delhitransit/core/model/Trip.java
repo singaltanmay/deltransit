@@ -3,6 +3,9 @@ package com.delhitransit.core.model;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * For more information see https://developers.google.com/transit/gtfs/reference/#tripstxt
+ */
 public class Trip {
 
     /**
@@ -11,7 +14,6 @@ public class Trip {
     @Getter
     @Setter
     private Route route;
-
 
     /**
      * Identifies a trip.

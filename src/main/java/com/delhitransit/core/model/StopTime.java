@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#stop_timestxt
  */
-public class StopTimes {
+public class StopTime {
 
     /**
      * Identifies a trip.

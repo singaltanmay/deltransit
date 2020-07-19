@@ -37,7 +37,6 @@ public class RouteReader {
         }
 
         bufferedReader.close();
-        fileInputStream.close();
 
         return routes;
     }

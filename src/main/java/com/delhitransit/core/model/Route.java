@@ -57,7 +57,7 @@ public class Route {
      */
     @Getter
     @Setter
-    private long agencyId;
+    private String agencyId;
 
     public enum ROUTE_TYPE {
         STREET_LEVEL_RAIL,

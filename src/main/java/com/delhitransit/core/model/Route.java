@@ -28,7 +28,6 @@ public class Route {
 
     /**
      * Indicates the type of transportation used on a route. Valid options are:
-     * <p>
      * 0 - Tram, Streetcar, Light rail. Any light rail or street level system within a metropolitan area.
      * 1 - Subway, Metro. Any underground rail system within a metropolitan area.
      * 2 - Rail. Used for intercity or long-distance travel.
@@ -54,8 +53,7 @@ public class Route {
     private long id;
 
     /**
-     * Agency for the specified route. This field is required when the dataset provides data for routes from more
-     * than one agency in agency.txt, otherwise it is optional.
+     * Agency for the specified route.
      */
     @Getter
     @Setter

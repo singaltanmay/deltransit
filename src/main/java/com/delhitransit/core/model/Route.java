@@ -53,8 +53,7 @@ public class Route {
     private long id;
 
     /**
-     * Agency for the specified route. This field is required when the dataset provides data for routes from more
-     * than one agency in agency.txt, otherwise it is optional.
+     * Agency for the specified route.
      */
     @Getter
     @Setter

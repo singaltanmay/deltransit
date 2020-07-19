@@ -1,7 +1,6 @@
 package com.delhitransit.core.model;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#routestxt
@@ -14,7 +13,6 @@ public class Route {
      * route_short_name or route_long_name must be specified, or potentially both if appropriate.
      */
     @Getter
-    @Setter
     private String shortName;
 
     /**
@@ -23,7 +21,6 @@ public class Route {
      * if appropriate.
      */
     @Getter
-    @Setter
     private String longName;
 
     /**
@@ -42,22 +39,69 @@ public class Route {
      * 12 - Monorail. Railway in which the track consists of a single rail or a beam.
      */
     @Getter
-    @Setter
     private ROUTE_TYPE type = ROUTE_TYPE.BUS;
 
     /**
      * Identifies a route.
      */
     @Getter
-    @Setter
     private long id;
 
     /**
      * Agency for the specified route.
      */
     @Getter
-    @Setter
     private String agencyId;
+
+    public static ROUTE_TYPE getRouteType(int routeType) {
+        switch (routeType) {
+            case 0:
+                return ROUTE_TYPE.STREET_LEVEL_RAIL;
+            case 1:
+                return ROUTE_TYPE.SUBWAY;
+            case 2:
+                return ROUTE_TYPE.RAIL;
+            case 4:
+                return ROUTE_TYPE.FERRY;
+            case 5:
+                return ROUTE_TYPE.CABLE_TRAM;
+            case 6:
+                return ROUTE_TYPE.AERIAL_LIFT;
+            case 7:
+                return ROUTE_TYPE.FUNICULAR;
+            case 8:
+                return ROUTE_TYPE.TROLLEYBUS;
+            case 9:
+                return ROUTE_TYPE.MONORAIL;
+            default:
+                return ROUTE_TYPE.BUS;
+        }
+    }
+
+    public Route setShortName(String shortName) {
+        this.shortName = shortName;
+        return this;
+    }
+
+    public Route setLongName(String longName) {
+        this.longName = longName;
+        return this;
+    }
+
+    public Route setType(ROUTE_TYPE type) {
+        this.type = type;
+        return this;
+    }
+
+    public Route setId(long id) {
+        this.id = id;
+        return this;
+    }
+
+    public Route setAgencyId(String agencyId) {
+        this.agencyId = agencyId;
+        return this;
+    }
 
     public enum ROUTE_TYPE {
         STREET_LEVEL_RAIL,
@@ -69,7 +113,6 @@ public class Route {
         AERIAL_LIFT,
         FUNICULAR,
         TROLLEYBUS,
-        MONORAIL
+        MONORAIL;
     }
-
 }

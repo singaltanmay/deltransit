@@ -13,9 +13,13 @@ import java.util.List;
 public class RouteReader {
 
     public List<Route> read() throws IOException {
+        return read("src/main/resources/static/routes.txt");
+    }
+
+    public List<Route> read(String filepath) throws IOException {
         List<Route> routes = new LinkedList<>();
 
-        FileInputStream fileInputStream = new FileInputStream(new File("src/main/resources/static/routes.txt"));
+        FileInputStream fileInputStream = new FileInputStream(new File(filepath));
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
         // First line of the stream
@@ -26,22 +30,35 @@ public class RouteReader {
         while (line != null) {
             // readLine() automatically moves to next line after reading
             line = bufferedReader.readLine();
-            //Skip any empty lines
-            if (!line.isBlank()) {
-                String[] strings = line.split(",");
-                if (strings.length > 5) {
-                    Route route = new Route().setShortName(strings[0])
-                                             .setLongName(strings[1])
-                                             .setType(Route.getRouteType(Integer.parseInt(strings[2])))
-                                             .setId(Long.parseLong(strings[3]))
-                                             .setAgencyId(strings[4]);
-                    routes.add(route);
-                } else {
-                    System.err.println(
-                            "Skipped reading line due to missing data. Expeected length was 5 but instead found " + strings.length + ". String: " + line);
-                }
+            Route route = readLine(line);
+            if (route != null) {
+                routes.add(route);
             }
         }
+
+        bufferedReader.close();
+        fileInputStream.close();
+
         return routes;
+    }
+
+    public Route readLine(String line) {
+        //Skip any empty lines
+        if (line != null && !line.isBlank()) {
+            String[] strings = line.split(",");
+            if (strings.length == 5) {
+                return new Route()
+                        .setShortName(strings[0])
+                        .setLongName(strings[1])
+                        .setType(Route.getRouteType(Integer.parseInt(strings[2])))
+                        .setId(Long.parseLong(strings[3]))
+                        .setAgencyId(strings[4]);
+            } else {
+                System.err.println("Skipped reading line due to missing data." +
+                                           " Expected length was 5 but instead found " + strings.length + "." +
+                                           " String: " + line);
+            }
+        }
+        return null;
     }
 }

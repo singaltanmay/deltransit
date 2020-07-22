@@ -1,3 +1,7 @@
+/*
+ * @author Tanmay Singal
+ */
+
 package com.delhitransit.core.model;
 
 import lombok.Getter;
@@ -6,6 +10,12 @@ import lombok.Getter;
  * For more information see https://developers.google.com/transit/gtfs/reference/#routestxt
  */
 public class Route {
+
+    /**
+     * Identifies a route.
+     */
+    @Getter
+    private long routeId;
 
     /**
      * Short name of a route. This will often be a short, abstract identifier like "32", "100X", or "Green" that
@@ -40,12 +50,6 @@ public class Route {
      */
     @Getter
     private ROUTE_TYPE type = ROUTE_TYPE.BUS;
-
-    /**
-     * Identifies a route.
-     */
-    @Getter
-    private long id;
 
     /**
      * Agency for the specified route.
@@ -93,8 +97,8 @@ public class Route {
         return this;
     }
 
-    public Route setId(long id) {
-        this.id = id;
+    public Route setRouteId(long routeId) {
+        this.routeId = routeId;
         return this;
     }
 

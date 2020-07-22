@@ -1,3 +1,7 @@
+/*
+ * @author Tanmay Singal
+ */
+
 package com.delhitransit.core.model;
 
 import lombok.Getter;
@@ -12,21 +16,33 @@ public class Trip {
      * Identifies the route that this trip is a part of.
      */
     @Getter
-    @Setter
-    private Route route;
+    private long routeId;
 
     /**
      * Identifies a trip.
      */
     @Getter
-    @Setter
-    private long id;
+    private long tripId;
 
     /**
      * Identifies a geospatial shape that describes the vehicle travel path for a trip.
      */
     @Getter
-    @Setter
-    private Shape shape;
+    private long shapeId;
+
+    public Trip setRouteId(long routeId) {
+        this.routeId = routeId;
+        return this;
+    }
+
+    public Trip setTripId(long tripId) {
+        this.tripId = tripId;
+        return this;
+    }
+
+    public Trip setShapeId(long shapeId) {
+        this.shapeId = shapeId;
+        return this;
+    }
 
 }

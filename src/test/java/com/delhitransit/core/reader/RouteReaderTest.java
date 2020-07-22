@@ -1,3 +1,7 @@
+/*
+ * @author Tanmay Singal
+ */
+
 package com.delhitransit.core.reader;
 
 import com.delhitransit.core.model.Route;
@@ -21,7 +25,7 @@ public class RouteReaderTest {
         assertEquals("", route.getShortName());
         assertEquals("108DOWN", route.getLongName());
         assertEquals(Route.ROUTE_TYPE.BUS, route.getType());
-        assertEquals(0, route.getId());
+        assertEquals(0, route.getRouteId());
         assertEquals("DIMTS", route.getAgencyId());
     }
 

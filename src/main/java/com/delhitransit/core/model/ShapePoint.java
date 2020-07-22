@@ -1,3 +1,7 @@
+/*
+ * @author Tanmay Singal
+ */
+
 package com.delhitransit.core.model;
 
 import lombok.Getter;
@@ -6,27 +10,24 @@ import lombok.Setter;
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#shapestxt
  */
-public class Shape {
+public class ShapePoint {
 
     /**
      * Identifies a shape.
      */
     @Getter
-    @Setter
-    private long id;
+    private long shapeId;
 
     /**
      * Latitude of a shape point. Each record in shapes.txt represents a shape point used to define the shape.
      */
     @Getter
-    @Setter
     private double latitude;
 
     /**
      * Longitude of a shape point.
      */
     @Getter
-    @Setter
     private double longitude;
 
     /**
@@ -39,7 +40,25 @@ public class Shape {
      * A_shp,37.65863,-122.30839,11
      */
     @Getter
-    @Setter
     private long sequence;
 
+    public ShapePoint setShapeId(long shapeId) {
+        this.shapeId = shapeId;
+        return this;
+    }
+
+    public ShapePoint setLatitude(double latitude) {
+        this.latitude = latitude;
+        return this;
+    }
+
+    public ShapePoint setLongitude(double longitude) {
+        this.longitude = longitude;
+        return this;
+    }
+
+    public ShapePoint setSequence(long sequence) {
+        this.sequence = sequence;
+        return this;
+    }
 }

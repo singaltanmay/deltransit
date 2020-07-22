@@ -1,3 +1,7 @@
+/*
+ * @author Tanmay Singal
+ */
+
 package com.delhitransit.core.model;
 
 import lombok.Getter;
@@ -14,8 +18,7 @@ public class StopTime {
      * Identifies a trip.
      */
     @Getter
-    @Setter
-    private Trip trip;
+    private long tripId;
 
     /**
      * Arrival time at a specific stop for a specific trip on a route. If there are not separate times for arrival
@@ -24,7 +27,6 @@ public class StopTime {
      * day on which the trip schedule begins.
      */
     @Getter
-    @Setter
     private Date arrival;
 
     /**
@@ -35,7 +37,6 @@ public class StopTime {
      * timepoints correctly.
      */
     @Getter
-    @Setter
     private Date departure;
 
     /**
@@ -44,8 +45,7 @@ public class StopTime {
      * in the same trip, and multiple trips and routes may service the same stop.
      */
     @Getter
-    @Setter
-    private Stop stop;
+    private long stopId;
 
     /**
      * Order of stops for a particular trip. The values must increase along the trip but do not need to be
@@ -53,7 +53,31 @@ public class StopTime {
      * trip could have a stop_sequence=23, the third location could have a stop_sequence=40, and so on.
      */
     @Getter
-    @Setter
     private long stopSequence;
+
+    public StopTime setTripId(long tripId) {
+        this.tripId = tripId;
+        return this;
+    }
+
+    public StopTime setArrival(Date arrival) {
+        this.arrival = arrival;
+        return this;
+    }
+
+    public StopTime setDeparture(Date departure) {
+        this.departure = departure;
+        return this;
+    }
+
+    public StopTime setStopId(long stopId) {
+        this.stopId = stopId;
+        return this;
+    }
+
+    public StopTime setStopSequence(long stopSequence) {
+        this.stopSequence = stopSequence;
+        return this;
+    }
 
 }

@@ -1,3 +1,7 @@
+/*
+ * @author Tanmay Singal
+ */
+
 package com.delhitransit.core.reader;
 
 import com.delhitransit.core.model.Route;
@@ -50,7 +54,7 @@ public class RouteReader {
                         .setShortName(strings[0])
                         .setLongName(strings[1])
                         .setType(Route.getRouteType(Integer.parseInt(strings[2])))
-                        .setId(Long.parseLong(strings[3]))
+                        .setRouteId(Long.parseLong(strings[3]))
                         .setAgencyId(strings[4]);
             } else {
                 System.err.println("Skipped reading line due to missing data." +

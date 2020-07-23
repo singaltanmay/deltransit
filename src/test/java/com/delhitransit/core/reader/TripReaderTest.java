@@ -1,3 +1,7 @@
+/*
+ * @author Ankit Varshney
+ */
+
 package com.delhitransit.core.reader;
 
 import com.delhitransit.core.model.Trip;
@@ -19,9 +23,7 @@ public class TripReaderTest {
         Trip trip = reader.readLine("1,12,1_11_10,13");
         assertNotNull(trip);
         assertEquals("1", trip.getRouteId());
-        assertEquals("", trip.getShapeId());
         assertEquals("1_11_10", trip.getTripId());
-        assertEquals("1_21_10", trip.getTripId());
         assertEquals("13", trip.getShapeId());
 
     }
@@ -35,10 +37,10 @@ public class TripReaderTest {
         for (Trip trip : trips) {
             assertNotNull(trip);
             assertEquals("1", trip.getRouteId());
-            assertEquals("1_11_10", trip.getTripId());
-            assertEquals("1_11_103", trip.getTripId());
-            assertEquals("", trip.getShapeId());
-            assertEquals("138", trip.getShapeId());
+            String tripId = trip.getTripId();
+            assertTrue(tripId.equals("1_11_10") || tripId.equals("1_11_103"));
+            Long shapeId = trip.getShapeId();
+            assertTrue(shapeId.equals("") || shapeId.equals(130));
 
 
         }

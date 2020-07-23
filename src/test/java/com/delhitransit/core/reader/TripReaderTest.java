@@ -1,7 +1,6 @@
 /*
  * @author Ankit Varshney
  */
-
 package com.delhitransit.core.reader;
 
 import com.delhitransit.core.model.Trip;
@@ -19,12 +18,12 @@ public class TripReaderTest {
     TripReader reader = new TripReader();
 
     @Test
-    void readLine(){
+    void readLine() {
         Trip trip = reader.readLine("1,12,1_11_10,13");
         assertNotNull(trip);
-        assertEquals("1", trip.getRouteId());
+        assertEquals(1, trip.getRouteId());
         assertEquals("1_11_10", trip.getTripId());
-        assertEquals("13", trip.getShapeId());
+        assertEquals(13, trip.getShapeId());
 
     }
 
@@ -32,15 +31,13 @@ public class TripReaderTest {
     void read() throws IOException {
         List<Trip> trips = reader.read("src/test/resources/static/trips_test.txt");
         assertNotNull(trips);
-        assertEquals(3, trips.size());
+        assertEquals(1, trips.size());
 
         for (Trip trip : trips) {
             assertNotNull(trip);
-            assertEquals("1", trip.getRouteId());
-            String tripId = trip.getTripId();
-            assertTrue(tripId.equals("1_11_10") || tripId.equals("1_11_103"));
-            Long shapeId = trip.getShapeId();
-            assertTrue(shapeId.equals("") || shapeId.equals(130));
+            assertEquals(1, trip.getRouteId());
+            assertEquals("1_11_10", trip.getTripId());
+            assertEquals(13, trip.getShapeId());
 
 
         }

@@ -42,7 +42,7 @@ public class StopReaderTest {
             double latitude = stop.getLatitude();
             assertTrue(latitude == 28.715917 || latitude == 28.598533000000003);
             double longitude = stop.getLongitude();
-            assertTrue(latitude == 77.170867 || latitude == 77.191383);
+            assertTrue(longitude == 77.170867 || longitude == 77.191383);
         }
 
     }

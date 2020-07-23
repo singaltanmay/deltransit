@@ -12,38 +12,46 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RouteReaderTest {
+
+    private final String ROUTE_SHORT_NAME = "";
+
+    private final String ROUTE_LONG_NAME = "108DOWN";
+
+    private final Route.ROUTE_TYPE ROUTE_TYPE = Route.ROUTE_TYPE.BUS;
+
+    private final String ROUTE_AGENCY_ID = "DIMTS";
+
+    private final Long ROUTE_ROUTE_ID = 0L;
 
     RouteReader reader = new RouteReader();
 
     @Test
     void readLine() {
-        Route route = reader.readLine(",108DOWN,3,0,DIMTS");
+        String line = ROUTE_SHORT_NAME + "," + ROUTE_LONG_NAME + ",3," + ROUTE_ROUTE_ID + "," + ROUTE_AGENCY_ID;
+        Route route = reader.readLine(line);
         assertNotNull(route);
-        assertEquals("", route.getShortName());
-        assertEquals("108DOWN", route.getLongName());
-        assertEquals(Route.ROUTE_TYPE.BUS, route.getType());
-        assertEquals(0, route.getRouteId());
-        assertEquals("DIMTS", route.getAgencyId());
+        assertEquals(ROUTE_SHORT_NAME, route.getShortName());
+        assertEquals(ROUTE_LONG_NAME, route.getLongName());
+        assertEquals(ROUTE_TYPE, route.getType());
+        assertEquals(ROUTE_ROUTE_ID, route.getRouteId());
+        assertEquals(ROUTE_AGENCY_ID, route.getAgencyId());
     }
 
     @Test
     void read() throws IOException {
         List<Route> routes = reader.read("src/test/resources/static/routes_test.txt");
         assertNotNull(routes);
-        assertEquals(2, routes.size());
+        assertEquals(1, routes.size());
 
-        for (Route route : routes) {
-            assertNotNull(route);
-            assertEquals("", route.getShortName());
-            assertEquals(Route.ROUTE_TYPE.BUS, route.getType());
-            String longName = route.getLongName();
-            assertTrue(longName.equals("108DOWN") || longName.equals("114DOWN_DTC"));
-            String agencyId = route.getAgencyId();
-            assertTrue(agencyId.equals("DIMTS") || agencyId.equals("DTC"));
-        }
+        Route route = routes.get(0);
+        assertNotNull(route);
+        assertEquals(ROUTE_SHORT_NAME, route.getShortName());
+        assertEquals(ROUTE_LONG_NAME, route.getLongName());
+        assertEquals(ROUTE_TYPE, route.getType());
+        assertEquals(ROUTE_ROUTE_ID, route.getRouteId());
+        assertEquals(ROUTE_AGENCY_ID, route.getAgencyId());
 
     }
 

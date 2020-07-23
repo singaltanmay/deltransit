@@ -2,4 +2,4 @@ route_short_name,route_long_name,route_type,route_id,agency_id
 ,108DOWN,3,0,DIMTS
 ,108STLDOWN,3,1
 
-,114DOWN_DTC,3,1544,DTC
+,114DO,WN_DTC,3,1544,DTC

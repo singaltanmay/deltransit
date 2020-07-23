@@ -14,6 +14,7 @@ public class StopTime {
     /**
      * Identifies a trip.
      */
+
     private String tripId;
 
     /**
@@ -22,7 +23,6 @@ public class StopTime {
      * midnight on the service day, enter the time as a value greater than 24:00:00 in HH:MM:SS local time for the
      * day on which the trip schedule begins.
      */
-
     private LocalTime arrival;
 
 
@@ -33,6 +33,7 @@ public class StopTime {
      * value for arrival_time and departure_time. See the arrival_time description for more details about using
      * timepoints correctly.
      */
+
     private LocalTime departure;
 
 
@@ -54,11 +55,11 @@ public class StopTime {
         return tripId;
     }
 
-    public Date getArrival() {
+    public LocalTime getArrival() {
         return arrival;
     }
 
-    public Date getDeparture() {
+    public LocalTime getDeparture() {
         return departure;
     }
 
@@ -69,6 +70,7 @@ public class StopTime {
     public long getStopSequence() {
         return stopSequence;
     }
+
 
     public StopTime setTripId(String tripId) {
         this.tripId = tripId;

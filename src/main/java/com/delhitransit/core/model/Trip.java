@@ -22,7 +22,7 @@ public class Trip {
      * Identifies a trip.
      */
     @Getter
-    private long tripId;
+    private String tripId;
 
     /**
      * Identifies a geospatial shape that describes the vehicle travel path for a trip.
@@ -35,7 +35,7 @@ public class Trip {
         return this;
     }
 
-    public Trip setTripId(long tripId) {
+    public Trip setTripId(String tripId) {
         this.tripId = tripId;
         return this;
     }

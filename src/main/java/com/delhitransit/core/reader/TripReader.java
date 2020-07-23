@@ -13,7 +13,7 @@ import java.util.List;
 public class TripReader {
 
     public List<Trip> read() throws IOException {
-        return read("src/main/resources/static/trip.txt");
+        return read("src/main/resources/static/trips.txt");
     }
 
     public List<Trip> read(String filepath) throws IOException {
@@ -45,11 +45,11 @@ public class TripReader {
             if (strings.length == 4) {
                 return new Trip()
                         .setRouteId(Long.parseLong(strings[0]))
-                        .setTripId(Long.parseLong(strings[2]))
+                        .setTripId(strings[2])
                         .setShapeId(Long.parseLong(strings[3]));
             } else {
                 System.err.println("Skipped reading line due to missing data." +
-                        " Expected length was 5 but instead found " + strings.length + "." +
+                        " Expected length was 4 but instead found " + strings.length + "." +
                         " String: " + line);
             }
         }

@@ -18,7 +18,7 @@ public class StopTime {
      * Identifies a trip.
      */
     @Getter
-    private long tripId;
+    private String tripId;
 
     /**
      * Arrival time at a specific stop for a specific trip on a route. If there are not separate times for arrival
@@ -55,7 +55,7 @@ public class StopTime {
     @Getter
     private long stopSequence;
 
-    public StopTime setTripId(long tripId) {
+    public StopTime setTripId(String tripId) {
         this.tripId = tripId;
         return this;
     }

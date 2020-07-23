@@ -53,8 +53,8 @@ public class TripReader {
                         .setShapeId(Long.parseLong(strings[3]));
             } else {
                 System.err.println("Skipped reading line due to missing data." +
-                                           " Expected length was 4 but instead found " + strings.length + "." +
-                                           " String: " + line);
+                        " Expected length was 4 but instead found " + strings.length + "." +
+                        " String: " + line);
             }
         }
         return null;

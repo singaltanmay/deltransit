@@ -16,7 +16,6 @@ public class StopTime {
     /**
      * Identifies a trip.
      */
-    @Getter
     private String tripId;
 
     /**
@@ -25,7 +24,6 @@ public class StopTime {
      * midnight on the service day, enter the time as a value greater than 24:00:00 in HH:MM:SS local time for the
      * day on which the trip schedule begins.
      */
-    @Getter
     private Date arrival;
 
     /**
@@ -35,7 +33,6 @@ public class StopTime {
      * value for arrival_time and departure_time. See the arrival_time description for more details about using
      * timepoints correctly.
      */
-    @Getter
     private Date departure;
 
     /**
@@ -43,7 +40,6 @@ public class StopTime {
      * Referenced locations must be stops, not stations or station entrances. A stop may be serviced multiple times
      * in the same trip, and multiple trips and routes may service the same stop.
      */
-    @Getter
     private long stopId;
 
     /**
@@ -51,8 +47,27 @@ public class StopTime {
      * consecutive.Example: The first location on the trip could have a stop_sequence=1, the second location on the
      * trip could have a stop_sequence=23, the third location could have a stop_sequence=40, and so on.
      */
-    @Getter
     private long stopSequence;
+
+    public String getTripId() {
+        return tripId;
+    }
+
+    public Date getArrival() {
+        return arrival;
+    }
+
+    public Date getDeparture() {
+        return departure;
+    }
+
+    public long getStopId() {
+        return stopId;
+    }
+
+    public long getStopSequence() {
+        return stopSequence;
+    }
 
     public StopTime setTripId(String tripId) {
         this.tripId = tripId;

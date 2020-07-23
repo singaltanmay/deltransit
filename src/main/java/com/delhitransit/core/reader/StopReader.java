@@ -1,13 +1,16 @@
-/**
+/*
  * @author nitin-singla
  */
 
 package com.delhitransit.core.reader;
 
-import com.delhitransit.core.model.Route;
 import com.delhitransit.core.model.Stop;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,8 +57,8 @@ public class StopReader {
                         .setLongitude(Double.parseDouble(strings[3]));
             } else {
                 System.err.println("Skipped reading line due to missing data." +
-                        " Expected length was 4 but instead found " + strings.length + "." +
-                        " String: " + line);
+                                           " Expected length was 4 but instead found " + strings.length + "." +
+                                           " String: " + line);
             }
         }
         return null;

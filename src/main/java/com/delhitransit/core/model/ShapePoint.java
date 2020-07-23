@@ -5,7 +5,6 @@
 package com.delhitransit.core.model;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#shapestxt

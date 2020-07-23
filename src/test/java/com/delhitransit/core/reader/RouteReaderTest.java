@@ -26,9 +26,7 @@ public class RouteReaderTest {
         assertEquals("108DOWN", route.getLongName());
         assertEquals(Route.ROUTE_TYPE.BUS, route.getType());
         assertEquals(0, route.getRouteId());
-        assertEquals("DIMTS", route.getAgencyId());
-    }
-
+        assertEquals("DIMTS", route.getAgencyId()); }
     @Test
     void read() throws IOException {
         List<Route> routes = reader.read("src/test/resources/static/routes_test.txt");

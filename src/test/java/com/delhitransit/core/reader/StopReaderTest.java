@@ -31,8 +31,26 @@ public class StopReaderTest {
     void read() throws IOException {
         List<Stop> stops = reader.read("src/test/resources/static/stops_test.txt");
         assertNotNull(stops);
-        assertEquals(4, stops.size());
+        assertEquals(2, stops.size());
 
+        for (Stop stop : stops) {
+            assertNotNull(stop);
+            long stopId = stop.getStopId();
+            assertTrue(stopId == 0 || stopId == 1);
+            String name = stop.getName();
+            assertTrue(name.equals("Adarsh Nagar / Bharola Village") || name.equals("British High Comission"));
+            double latitude = stop.getLatitude();
+            assertTrue(latitude == 28.715917 || latitude == 28.598533000000003);
+            double longitude = stop.getLongitude();
+            assertTrue(latitude == 77.170867 || latitude == 77.191383);
+        }
 
     }
 }
+
+
+
+
+
+
+

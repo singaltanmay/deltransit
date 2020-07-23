@@ -58,8 +58,8 @@ public class RouteReader {
                         .setAgencyId(strings[4]);
             } else {
                 System.err.println("Skipped reading line due to missing data." +
-                                           " Expected length was 5 but instead found " + strings.length + "." +
-                                           " String: " + line);
+                        " Expected length was 5 but instead found " + strings.length + "." +
+                        " String: " + line);
             }
         }
         return null;

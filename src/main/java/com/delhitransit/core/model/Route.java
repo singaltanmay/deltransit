@@ -14,7 +14,6 @@ public class Route {
     /**
      * Identifies a route.
      */
-
     private long routeId;
 
     /**

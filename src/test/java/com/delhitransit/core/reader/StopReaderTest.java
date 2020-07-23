@@ -36,13 +36,13 @@ public class StopReaderTest {
         for (Stop stop : stops) {
             assertNotNull(stop);
             long stopId = stop.getStopId();
-            assertTrue(stopId == 0 || stopId == 1);
+            assertTrue(stopId == 0 || stopId == 2);
             String name = stop.getName();
-            assertTrue(name.equals("Adarsh Nagar / Bharola Village") || name.equals("British High Comission"));
+            assertTrue(name.equals("Adarsh Nagar / Bharola Village") || name.equals("Azad Market"));
             double latitude = stop.getLatitude();
-            assertTrue(latitude == 28.715917 || latitude == 28.598533000000003);
+            assertTrue(latitude == 28.715917 || latitude == 28.6647);
             double longitude = stop.getLongitude();
-            assertTrue(longitude == 77.170867 || longitude == 77.191383);
+            assertTrue(longitude == 77.170867 || longitude == 77.2084);
         }
 
     }

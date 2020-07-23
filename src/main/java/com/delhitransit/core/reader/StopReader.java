@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class StopReader {
+
     public List<Stop> read() throws IOException {
         return read("src/main/resources/static/stops.txt");
     }
@@ -60,3 +61,8 @@ public class StopReader {
         return null;
     }
 }
+
+
+
+
+

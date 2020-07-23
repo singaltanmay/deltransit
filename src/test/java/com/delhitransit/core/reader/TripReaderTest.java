@@ -39,9 +39,6 @@ public class TripReaderTest {
             assertEquals("1_11_10", trip.getTripId());
             assertEquals(13, trip.getShapeId());
 
-
         }
-
-
     }
 }

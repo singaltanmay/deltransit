@@ -14,20 +14,29 @@ public class Trip {
     /**
      * Identifies the route that this trip is a part of.
      */
-    @Getter
     private long routeId;
 
     /**
      * Identifies a trip.
      */
-    @Getter
     private String tripId;
 
     /**
      * Identifies a geospatial shape that describes the vehicle travel path for a trip.
      */
-    @Getter
     private long shapeId;
+
+    public long getRouteId() {
+        return routeId;
+    }
+
+    public String getTripId() {
+        return tripId;
+    }
+
+    public long getShapeId() {
+        return shapeId;
+    }
 
     public Trip setRouteId(long routeId) {
         this.routeId = routeId;

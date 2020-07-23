@@ -1,20 +1,21 @@
-/**
+/*
  * @author nitin-singla
  */
 
 package com.delhitransit.core.reader;
 
-import com.delhitransit.core.model.Route;
 import com.delhitransit.core.model.Stop;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StopReaderTest {
+
     StopReader reader = new StopReader();
 
     @Test
@@ -47,10 +48,3 @@ public class StopReaderTest {
 
     }
 }
-
-
-
-
-
-
-

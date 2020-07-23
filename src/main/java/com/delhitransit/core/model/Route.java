@@ -117,6 +117,6 @@ public class Route {
         AERIAL_LIFT,
         FUNICULAR,
         TROLLEYBUS,
-        MONORAIL;
+        MONORAIL
     }
 }

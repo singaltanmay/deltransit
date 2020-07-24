@@ -4,7 +4,7 @@
 
 package com.delhitransit.core.model;
 
-import java.util.Date;
+import java.time.LocalTime;
 
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#stop_timestxt
@@ -14,6 +14,7 @@ public class StopTime {
     /**
      * Identifies a trip.
      */
+
     private String tripId;
 
     /**
@@ -22,7 +23,8 @@ public class StopTime {
      * midnight on the service day, enter the time as a value greater than 24:00:00 in HH:MM:SS local time for the
      * day on which the trip schedule begins.
      */
-    private Date arrival;
+    private LocalTime arrival;
+
 
     /**
      * Departure time from a specific stop for a specific trip on a route. For times occurring after midnight on the
@@ -31,7 +33,9 @@ public class StopTime {
      * value for arrival_time and departure_time. See the arrival_time description for more details about using
      * timepoints correctly.
      */
-    private Date departure;
+
+    private LocalTime departure;
+
 
     /**
      * Identifies the serviced stop. All stops serviced during a trip must have a record in stop_times.txt.
@@ -56,21 +60,31 @@ public class StopTime {
         return this;
     }
 
-    public Date getArrival() {
+    public LocalTime getArrival() {
         return arrival;
     }
 
-    public StopTime setArrival(Date arrival) {
+    public StopTime setArrival(LocalTime arrival) {
         this.arrival = arrival;
         return this;
     }
 
-    public Date getDeparture() {
+    public StopTime setArrival(String arrival) {
+        this.arrival = LocalTime.parse(arrival);
+        return this;
+    }
+
+    public LocalTime getDeparture() {
         return departure;
     }
 
-    public StopTime setDeparture(Date departure) {
+    public StopTime setDeparture(LocalTime departure) {
         this.departure = departure;
+        return this;
+    }
+
+    public StopTime setDeparture(String departure) {
+        this.departure = LocalTime.parse(departure);
         return this;
     }
 
@@ -91,5 +105,4 @@ public class StopTime {
         this.stopSequence = stopSequence;
         return this;
     }
-
 }

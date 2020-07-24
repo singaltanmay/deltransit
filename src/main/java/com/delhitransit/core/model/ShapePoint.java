@@ -4,8 +4,6 @@
 
 package com.delhitransit.core.model;
 
-import lombok.Getter;
-
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#shapestxt
  */
@@ -41,21 +39,13 @@ public class ShapePoint {
         return shapeId;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public long getSequence() {
-        return sequence;
-    }
-
     public ShapePoint setShapeId(long shapeId) {
         this.shapeId = shapeId;
         return this;
+    }
+
+    public double getLatitude() {
+        return latitude;
     }
 
     public ShapePoint setLatitude(double latitude) {
@@ -63,9 +53,17 @@ public class ShapePoint {
         return this;
     }
 
+    public double getLongitude() {
+        return longitude;
+    }
+
     public ShapePoint setLongitude(double longitude) {
         this.longitude = longitude;
         return this;
+    }
+
+    public long getSequence() {
+        return sequence;
     }
 
     public ShapePoint setSequence(long sequence) {

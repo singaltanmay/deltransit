@@ -4,8 +4,6 @@
 
 package com.delhitransit.core.model;
 
-import lombok.Getter;
-
 import java.util.Date;
 
 /**
@@ -53,25 +51,13 @@ public class StopTime {
         return tripId;
     }
 
-    public Date getArrival() {
-        return arrival;
-    }
-
-    public Date getDeparture() {
-        return departure;
-    }
-
-    public long getStopId() {
-        return stopId;
-    }
-
-    public long getStopSequence() {
-        return stopSequence;
-    }
-
     public StopTime setTripId(String tripId) {
         this.tripId = tripId;
         return this;
+    }
+
+    public Date getArrival() {
+        return arrival;
     }
 
     public StopTime setArrival(Date arrival) {
@@ -79,14 +65,26 @@ public class StopTime {
         return this;
     }
 
+    public Date getDeparture() {
+        return departure;
+    }
+
     public StopTime setDeparture(Date departure) {
         this.departure = departure;
         return this;
     }
 
+    public long getStopId() {
+        return stopId;
+    }
+
     public StopTime setStopId(long stopId) {
         this.stopId = stopId;
         return this;
+    }
+
+    public long getStopSequence() {
+        return stopSequence;
     }
 
     public StopTime setStopSequence(long stopSequence) {

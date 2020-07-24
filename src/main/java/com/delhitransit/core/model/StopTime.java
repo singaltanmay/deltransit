@@ -4,7 +4,7 @@
 
 package com.delhitransit.core.model;
 
-import java.util.Date;
+import java.time.LocalTime;
 
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#stop_timestxt
@@ -55,43 +55,36 @@ public class StopTime {
         return tripId;
     }
 
+    public StopTime setTripId(String tripId) {
+        this.tripId = tripId;
+        return this;
+    }
+
     public LocalTime getArrival() {
         return arrival;
+    }
+
+    public StopTime setArrival(LocalTime arrival) {
+        this.arrival = arrival;
+        return this;
+    }
+
+    public StopTime setArrival(String arrival) {
+        this.arrival = LocalTime.parse(arrival);
+        return this;
     }
 
     public LocalTime getDeparture() {
         return departure;
     }
 
-    public long getStopId() {
-        return stopId;
-    }
-
-    public long getStopSequence() {
-        return stopSequence;
-    }
-
-
-    public StopTime setTripId(String tripId) {
-        this.tripId = tripId;
-        return this;
-    }
-
-    public Date getArrival() {
-        return arrival;
-    }
-
-    public StopTime setArrival(Date arrival) {
-        this.arrival = arrival;
-        return this;
-    }
-
-    public Date getDeparture() {
-        return departure;
-    }
-
-    public StopTime setDeparture(Date departure) {
+    public StopTime setDeparture(LocalTime departure) {
         this.departure = departure;
+        return this;
+    }
+
+    public StopTime setDeparture(String departure) {
+        this.departure = LocalTime.parse(departure);
         return this;
     }
 
@@ -112,5 +105,4 @@ public class StopTime {
         this.stopSequence = stopSequence;
         return this;
     }
-
 }

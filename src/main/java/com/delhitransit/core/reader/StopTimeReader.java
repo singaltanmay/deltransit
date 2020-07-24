@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 
-public class StopTimesReader {
+public class StopTimeReader {
 
     public List<StopTime> read() throws IOException {
         return read("src/main/resources/static/stop_times.txt");

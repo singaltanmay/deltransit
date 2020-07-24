@@ -16,9 +16,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class StopTimesReaderTest {
+public class StopTimeReaderTest {
 
-    StopTimesReader reader = new StopTimesReader();
+    StopTimeReader reader = new StopTimeReader();
 
     @Test
     void readLine() {

@@ -4,7 +4,7 @@
 
 package com.delhitransit.core.reader;
 
-import com.delhitransit.core.model.Route;
+import com.delhitransit.core.model.parseable.Route;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

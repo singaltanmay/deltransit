@@ -2,7 +2,11 @@
  * @author Tanmay Singal
  */
 
-package com.delhitransit.core.model;
+package com.delhitransit.core.model.parseable;
+
+import com.delhitransit.core.model.entity.RouteEntity.ROUTE_TYPE;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#routestxt
@@ -12,6 +16,7 @@ public class Route {
     /**
      * Identifies a route.
      */
+    @Getter
     private long routeId;
 
     /**
@@ -19,6 +24,7 @@ public class Route {
      * riders use to identify a route, but which doesn't give any indication of what places the route serves. Either
      * route_short_name or route_long_name must be specified, or potentially both if appropriate.
      */
+    @Getter
     private String shortName;
 
     /**
@@ -26,6 +32,7 @@ public class Route {
      * route's destination or stop. Either route_short_name or route_long_name must be specified, or potentially both
      * if appropriate.
      */
+    @Getter
     private String longName;
 
     /**
@@ -43,12 +50,39 @@ public class Route {
      * 11 - Trolleybus. Electric buses that draw power from overhead wires using poles.
      * 12 - Monorail. Railway in which the track consists of a single rail or a beam.
      */
-    private ROUTE_TYPE type = ROUTE_TYPE.BUS;
+    @Getter
+    private int type;
 
     /**
      * Agency for the specified route.
      */
+    @Getter
     private String agencyId;
+
+    public Route setRouteId(long routeId) {
+        this.routeId = routeId;
+        return this;
+    }
+
+    public Route setShortName(String shortName) {
+        this.shortName = shortName;
+        return this;
+    }
+
+    public Route setLongName(String longName) {
+        this.longName = longName;
+        return this;
+    }
+
+    public Route setType(int type) {
+        this.type = type;
+        return this;
+    }
+
+    public Route setAgencyId(String agencyId) {
+        this.agencyId = agencyId;
+        return this;
+    }
 
     public static ROUTE_TYPE getRouteType(int routeType) {
         switch (routeType) {
@@ -75,61 +109,4 @@ public class Route {
         }
     }
 
-    public long getRouteId() {
-        return routeId;
-    }
-
-    public Route setRouteId(long routeId) {
-        this.routeId = routeId;
-        return this;
-    }
-
-    public String getShortName() {
-        return shortName;
-    }
-
-    public Route setShortName(String shortName) {
-        this.shortName = shortName;
-        return this;
-    }
-
-    public String getLongName() {
-        return longName;
-    }
-
-    public Route setLongName(String longName) {
-        this.longName = longName;
-        return this;
-    }
-
-    public ROUTE_TYPE getType() {
-        return type;
-    }
-
-    public Route setType(ROUTE_TYPE type) {
-        this.type = type;
-        return this;
-    }
-
-    public String getAgencyId() {
-        return agencyId;
-    }
-
-    public Route setAgencyId(String agencyId) {
-        this.agencyId = agencyId;
-        return this;
-    }
-
-    public enum ROUTE_TYPE {
-        STREET_LEVEL_RAIL,
-        SUBWAY,
-        RAIL,
-        BUS,
-        FERRY,
-        CABLE_TRAM,
-        AERIAL_LIFT,
-        FUNICULAR,
-        TROLLEYBUS,
-        MONORAIL
-    }
 }

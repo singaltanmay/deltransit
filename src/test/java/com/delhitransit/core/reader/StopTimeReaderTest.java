@@ -5,7 +5,7 @@
 package com.delhitransit.core.reader;
 
 
-import com.delhitransit.core.model.StopTime;
+import com.delhitransit.core.model.parseable.StopTime;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

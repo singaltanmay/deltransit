@@ -4,7 +4,7 @@
 
 package com.delhitransit.core.reader;
 
-import com.delhitransit.core.model.Route;
+import com.delhitransit.core.model.parseable.Route;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,7 +53,7 @@ public class RouteReader {
                 return new Route()
                         .setShortName(strings[0])
                         .setLongName(strings[1])
-                        .setType(Route.getRouteType(Integer.parseInt(strings[2])))
+                        .setType(Integer.parseInt(strings[2]))
                         .setRouteId(Long.parseLong(strings[3]))
                         .setAgencyId(strings[4]);
             } else {

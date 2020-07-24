@@ -4,7 +4,7 @@
 
 package com.delhitransit.core.reader;
 
-import com.delhitransit.core.model.Route;
+import com.delhitransit.core.model.parseable.Route;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,13 +13,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class RouteReaderTest {
+public class RouteEntityReaderTest {
 
     private final String ROUTE_SHORT_NAME = "";
 
     private final String ROUTE_LONG_NAME = "108DOWN";
 
-    private final Route.ROUTE_TYPE ROUTE_TYPE = Route.ROUTE_TYPE.BUS;
+    private final int ROUTE_TYPE = 3;
 
     private final String ROUTE_AGENCY_ID = "DIMTS";
 
@@ -29,7 +29,8 @@ public class RouteReaderTest {
 
     @Test
     void readLine() {
-        String line = ROUTE_SHORT_NAME + "," + ROUTE_LONG_NAME + ",3," + ROUTE_ROUTE_ID + "," + ROUTE_AGENCY_ID;
+        String line =
+                ROUTE_SHORT_NAME + "," + ROUTE_LONG_NAME + "," + ROUTE_TYPE + "," + ROUTE_ROUTE_ID + "," + ROUTE_AGENCY_ID;
         Route route = reader.readLine(line);
         assertNotNull(route);
         assertEquals(ROUTE_SHORT_NAME, route.getShortName());

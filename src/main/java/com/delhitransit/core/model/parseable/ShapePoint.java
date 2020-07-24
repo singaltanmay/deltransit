@@ -2,7 +2,7 @@
  * @author Tanmay Singal
  */
 
-package com.delhitransit.core.model;
+package com.delhitransit.core.model.parseable;
 
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#shapestxt

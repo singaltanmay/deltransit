@@ -3,7 +3,7 @@
  */
 package com.delhitransit.core.reader;
 
-import com.delhitransit.core.model.Trip;
+import com.delhitransit.core.model.parseable.Trip;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

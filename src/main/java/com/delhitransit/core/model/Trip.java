@@ -4,8 +4,6 @@
 
 package com.delhitransit.core.model;
 
-import lombok.Getter;
-
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#tripstxt
  */
@@ -30,22 +28,22 @@ public class Trip {
         return routeId;
     }
 
-    public String getTripId() {
-        return tripId;
-    }
-
-    public long getShapeId() {
-        return shapeId;
-    }
-
     public Trip setRouteId(long routeId) {
         this.routeId = routeId;
         return this;
     }
 
+    public String getTripId() {
+        return tripId;
+    }
+
     public Trip setTripId(String tripId) {
         this.tripId = tripId;
         return this;
+    }
+
+    public long getShapeId() {
+        return shapeId;
     }
 
     public Trip setShapeId(long shapeId) {

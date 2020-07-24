@@ -4,8 +4,6 @@
 
 package com.delhitransit.core.model;
 
-import lombok.Getter;
-
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#routestxt
  */
@@ -81,20 +79,13 @@ public class Route {
         return routeId;
     }
 
+    public Route setRouteId(long routeId) {
+        this.routeId = routeId;
+        return this;
+    }
+
     public String getShortName() {
         return shortName;
-    }
-
-    public String getLongName() {
-        return longName;
-    }
-
-    public ROUTE_TYPE getType() {
-        return type;
-    }
-
-    public String getAgencyId() {
-        return agencyId;
     }
 
     public Route setShortName(String shortName) {
@@ -102,9 +93,17 @@ public class Route {
         return this;
     }
 
+    public String getLongName() {
+        return longName;
+    }
+
     public Route setLongName(String longName) {
         this.longName = longName;
         return this;
+    }
+
+    public ROUTE_TYPE getType() {
+        return type;
     }
 
     public Route setType(ROUTE_TYPE type) {
@@ -112,9 +111,8 @@ public class Route {
         return this;
     }
 
-    public Route setRouteId(long routeId) {
-        this.routeId = routeId;
-        return this;
+    public String getAgencyId() {
+        return agencyId;
     }
 
     public Route setAgencyId(String agencyId) {

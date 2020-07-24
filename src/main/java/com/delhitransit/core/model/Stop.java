@@ -4,8 +4,6 @@
 
 package com.delhitransit.core.model;
 
-import lombok.Getter;
-
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#stopstxt
  */
@@ -42,21 +40,13 @@ public class Stop {
         return stopId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
     public Stop setStopId(long stopId) {
         this.stopId = stopId;
         return this;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Stop setName(String name) {
@@ -64,9 +54,17 @@ public class Stop {
         return this;
     }
 
+    public double getLatitude() {
+        return latitude;
+    }
+
     public Stop setLatitude(double latitude) {
         this.latitude = latitude;
         return this;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     public Stop setLongitude(double longitude) {

@@ -57,9 +57,10 @@ public class StopTimeReader {
                         .setStopId(Long.parseLong(strings[3]))
                         .setStopSequence(Long.parseLong(strings[4]));
             } else {
-                System.err.println("Skipped reading line due to missing data." +
-                                           " Expected length was 5 but instead found " + strings.length + "." +
-                                           " String: " + line);
+                System.err.println(
+                        "Skipped reading line due to missing data." +
+                                " Expected length was 5 but instead found " + strings.length + "." +
+                                " String: " + line);
             }
         }
         return null;

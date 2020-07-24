@@ -27,7 +27,7 @@ public class RouteReader {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
         // First line of the stream
-        //Being skipped as it contains headers   and not actual data
+        //Being skipped as it contains headers and not actual data
         String line = bufferedReader.readLine();
 
         // Read till end of stream
@@ -57,9 +57,10 @@ public class RouteReader {
                         .setRouteId(Long.parseLong(strings[3]))
                         .setAgencyId(strings[4]);
             } else {
-                System.err.println("Skipped reading line due to missing data." +
-                                           " Expected length was 5 but instead found " + strings.length + "." +
-                                           " String: " + line);
+                System.err.println(
+                        "Skipped reading line due to missing data." +
+                                " Expected length was 5 but instead found " + strings.length + "." +
+                                " String: " + line);
             }
         }
         return null;

@@ -56,9 +56,10 @@ public class StopReader {
                         .setLatitude(Double.parseDouble(strings[2]))
                         .setLongitude(Double.parseDouble(strings[3]));
             } else {
-                System.err.println("Skipped reading line due to missing data." +
-                                           " Expected length was 4 but instead found " + strings.length + "." +
-                                           " String: " + line);
+                System.err.println(
+                        "Skipped reading line due to missing data." +
+                                " Expected length was 4 but instead found " + strings.length + "." +
+                                " String: " + line);
             }
         }
         return null;

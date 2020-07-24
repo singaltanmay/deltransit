@@ -4,7 +4,7 @@
 
 package com.delhitransit.core.reader;
 
-import com.delhitransit.core.model.StopTime;
+import com.delhitransit.core.model.parseable.StopTime;
 
 import java.io.BufferedReader;
 import java.io.File;

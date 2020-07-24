@@ -4,7 +4,7 @@
 
 package com.delhitransit.core.reader;
 
-import com.delhitransit.core.model.Trip;
+import com.delhitransit.core.model.parseable.Trip;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -4,56 +4,44 @@
 
 package com.delhitransit.core.model.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.List;
 
 @Entity
-public class Route {
+public class RouteEntity {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
-    private long pKey;
+    private long key;
 
+    @Getter
+    @Setter
     private String shortName;
 
+    @Getter
+    @Setter
     private String longName;
 
+    @Getter
+    @Setter
     private ROUTE_TYPE type = ROUTE_TYPE.BUS;
 
-    public long getpKey() {
-        return pKey;
-    }
-
-    public String getShortName() {
-        return shortName;
-    }
-
-    public Route setShortName(String shortName) {
-        this.shortName = shortName;
-        return this;
-    }
-
-    public String getLongName() {
-        return longName;
-    }
-
-    public Route setLongName(String longName) {
-        this.longName = longName;
-        return this;
-    }
-
-    public ROUTE_TYPE getType() {
-        return type;
-    }
-
-    public Route setType(ROUTE_TYPE type) {
-        this.type = type;
-        return this;
-    }
+    @Getter
+    @Setter
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "route", cascade = CascadeType.ALL)
+    private List<TripEntity> trips;
 
     public enum ROUTE_TYPE {
         STREET_LEVEL_RAIL,

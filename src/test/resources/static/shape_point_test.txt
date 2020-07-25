@@ -1,0 +1,5 @@
+shape_id,shape_pt_lat,shappt_lon,shape_pt_sequence
+2.36,abc
+
+692,28.625705,77.110839,712
+692,28.625705,77.110839,712,456

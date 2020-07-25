@@ -27,7 +27,7 @@ public class ShapePointReaderTest {
     ShapePointReader reader = new ShapePointReader();
 
     @Test
-    void readLine(){
+    void readLine() {
         String line = SHAPE_ID + "," + LATITUDE + "," + LOGITUDE + "," + SEQUENCE;
         ShapePoint shapePoint = reader.readLine(line);
         assertNotNull(shapePoint);
@@ -40,6 +40,17 @@ public class ShapePointReaderTest {
 
     @Test
     void read() throws IOException {
-        List<ShapePoint> shapePoints = reader.read("src/test/resources/static/shapes.txt");
+        List<ShapePoint> shapePoints = reader.read("src/test/resources/static/shape_point_test.txt");
+
+        assertNotNull(shapePoints);
+        assertEquals(1, shapePoints.size());
+
+        for (ShapePoint shapePoint : shapePoints) {
+            assertNotNull(shapePoint);
+            assertEquals(692, shapePoint.getShapeId());
+            assertEquals(28.625705, shapePoint.getLatitude());
+            assertEquals(77.110839, shapePoint.getLongitude());
+            assertEquals(712, shapePoint.getSequence());
+        }
     }
 }

@@ -47,10 +47,10 @@ public class ShapePointReaderTest {
 
         for (ShapePoint shapePoint : shapePoints) {
             assertNotNull(shapePoint);
-            assertEquals(692, shapePoint.getShapeId());
-            assertEquals(28.625705, shapePoint.getLatitude());
-            assertEquals(77.110839, shapePoint.getLongitude());
-            assertEquals(712, shapePoint.getSequence());
+            assertEquals(SHAPE_ID, shapePoint.getShapeId());
+            assertEquals(LATITUDE, shapePoint.getLatitude());
+            assertEquals(LOGITUDE, shapePoint.getLongitude());
+            assertEquals(SEQUENCE, shapePoint.getSequence());
         }
     }
 }

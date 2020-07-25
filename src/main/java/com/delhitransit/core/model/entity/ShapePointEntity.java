@@ -28,7 +28,7 @@ public class ShapePointEntity {
 
     @Getter
     @Setter
-    private long shapeId;
+    private int shapeId;
 
     @Getter
     @Setter
@@ -40,7 +40,7 @@ public class ShapePointEntity {
 
     @Getter
     @Setter
-    private long sequence;
+    private int sequence;
 
     @Getter
     @Setter

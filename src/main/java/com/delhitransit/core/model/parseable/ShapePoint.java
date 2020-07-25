@@ -12,7 +12,7 @@ public class ShapePoint {
     /**
      * Identifies a shape.
      */
-    private long shapeId;
+    private int shapeId;
 
     /**
      * Latitude of a shape point. Each record in shapes.txt represents a shape point used to define the shape.
@@ -33,13 +33,13 @@ public class ShapePoint {
      * A_shp,37.64430,-122.41070,6
      * A_shp,37.65863,-122.30839,11
      */
-    private long sequence;
+    private int sequence;
 
-    public long getShapeId() {
+    public int getShapeId() {
         return shapeId;
     }
 
-    public ShapePoint setShapeId(long shapeId) {
+    public ShapePoint setShapeId(int shapeId) {
         this.shapeId = shapeId;
         return this;
     }
@@ -62,11 +62,11 @@ public class ShapePoint {
         return this;
     }
 
-    public long getSequence() {
+    public int getSequence() {
         return sequence;
     }
 
-    public ShapePoint setSequence(long sequence) {
+    public ShapePoint setSequence(int sequence) {
         this.sequence = sequence;
         return this;
     }

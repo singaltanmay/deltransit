@@ -14,7 +14,6 @@ public class StopTime {
     /**
      * Identifies a trip.
      */
-
     private String tripId;
 
     /**
@@ -25,7 +24,6 @@ public class StopTime {
      */
     private LocalTime arrival;
 
-
     /**
      * Departure time from a specific stop for a specific trip on a route. For times occurring after midnight on the
      * service day, enter the time as a value greater than 24:00:00 in HH:MM:SS local time for the day on which the
@@ -33,9 +31,7 @@ public class StopTime {
      * value for arrival_time and departure_time. See the arrival_time description for more details about using
      * timepoints correctly.
      */
-
     private LocalTime departure;
-
 
     /**
      * Identifies the serviced stop. All stops serviced during a trip must have a record in stop_times.txt.

@@ -12,7 +12,7 @@ public class Trip {
     /**
      * Identifies the route that this trip is a part of.
      */
-    private long routeId;
+    private int routeId;
 
     /**
      * Identifies a trip.
@@ -22,13 +22,13 @@ public class Trip {
     /**
      * Identifies a geospatial shape that describes the vehicle travel path for a trip.
      */
-    private long shapeId;
+    private int shapeId;
 
-    public long getRouteId() {
+    public int getRouteId() {
         return routeId;
     }
 
-    public Trip setRouteId(long routeId) {
+    public Trip setRouteId(int routeId) {
         this.routeId = routeId;
         return this;
     }
@@ -42,11 +42,11 @@ public class Trip {
         return this;
     }
 
-    public long getShapeId() {
+    public int getShapeId() {
         return shapeId;
     }
 
-    public Trip setShapeId(long shapeId) {
+    public Trip setShapeId(int shapeId) {
         this.shapeId = shapeId;
         return this;
     }

@@ -48,13 +48,18 @@ public class TripReader {
             String[] strings = line.split(",");
             if (strings.length == 4) {
                 return new Trip()
-                        .setRouteId(Long.parseLong(strings[0]))
+                        .setRouteId(Integer.parseInt(strings[0]))
                         .setTripId(strings[2])
-                        .setShapeId(Long.parseLong(strings[3]));
+                        .setShapeId(Integer.parseInt(strings[3]));
+            }
+            if (strings.length == 3) {
+                return new Trip()
+                        .setRouteId(Integer.parseInt(strings[0]))
+                        .setTripId(strings[2]);
             } else {
                 System.err.println(
                         "Skipped reading line due to missing data." +
-                                " Expected length was 4 but instead found " + strings.length + "." +
+                                " Expected length was 4 or 3 but instead found " + strings.length + "." +
                                 " String: " + line);
             }
         }

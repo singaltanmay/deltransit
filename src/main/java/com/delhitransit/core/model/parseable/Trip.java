@@ -4,6 +4,8 @@
 
 package com.delhitransit.core.model.parseable;
 
+import lombok.Getter;
+
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#tripstxt
  */
@@ -12,29 +14,24 @@ public class Trip {
     /**
      * Identifies the route that this trip is a part of.
      */
-    private long routeId;
+    @Getter
+    private int routeId;
 
     /**
      * Identifies a trip.
      */
+    @Getter
     private String tripId;
 
     /**
      * Identifies a geospatial shape that describes the vehicle travel path for a trip.
      */
-    private long shapeId;
+    @Getter
+    private int shapeId;
 
-    public long getRouteId() {
-        return routeId;
-    }
-
-    public Trip setRouteId(long routeId) {
+    public Trip setRouteId(int routeId) {
         this.routeId = routeId;
         return this;
-    }
-
-    public String getTripId() {
-        return tripId;
     }
 
     public Trip setTripId(String tripId) {
@@ -42,11 +39,7 @@ public class Trip {
         return this;
     }
 
-    public long getShapeId() {
-        return shapeId;
-    }
-
-    public Trip setShapeId(long shapeId) {
+    public Trip setShapeId(int shapeId) {
         this.shapeId = shapeId;
         return this;
     }

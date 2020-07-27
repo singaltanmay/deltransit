@@ -46,16 +46,22 @@ public class TripReader {
 
         if (line != null && !line.isBlank()) {
             String[] strings = line.split(",");
-            if (strings.length == 4) {
-                return new Trip()
-                        .setRouteId(Long.parseLong(strings[0]))
-                        .setTripId(strings[2])
-                        .setShapeId(Long.parseLong(strings[3]));
-            } else {
-                System.err.println(
-                        "Skipped reading line due to missing data." +
-                                " Expected length was 4 but instead found " + strings.length + "." +
-                                " String: " + line);
+            switch (strings.length) {
+                case 3:
+                    return new Trip()
+                            .setRouteId(Integer.parseInt(strings[0]))
+                            .setTripId(strings[2]);
+                case 4:
+                    return new Trip()
+                            .setRouteId(Integer.parseInt(strings[0]))
+                            .setTripId(strings[2])
+                            .setShapeId(Integer.parseInt(strings[3]));
+                default:
+                    System.err.println(
+                            "Skipped reading line due to missing data." +
+                                    " Expected length was either 4 or 3 but instead found " + strings.length + "." +
+                                    " String: " + line);
+                    break;
             }
         }
         return null;

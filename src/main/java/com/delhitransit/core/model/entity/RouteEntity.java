@@ -46,6 +46,37 @@ public class RouteEntity {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "route", cascade = CascadeType.ALL)
     private List<TripEntity> trips;
 
+    public RouteEntity(Route route) {
+        this.setShortName(route.getShortName());
+        this.setLongName(route.getLongName());
+        this.setType(getRouteType(route.getType()));
+    }
+
+    public static ROUTE_TYPE getRouteType(int routeType) {
+        switch (routeType) {
+            case 0:
+                return ROUTE_TYPE.STREET_LEVEL_RAIL;
+            case 1:
+                return ROUTE_TYPE.SUBWAY;
+            case 2:
+                return ROUTE_TYPE.RAIL;
+            case 4:
+                return ROUTE_TYPE.FERRY;
+            case 5:
+                return ROUTE_TYPE.CABLE_TRAM;
+            case 6:
+                return ROUTE_TYPE.AERIAL_LIFT;
+            case 7:
+                return ROUTE_TYPE.FUNICULAR;
+            case 8:
+                return ROUTE_TYPE.TROLLEYBUS;
+            case 9:
+                return ROUTE_TYPE.MONORAIL;
+            default:
+                return ROUTE_TYPE.BUS;
+        }
+    }
+
     public enum ROUTE_TYPE {
         STREET_LEVEL_RAIL,
         SUBWAY,
@@ -57,12 +88,6 @@ public class RouteEntity {
         FUNICULAR,
         TROLLEYBUS,
         MONORAIL
-    }
-
-    public RouteEntity(Route route){
-        this.setShortName(route.getShortName());
-        this.setLongName(route.getLongName());
-        this.setType(Route.getRouteType(route.getType()));
     }
 
 }

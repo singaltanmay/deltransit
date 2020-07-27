@@ -25,6 +25,15 @@ public class RouteService {
         this.repository = repository;
     }
 
+    public List<RouteEntity> getAllRoutes(){
+        return repository.findAll();
+    }
+
+    public void initializeUnlinkedDatabase() throws IOException {
+        List<RouteEntity> entities = parseCsvToEntityList();
+        insertRoutes(entities);
+    }
+
     private List<RouteEntity> parseCsvToEntityList() throws IOException {
 
         List<RouteEntity> entities = new LinkedList<>();
@@ -42,15 +51,6 @@ public class RouteService {
         if (routes != null && routes.size() > 0) {
             repository.saveAll(routes);
         }
-    }
-
-    public void initializeUnlinkedDatabase() throws IOException {
-        List<RouteEntity> entities = parseCsvToEntityList();
-        insertRoutes(entities);
-    }
-
-    public List<RouteEntity> getAllRoutes(){
-        return repository.findAll();
     }
 
 }

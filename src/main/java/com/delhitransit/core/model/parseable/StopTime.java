@@ -4,6 +4,8 @@
 
 package com.delhitransit.core.model.parseable;
 
+import lombok.Getter;
+
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#stop_timestxt
  */
@@ -12,6 +14,7 @@ public class StopTime {
     /**
      * Identifies a trip.
      */
+    @Getter
     private String tripId;
 
     /**
@@ -36,6 +39,7 @@ public class StopTime {
      * Referenced locations must be stops, not stations or station entrances. A stop may be serviced multiple times
      * in the same trip, and multiple trips and routes may service the same stop.
      */
+    @Getter
     private long stopId;
 
     /**
@@ -43,6 +47,7 @@ public class StopTime {
      * consecutive.Example: The first location on the trip could have a stop_sequence=1, the second location on the
      * trip could have a stop_sequence=23, the third location could have a stop_sequence=40, and so on.
      */
+    @Getter
     private long stopSequence;
 
     public StopTime setTripId(String tripId) {
@@ -50,8 +55,8 @@ public class StopTime {
         return this;
     }
 
-    public String getTripId() {
-        return tripId;
+    public String getArrival() {
+        return longToTimeString(arrival);
     }
 
     public StopTime setArrival(String arrival) {
@@ -60,8 +65,8 @@ public class StopTime {
         return this;
     }
 
-    public String getArrival() {
-        return longToTimeString(arrival);
+    public String getDeparture() {
+        return longToTimeString(departure);
     }
 
     public StopTime setDeparture(String departure) {
@@ -70,21 +75,9 @@ public class StopTime {
         return this;
     }
 
-    public String getDeparture() {
-        return longToTimeString(departure);
-    }
-
     public StopTime setStopId(long stopId) {
         this.stopId = stopId;
         return this;
-    }
-
-    public long getStopId() {
-        return stopId;
-    }
-
-    public long getStopSequence() {
-        return stopSequence;
     }
 
     public StopTime setStopSequence(long stopSequence) {

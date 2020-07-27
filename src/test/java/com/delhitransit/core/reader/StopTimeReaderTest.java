@@ -9,7 +9,6 @@ import com.delhitransit.core.model.parseable.StopTime;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.time.LocalTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,8 +24,8 @@ public class StopTimeReaderTest {
         StopTime stopTime = reader.readLine("0_6_0,06:00:00,06:00:00,2101,0");
         assertNotNull(stopTime);
         assertEquals("0_6_0", stopTime.getTripId());
-        assertTrue("06:00:00".equals(stopTime.getArrival()));
-        assertTrue(("06:00:00").equals(stopTime.getDeparture()));
+        assertEquals("06:00:00", stopTime.getArrival());
+        assertEquals(("06:00:00"), stopTime.getDeparture());
         assertEquals(2101, stopTime.getStopId());
         assertEquals(0, stopTime.getStopSequence());
     }

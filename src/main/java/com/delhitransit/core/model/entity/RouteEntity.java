@@ -4,7 +4,9 @@
 
 package com.delhitransit.core.model.entity;
 
+import com.delhitransit.core.model.parseable.Route;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
@@ -18,6 +20,7 @@ import javax.persistence.OneToMany;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
 public class RouteEntity {
 
     @Getter
@@ -54,6 +57,12 @@ public class RouteEntity {
         FUNICULAR,
         TROLLEYBUS,
         MONORAIL
+    }
+
+    public RouteEntity(Route route){
+        this.setShortName(route.getShortName());
+        this.setLongName(route.getLongName());
+        this.setType(Route.getRouteType(route.getType()));
     }
 
 }

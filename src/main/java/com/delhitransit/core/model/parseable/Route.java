@@ -6,7 +6,6 @@ package com.delhitransit.core.model.parseable;
 
 import com.delhitransit.core.model.entity.RouteEntity.ROUTE_TYPE;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#routestxt
@@ -59,31 +58,6 @@ public class Route {
     @Getter
     private String agencyId;
 
-    public Route setRouteId(long routeId) {
-        this.routeId = routeId;
-        return this;
-    }
-
-    public Route setShortName(String shortName) {
-        this.shortName = shortName;
-        return this;
-    }
-
-    public Route setLongName(String longName) {
-        this.longName = longName;
-        return this;
-    }
-
-    public Route setType(int type) {
-        this.type = type;
-        return this;
-    }
-
-    public Route setAgencyId(String agencyId) {
-        this.agencyId = agencyId;
-        return this;
-    }
-
     public static ROUTE_TYPE getRouteType(int routeType) {
         switch (routeType) {
             case 0:
@@ -107,6 +81,31 @@ public class Route {
             default:
                 return ROUTE_TYPE.BUS;
         }
+    }
+
+    public Route setRouteId(long routeId) {
+        this.routeId = routeId;
+        return this;
+    }
+
+    public Route setShortName(String shortName) {
+        this.shortName = shortName;
+        return this;
+    }
+
+    public Route setLongName(String longName) {
+        this.longName = longName;
+        return this;
+    }
+
+    public Route setType(int type) {
+        this.type = type;
+        return this;
+    }
+
+    public Route setAgencyId(String agencyId) {
+        this.agencyId = agencyId;
+        return this;
     }
 
 }

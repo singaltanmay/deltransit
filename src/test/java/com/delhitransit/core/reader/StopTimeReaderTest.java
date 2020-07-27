@@ -25,8 +25,8 @@ public class StopTimeReaderTest {
         StopTime stopTime = reader.readLine("0_6_0,06:00:00,06:00:00,2101,0");
         assertNotNull(stopTime);
         assertEquals("0_6_0", stopTime.getTripId());
-        assertTrue(LocalTime.parse("06:00:00").equals(stopTime.getArrival()));
-        assertTrue(LocalTime.parse("06:00:00").equals(stopTime.getDeparture()));
+        assertTrue("06:00:00".equals(stopTime.getArrival()));
+        assertTrue(("06:00:00").equals(stopTime.getDeparture()));
         assertEquals(2101, stopTime.getStopId());
         assertEquals(0, stopTime.getStopSequence());
     }
@@ -39,11 +39,10 @@ public class StopTimeReaderTest {
         for (StopTime stopTime : stopTimes) {
             assertNotNull(stopTime);
             assertEquals("0_6_0", stopTime.getTripId());
-            LocalTime arrival = stopTime.getArrival();
-            assertTrue(LocalTime.parse("06:00:00").equals(arrival) || LocalTime.parse("06:04:17").equals(arrival));
-            LocalTime departure = stopTime.getDeparture();
-            assertTrue(LocalTime.parse("06:00:00").equals(departure) || LocalTime.parse("06:04:17")
-                                                                                 .equals(departure));
+            String arrival = stopTime.getArrival();
+            assertTrue(("06:00:00").equals(arrival) || ("06:04:17").equals(arrival));
+            String departure = stopTime.getDeparture();
+            assertTrue(("06:00:00").equals(departure) || ("06:04:17").equals(departure));
             long stopId = stopTime.getStopId();
             assertTrue(2101 == stopId || 2790 == stopId);
             long stopSequence = stopTime.getStopSequence();

@@ -6,7 +6,6 @@ package com.delhitransit.core.model.parseable;
 
 import com.delhitransit.core.model.entity.RouteEntity.ROUTE_TYPE;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * For more information see https://developers.google.com/transit/gtfs/reference/#routestxt
@@ -82,31 +81,6 @@ public class Route {
     public Route setAgencyId(String agencyId) {
         this.agencyId = agencyId;
         return this;
-    }
-
-    public static ROUTE_TYPE getRouteType(int routeType) {
-        switch (routeType) {
-            case 0:
-                return ROUTE_TYPE.STREET_LEVEL_RAIL;
-            case 1:
-                return ROUTE_TYPE.SUBWAY;
-            case 2:
-                return ROUTE_TYPE.RAIL;
-            case 4:
-                return ROUTE_TYPE.FERRY;
-            case 5:
-                return ROUTE_TYPE.CABLE_TRAM;
-            case 6:
-                return ROUTE_TYPE.AERIAL_LIFT;
-            case 7:
-                return ROUTE_TYPE.FUNICULAR;
-            case 8:
-                return ROUTE_TYPE.TROLLEYBUS;
-            case 9:
-                return ROUTE_TYPE.MONORAIL;
-            default:
-                return ROUTE_TYPE.BUS;
-        }
     }
 
 }

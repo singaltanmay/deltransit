@@ -5,6 +5,7 @@
 package com.delhitransit.core.model.entity;
 
 import com.delhitransit.core.model.parseable.Route;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -41,6 +42,7 @@ public class RouteEntity {
     @Setter
     private ROUTE_TYPE type = ROUTE_TYPE.BUS;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @Getter
     @Setter
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "route", cascade = CascadeType.ALL)

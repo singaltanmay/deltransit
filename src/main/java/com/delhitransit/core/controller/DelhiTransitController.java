@@ -21,7 +21,7 @@ public class DelhiTransitController {
     private TripService tripService;
 
     @Autowired
-    public DelhiTransitController(RouteService routeService) {
+    public DelhiTransitController(RouteService routeService, TripService tripService) {
         this.routeService = routeService;
         this.tripService = tripService;
     }

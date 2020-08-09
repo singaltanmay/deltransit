@@ -16,7 +16,7 @@ public class AdminController {
     private RouteService routeService;
     private TripService tripService;
     @Autowired
-    public AdminController(RouteService routeService) {
+    public AdminController(RouteService routeService, TripService tripService) {
         this.routeService = routeService;
         this.tripService = tripService;
     }

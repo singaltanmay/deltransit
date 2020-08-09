@@ -4,6 +4,7 @@
 
 package com.delhitransit.core.model.entity;
 
+import com.delhitransit.core.model.parseable.Stop;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -48,5 +49,13 @@ public class StopEntity {
     @Setter
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "stop", cascade = CascadeType.ALL)
     private List<StopTimeEntity> stopTimes;
+
+    public StopEntity(Stop stop) {
+        this.setStopId(stop.getStopId());
+        this.setName(stop.getName());
+        this.setLatitude(stop.getLatitude());
+        this.setLongitude(stop.getLongitude());
+
+    }
 
 }

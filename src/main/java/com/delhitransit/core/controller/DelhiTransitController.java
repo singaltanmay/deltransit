@@ -1,9 +1,9 @@
 package com.delhitransit.core.controller;
 
 import com.delhitransit.core.model.entity.RouteEntity;
-import com.delhitransit.core.model.parseable.Route;
+import com.delhitransit.core.model.entity.TripEntity;
 import com.delhitransit.core.service.RouteService;
-import org.springframework.beans.factory.ListableBeanFactory;
+import com.delhitransit.core.service.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,15 +15,23 @@ import java.util.List;
 @RequestMapping("delhitransit/v1")
 public class DelhiTransitController {
 
-    private RouteService routeService;
+    private final RouteService routeService;
+
+    private final TripService tripService;
 
     @Autowired
-    public DelhiTransitController(RouteService routeService) {
+    public DelhiTransitController(RouteService routeService, TripService tripService) {
         this.routeService = routeService;
+        this.tripService = tripService;
     }
 
     @GetMapping("routes")
     public List<RouteEntity> getAllRoutes() {
         return routeService.getAllRoutes();
+    }
+
+    @GetMapping("trips")
+    public List<TripEntity> getAllTrips() {
+        return tripService.getAllTrips();
     }
 }

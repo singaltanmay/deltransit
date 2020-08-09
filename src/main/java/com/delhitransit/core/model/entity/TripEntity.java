@@ -4,8 +4,10 @@
 
 package com.delhitransit.core.model.entity;
 
+import com.delhitransit.core.model.parseable.Trip;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,6 +21,7 @@ import javax.persistence.OneToMany;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
 public class TripEntity {
 
     @Getter
@@ -46,4 +49,8 @@ public class TripEntity {
     @ManyToOne(cascade = CascadeType.ALL)
     private ShapePointEntity shapePoint;
 
+    public TripEntity(Trip trip) {
+        this.setTripId(trip.getTripId());
+
+    }
 }

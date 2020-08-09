@@ -1,6 +1,7 @@
 package com.delhitransit.core.controller;
 
 import com.delhitransit.core.service.RouteService;
+import com.delhitransit.core.service.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,15 +13,23 @@ import java.io.IOException;
 @RequestMapping("delhitransit-admin/v1")
 public class AdminController {
 
-    private RouteService routeService;
+    private final RouteService routeService;
+
+    private final TripService tripService;
 
     @Autowired
-    public AdminController(RouteService routeService) {
+    public AdminController(RouteService routeService, TripService tripService) {
         this.routeService = routeService;
+        this.tripService = tripService;
     }
 
     @PostMapping("init/routes")
     public void initializeRoutesTable() throws IOException {
         routeService.initializeUnlinkedDatabase();
+    }
+
+    @PostMapping("init/trips")
+    public void initializeTripsTables() throws IOException {
+        tripService.initializeUnlinkedDatabase();
     }
 }

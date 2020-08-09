@@ -4,7 +4,9 @@
 
 package com.delhitransit.core.model.entity;
 
+import com.delhitransit.core.model.parseable.ShapePoint;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
@@ -18,6 +20,7 @@ import javax.persistence.OneToMany;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
 public class ShapePointEntity {
 
     @Getter
@@ -47,4 +50,10 @@ public class ShapePointEntity {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "shapePoint", cascade = CascadeType.ALL)
     private List<TripEntity> trips;
 
+    public ShapePointEntity(ShapePoint shapePoint) {
+        this.setShapeId(shapePoint.getShapeId());
+        this.setLatitude(shapePoint.getLatitude());
+        this.setLongitude(shapePoint.getLongitude());
+        this.setSequence(shapePoint.getSequence());
+    }
 }

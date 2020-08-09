@@ -2,10 +2,8 @@ package com.delhitransit.core.controller;
 
 import com.delhitransit.core.model.entity.RouteEntity;
 import com.delhitransit.core.model.entity.TripEntity;
-import com.delhitransit.core.model.parseable.Route;
 import com.delhitransit.core.service.RouteService;
 import com.delhitransit.core.service.TripService;
-import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +15,9 @@ import java.util.List;
 @RequestMapping("delhitransit/v1")
 public class DelhiTransitController {
 
-    private RouteService routeService;
-    private TripService tripService;
+    private final RouteService routeService;
+
+    private final TripService tripService;
 
     @Autowired
     public DelhiTransitController(RouteService routeService, TripService tripService) {

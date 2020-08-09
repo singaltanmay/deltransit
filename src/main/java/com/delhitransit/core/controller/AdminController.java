@@ -13,8 +13,10 @@ import java.io.IOException;
 @RequestMapping("delhitransit-admin/v1")
 public class AdminController {
 
-    private RouteService routeService;
-    private TripService tripService;
+    private final RouteService routeService;
+
+    private final TripService tripService;
+
     @Autowired
     public AdminController(RouteService routeService, TripService tripService) {
         this.routeService = routeService;
@@ -25,6 +27,7 @@ public class AdminController {
     public void initializeRoutesTable() throws IOException {
         routeService.initializeUnlinkedDatabase();
     }
+
     @PostMapping("init/trips")
     public void initializeTripsTables() throws IOException {
         tripService.initializeUnlinkedDatabase();

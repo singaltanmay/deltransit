@@ -2,9 +2,11 @@ package com.delhitransit.core.controller;
 
 import com.delhitransit.core.model.entity.RouteEntity;
 import com.delhitransit.core.model.entity.ShapePointEntity;
+import com.delhitransit.core.model.entity.StopEntity;
 import com.delhitransit.core.model.entity.TripEntity;
 import com.delhitransit.core.service.RouteService;
 import com.delhitransit.core.service.ShapePointService;
+import com.delhitransit.core.service.StopService;
 import com.delhitransit.core.service.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,12 +25,15 @@ public class DelhiTransitController {
 
     private final ShapePointService shapePointService;
 
+    private final StopService stopService;
+
     @Autowired
     public DelhiTransitController(RouteService routeService, TripService tripService,
-                                  ShapePointService shapePointService) {
+                                  ShapePointService shapePointService, StopService stopService) {
         this.routeService = routeService;
         this.tripService = tripService;
         this.shapePointService = shapePointService;
+        this.stopService = stopService;
     }
 
     @GetMapping("routes")
@@ -45,4 +50,10 @@ public class DelhiTransitController {
     public List<ShapePointEntity> getAllShapePoints() {
         return shapePointService.getAllShapePoints();
     }
+
+    @GetMapping("stops")
+    public List<StopEntity> getAllStops() {
+        return stopService.getAllStops();
+    }
+
 }

@@ -18,14 +18,15 @@ public class StopTimeEntityTest {
         String departure = "22:30:00";
         int stopSequence = 4612;
 
-        StopTime stopTime = new StopTime().setArrival(arrival)
+        StopTime stopTime = new StopTime()
+                .setArrival(arrival)
                 .setDeparture(departure)
                 .setStopSequence(stopSequence);
 
         StopTimeEntity stopTimeEntity = new StopTimeEntity(stopTime);
-        assertEquals(arrival, stopTime.getArrival());
-        assertEquals(departure, stopTime.getDeparture());
-        assertEquals(stopSequence, stopTime.getStopSequence());
+        assertEquals(arrival, stopTimeEntity.getArrivalString());
+        assertEquals(departure, stopTimeEntity.getDepartureString());
+        assertEquals(stopSequence, stopTimeEntity.getStopSequence());
     }
 
 }

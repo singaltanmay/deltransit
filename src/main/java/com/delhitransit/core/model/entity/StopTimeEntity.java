@@ -29,11 +29,11 @@ public class StopTimeEntity {
 
     @Getter
     @Setter
-    private String arrival;
+    private long arrival;
 
     @Getter
     @Setter
-    private String departure;
+    private long departure;
 
     @Getter
     @Setter
@@ -55,4 +55,42 @@ public class StopTimeEntity {
         this.setStopSequence(stopTime.getStopSequence());
     }
 
+    public void setArrival(String arrival) {
+        this.arrival = Long.parseLong(arrival.substring(0, 2)) * 3600 + Long.parseLong(
+                arrival.substring(3, 5)) * 60 + Long.parseLong(arrival.substring(6, 8));
+    }
+
+    public void setDeparture(String departure) {
+        this.departure = Long.parseLong(departure.substring(0, 2)) * 3600 + Long.parseLong(
+                departure.substring(3, 5)) * 60 + Long.parseLong(departure.substring(6, 8));
+    }
+
+    public String getArrivalString() {
+        return longToTimeString(arrival);
+    }
+
+    public String getDepartureString() {
+        return longToTimeString(departure);
+    }
+
+    private String longToTimeString(long seconds) {
+        long[] timeArray = new long[3];
+
+        long hrs = timeArray[0] = seconds / 3600;
+        long mins = timeArray[1] = (seconds - hrs * 3600) / 60;
+        timeArray[2] = seconds - hrs * 3600 - mins * 60;
+
+        StringBuilder timeStringBuilder = new StringBuilder();
+
+        for (long elem : timeArray) {
+            if (elem / 10 < 1) {
+                timeStringBuilder.append("0").append(elem).append(":");
+            } else {
+                timeStringBuilder.append(elem).append(":");
+            }
+        }
+
+        String timeString = timeStringBuilder.toString();
+        return timeString.substring(0, timeString.length() - 1);
+    }
 }

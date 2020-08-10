@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ShapePointEntityTest {
 
     @Test
-    void entityFromParaseableConstructorTest() {
+    void entityFromParseableConstructorTest() {
         int shapeId = 001;
         Double latitude = 77.1108082069294;
         Double longitude = 28.6251975188353;

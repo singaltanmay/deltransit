@@ -23,7 +23,8 @@ public class StopTime {
      * midnight on the service day, enter the time as a value greater than 24:00:00 in HH:MM:SS local time for the
      * day on which the trip schedule begins.
      */
-    private long arrival;
+    @Getter
+    private String arrival;
 
     /**
      * Departure time from a specific stop for a specific trip on a route. For times occurring after midnight on the
@@ -32,7 +33,8 @@ public class StopTime {
      * value for arrival_time and departure_time. See the arrival_time description for more details about using
      * timepoints correctly.
      */
-    private long departure;
+    @Getter
+    private String departure;
 
     /**
      * Identifies the serviced stop. All stops serviced during a trip must have a record in stop_times.txt.
@@ -48,30 +50,20 @@ public class StopTime {
      * trip could have a stop_sequence=23, the third location could have a stop_sequence=40, and so on.
      */
     @Getter
-    private long stopSequence;
+    private int stopSequence;
 
     public StopTime setTripId(String tripId) {
         this.tripId = tripId;
         return this;
     }
 
-    public String getArrival() {
-        return longToTimeString(arrival);
-    }
-
     public StopTime setArrival(String arrival) {
-        this.arrival = Long.parseLong(arrival.substring(0, 2)) * 3600 + Long.parseLong(
-                arrival.substring(3, 5)) * 60 + Long.parseLong(arrival.substring(6, 8));
+        this.arrival = arrival;
         return this;
     }
 
-    public String getDeparture() {
-        return longToTimeString(departure);
-    }
-
     public StopTime setDeparture(String departure) {
-        this.departure = Long.parseLong(departure.substring(0, 2)) * 3600 + Long.parseLong(
-                departure.substring(3, 5)) * 60 + Long.parseLong(departure.substring(6, 8));
+        this.departure = departure;
         return this;
     }
 
@@ -80,22 +72,8 @@ public class StopTime {
         return this;
     }
 
-    public StopTime setStopSequence(long stopSequence) {
+    public StopTime setStopSequence(int stopSequence) {
         this.stopSequence = stopSequence;
         return this;
-    }
-
-    private String longToTimeString(long input_secs) {
-        long[] time_arr = new long[3];
-        long hrs = time_arr[0] = input_secs / 3600;
-        long mins = time_arr[1] = (input_secs - hrs * 3600) / 60;
-        time_arr[2] = input_secs - hrs * 3600 - mins * 60;
-        String time_string = "";
-        for (long elem : time_arr) {
-            if (elem / 10 < 1) time_string += "0" + elem + ":";
-            else time_string += elem + ":";
-        }
-        time_string = time_string.substring(0, time_string.length() - 1);
-        return time_string;
     }
 }

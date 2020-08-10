@@ -3,6 +3,7 @@ package com.delhitransit.core.controller;
 import com.delhitransit.core.service.RouteService;
 import com.delhitransit.core.service.ShapePointService;
 import com.delhitransit.core.service.StopService;
+import com.delhitransit.core.service.StopTimeService;
 import com.delhitransit.core.service.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,13 +24,16 @@ public class AdminController {
 
     private final StopService stopService;
 
+    private final StopTimeService stopTimeService;
+
     @Autowired
     public AdminController(RouteService routeService, TripService tripService, ShapePointService shapePointService,
-                           StopService stopService) {
+                           StopService stopService, StopTimeService stopTimeService) {
         this.routeService = routeService;
         this.tripService = tripService;
         this.shapePointService = shapePointService;
         this.stopService = stopService;
+        this.stopTimeService = stopTimeService;
     }
 
     @PostMapping("init/routes")
@@ -52,4 +56,8 @@ public class AdminController {
         stopService.initializeUnlinkedDatabase();
     }
 
+    @PostMapping("init/stopTimes")
+    public void initializeStopTimesTable() throws IOException {
+        stopTimeService.initializeUnlinkedDatabase();
+    }
 }

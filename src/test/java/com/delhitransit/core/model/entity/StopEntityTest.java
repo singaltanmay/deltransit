@@ -14,9 +14,9 @@ public class StopEntityTest {
     @Test
     void entityFromParseableConstructorTest() {
         long stopId = 83759837;
-        String name = "Stop = 'Shastri Nagar'";
-        Double latitude = 1213.12345132132121321;
-        Double longitude = 1254.1215465742121211;
+        String name = "Shastri Nagar";
+        Double latitude = 1213.1234513;
+        Double longitude = 1254.121546;
 
         Stop stop = new Stop().setStopId(stopId)
                               .setName(name)

@@ -37,17 +37,20 @@ public class RouteEntityTest {
 
     @Test
     void entityFromParseableConstructorTest() {
+        long routeId = 1;
         String shortName = "shortName";
         String longName = "longName";
 
-        Route route = new Route().setShortName(shortName)
-                                 .setLongName(longName)
-                                 .setType(5);
+        Route route = new Route()
+                .setRouteId(routeId)
+                .setShortName(shortName)
+                .setLongName(longName)
+                .setType(5);
         RouteEntity entity = new RouteEntity(route);
+        assertEquals(routeId, entity.getRouteId());
         assertEquals(shortName, entity.getShortName());
         assertEquals(longName, entity.getLongName());
         assertEquals(CABLE_TRAM, entity.getType());
-
     }
 
 }

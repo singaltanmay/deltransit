@@ -32,6 +32,10 @@ public class RouteEntity {
 
     @Getter
     @Setter
+    private long routeId;
+
+    @Getter
+    @Setter
     private String shortName;
 
     @Getter
@@ -49,6 +53,7 @@ public class RouteEntity {
     private List<TripEntity> trips;
 
     public RouteEntity(Route route) {
+        this.setRouteId(route.getRouteId());
         this.setShortName(route.getShortName());
         this.setLongName(route.getLongName());
         this.setType(getRouteType(route.getType()));

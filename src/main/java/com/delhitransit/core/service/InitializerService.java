@@ -7,14 +7,17 @@ package com.delhitransit.core.service;
 import com.delhitransit.core.model.entity.RouteEntity;
 import com.delhitransit.core.model.entity.ShapePointEntity;
 import com.delhitransit.core.model.entity.StopEntity;
+import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
 import com.delhitransit.core.model.parseable.Route;
 import com.delhitransit.core.model.parseable.ShapePoint;
 import com.delhitransit.core.model.parseable.Stop;
+import com.delhitransit.core.model.parseable.StopTime;
 import com.delhitransit.core.model.parseable.Trip;
 import com.delhitransit.core.reader.RouteReader;
 import com.delhitransit.core.reader.ShapePointReader;
 import com.delhitransit.core.reader.StopReader;
+import com.delhitransit.core.reader.StopTimeReader;
 import com.delhitransit.core.reader.TripReader;
 import org.springframework.stereotype.Service;
 
@@ -34,11 +37,14 @@ public class InitializerService {
 
     private List<ShapePointEntity> allShapePoints;
 
+    private List<StopTimeEntity> allStopTimes;
+
     public void init() throws IOException {
         initRoutesEntityList();
-        initStopsEntityList();
-        initTripsEntityList();
         initShapePointsEntityList();
+        initTripsEntityList();
+        initStopsEntityList();
+        initStopTimesEntityList();
     }
 
     private List<RouteEntity> initRoutesEntityList() throws IOException {
@@ -51,14 +57,14 @@ public class InitializerService {
         return routeEntities;
     }
 
-    private List<StopEntity> initStopsEntityList() throws IOException {
-        List<StopEntity> stopEntities = new ArrayList<>();
-        List<Stop> stops = new StopReader().read();
-        for (Stop stop : stops) {
-            stopEntities.add(new StopEntity(stop));
+    private List<ShapePointEntity> initShapePointsEntityList() throws IOException {
+        List<ShapePointEntity> shapePointEntities = new ArrayList<>();
+        List<ShapePoint> shapePoints = new ShapePointReader().read();
+        for (ShapePoint shapePoint : shapePoints) {
+            shapePointEntities.add(new ShapePointEntity(shapePoint));
         }
-        allStops = stopEntities;
-        return stopEntities;
+        allShapePoints = shapePointEntities;
+        return shapePointEntities;
     }
 
     private List<TripEntity> initTripsEntityList() throws IOException {
@@ -71,14 +77,33 @@ public class InitializerService {
         return tripEntities;
     }
 
-    private List<ShapePointEntity> initShapePointsEntityList() throws IOException {
-        List<ShapePointEntity> shapePointEntities = new ArrayList<>();
-        List<ShapePoint> shapePoints = new ShapePointReader().read();
-        for (ShapePoint shapePoint : shapePoints) {
-            shapePointEntities.add(new ShapePointEntity(shapePoint));
+    private List<StopEntity> initStopsEntityList() throws IOException {
+        List<StopEntity> stopEntities = new ArrayList<>();
+        List<Stop> stops = new StopReader().read();
+        for (Stop stop : stops) {
+            stopEntities.add(new StopEntity(stop));
         }
-        allShapePoints = shapePointEntities;
-        return shapePointEntities;
+        allStops = stopEntities;
+        return stopEntities;
+    }
+
+    private List<StopTimeEntity> initStopTimesEntityList() throws IOException {
+        List<StopTimeEntity> stopTimeEntities = new ArrayList<>();
+        List<StopTime> stopTimes = new StopTimeReader().read();
+        for (StopTime stopTime : stopTimes) {
+
+            StopTimeEntity stopTimeEntity = new StopTimeEntity(stopTime);
+
+            stopTimeEntities.add(stopTimeEntity);
+
+            allStops.parallelStream().filter(stopEntity -> stopEntity.getStopId() == stopTime.getStopId())
+                    .forEach(filteredStopEntity -> filteredStopEntity.getStopTimes().add(stopTimeEntity));
+
+            allTrips.parallelStream().filter(tripEntity -> tripEntity.getTripId().equals(stopTime.getTripId()))
+                    .forEach(filteredTripEntity -> filteredTripEntity.getStopTimes().add(stopTimeEntity));
+        }
+        allStopTimes = stopTimeEntities;
+        return stopTimeEntities;
     }
 
 }

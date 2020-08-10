@@ -29,6 +29,10 @@ public class TripService {
         return tripRepository.findAll();
     }
 
+    public List<TripEntity> getAllTripsByRouteId(long routeId) {
+        return tripRepository.findTripEntitiesByRoute_RouteId(routeId);
+    }
+
     public void initializeUnlinkedDatabase() throws IOException {
         List<TripEntity> tripEntities = parseCsvToEntityList();
         insertTrips(tripEntities);

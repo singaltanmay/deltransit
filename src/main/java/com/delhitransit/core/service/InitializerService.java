@@ -5,6 +5,7 @@
 package com.delhitransit.core.service;
 
 import com.delhitransit.core.model.entity.RouteEntity;
+import com.delhitransit.core.model.entity.TripEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,8 @@ public class InitializerService {
 
     private final ShapePointService shapePointService;
 
+    private final List<RouteEntity> routes;
+
     @Autowired
     public InitializerService(RouteService routeService, StopService stopService,
                               TripService tripService, ShapePointService shapePointService) {
@@ -28,12 +31,18 @@ public class InitializerService {
         this.stopService = stopService;
         this.tripService = tripService;
         this.shapePointService = shapePointService;
+        routes = routeService.getAllRoutes();
     }
 
-    public void setupLinkingForRoutes(){
-        List<RouteEntity> allRoutes = routeService.getAllRoutes();
-        allRoutes.parallelStream().forEach(
+    public void init() {
+        setupLinkingForRoutes();
+    }
+
+    private void setupLinkingForRoutes() {
+        routes.parallelStream().forEach(
                 routeEntity -> {
+                    List<TripEntity> trips = tripService.getAllTripsByRouteId(routeEntity.getRouteId());
+                    routeEntity.setTrips(trips);
                 }
         );
     }

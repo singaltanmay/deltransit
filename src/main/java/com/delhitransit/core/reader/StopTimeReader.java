@@ -55,7 +55,7 @@ public class StopTimeReader {
                         .setArrival(strings[1])
                         .setDeparture(strings[2])
                         .setStopId(Long.parseLong(strings[3]))
-                        .setStopSequence(Long.parseLong(strings[4]));
+                        .setStopSequence(Integer.parseInt(strings[4]));
             } else {
                 System.err.println(
                         "Skipped reading line due to missing data." +

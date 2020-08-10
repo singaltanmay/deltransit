@@ -48,7 +48,7 @@ public class StopTime {
      * trip could have a stop_sequence=23, the third location could have a stop_sequence=40, and so on.
      */
     @Getter
-    private long stopSequence;
+    private int stopSequence;
 
     public StopTime setTripId(String tripId) {
         this.tripId = tripId;
@@ -80,7 +80,7 @@ public class StopTime {
         return this;
     }
 
-    public StopTime setStopSequence(long stopSequence) {
+    public StopTime setStopSequence(int stopSequence) {
         this.stopSequence = stopSequence;
         return this;
     }

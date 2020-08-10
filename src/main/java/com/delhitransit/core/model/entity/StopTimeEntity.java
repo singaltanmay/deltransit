@@ -4,7 +4,9 @@
 
 package com.delhitransit.core.model.entity;
 
+import com.delhitransit.core.model.parseable.StopTime;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
@@ -14,9 +16,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import java.time.LocalTime;
 
 @Entity
+@NoArgsConstructor
 public class StopTimeEntity {
 
     @Getter
@@ -27,11 +29,11 @@ public class StopTimeEntity {
 
     @Getter
     @Setter
-    private LocalTime arrival;
+    private String arrival;
 
     @Getter
     @Setter
-    private LocalTime departure;
+    private String departure;
 
     @Getter
     @Setter
@@ -45,6 +47,12 @@ public class StopTimeEntity {
 
     @Getter
     @Setter
-    private long stopSequence;
+    private int stopSequence;
+
+    public StopTimeEntity(StopTime stopTime) {
+        this.setArrival(stopTime.getArrival());
+        this.setDeparture(stopTime.getDeparture());
+        this.setStopSequence(stopTime.getStopSequence());
+    }
 
 }

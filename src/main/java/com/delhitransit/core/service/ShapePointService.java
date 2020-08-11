@@ -25,7 +25,7 @@ public class ShapePointService {
         return shapePointRepository.findAll();
     }
 
-    private void insertTrips(List<ShapePointEntity> shapePointEntities) {
+    private void insertShapePoints(List<ShapePointEntity> shapePointEntities) {
         if (shapePointEntities != null && shapePointEntities.size() > 0) {
             shapePointRepository.saveAll(shapePointEntities);
         }

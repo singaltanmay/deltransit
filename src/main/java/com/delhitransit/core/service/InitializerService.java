@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -32,6 +35,8 @@ import static java.lang.Thread.sleep;
 
 @Service
 public class InitializerService {
+
+    private final ExecutorService executorService = Executors.newCachedThreadPool(Executors.defaultThreadFactory());
 
     private List<RouteEntity> allRoutes;
 
@@ -130,20 +135,23 @@ public class InitializerService {
     private List<StopTimeEntity> initStopTimesEntityList() throws IOException {
         List<StopTimeEntity> stopTimeEntities = new ArrayList<>();
         List<StopTime> stopTimes = new StopTimeReader().read();
-
+        List<Future<?>> futures = new LinkedList<>();
         long listNum = 0;
         while (stopTimes.size() > 0) {
             List<StopTime> sublist;
-            if (stopTimes.size() >= 10000) {
-                List<StopTime> skipped10k = stopTimes.stream().skip(10000).collect(Collectors.toCollection(LinkedList::new));
-                sublist = stopTimes.subList(0, 10000);
+            int perThreadItemSize = 5000;
+            if (stopTimes.size() >= perThreadItemSize) {
+                List<StopTime> skipped10k = stopTimes.stream().skip(perThreadItemSize).collect(
+                        Collectors.toCollection(LinkedList::new));
+                sublist = stopTimes.subList(0, perThreadItemSize);
                 stopTimes = skipped10k;
                 listNum++;
             } else {
                 sublist = stopTimes;
             }
             long finalListNum = listNum;
-            new Thread(() -> {
+
+            Runnable runnable = (() -> {
                 for (StopTime stopTime : sublist) {
 
                     StopTimeEntity entity = new StopTimeEntity(stopTime);
@@ -162,8 +170,18 @@ public class InitializerService {
                             });
                 }
                 System.out.println("Processed sublist number " + finalListNum);
-            }).start();
+            });
+            Future<?> future = executorService.submit(runnable);
+            futures.add(future);
         }
+
+        // Iterating over all futures as trying to get a future whose Thread hasn't finished executing will pause the
+        // loop temporarily
+        if (futures.size() > 0) {
+            futures.forEach(f -> {
+            });
+        }
+
         allStopTimes = stopTimeEntities;
         return stopTimeEntities;
     }

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static java.lang.Thread.sleep;
 
@@ -129,25 +130,39 @@ public class InitializerService {
     private List<StopTimeEntity> initStopTimesEntityList() throws IOException {
         List<StopTimeEntity> stopTimeEntities = new ArrayList<>();
         List<StopTime> stopTimes = new StopTimeReader().read();
-        for (StopTime stopTime : stopTimes) {
 
-            StopTimeEntity entity = new StopTimeEntity(stopTime);
-            stopTimeEntities.add(entity);
+        long listNum = 0;
+        while (stopTimes.size() > 0) {
+            List<StopTime> sublist;
+            if (stopTimes.size() >= 10000) {
+                List<StopTime> skipped10k = stopTimes.stream().skip(10000).collect(Collectors.toCollection(LinkedList::new));
+                sublist = stopTimes.subList(0, 10000);
+                stopTimes = skipped10k;
+                listNum++;
+            } else {
+                sublist = stopTimes;
+            }
+            long finalListNum = listNum;
+            new Thread(() -> {
+                for (StopTime stopTime : sublist) {
 
-            allStops.parallelStream().filter(stopEntity -> stopEntity.getStopId() == stopTime.getStopId())
-                    .forEach(filteredStopEntity -> {
-                        filteredStopEntity.getStopTimes().add(entity);
-                        entity.setStop(filteredStopEntity);
-                    });
+                    StopTimeEntity entity = new StopTimeEntity(stopTime);
+                    stopTimeEntities.add(entity);
 
-            allTrips.parallelStream().filter(tripEntity -> tripEntity.getTripId().equals(stopTime.getTripId()))
-                    .forEach(filteredTripEntity -> {
-                        filteredTripEntity.getStopTimes().add(entity);
-                        entity.setTrip(filteredTripEntity);
-                    });
+                    allStops.parallelStream().filter(stopEntity -> stopEntity.getStopId() == stopTime.getStopId())
+                            .forEach(filteredStopEntity -> {
+                                filteredStopEntity.getStopTimes().add(entity);
+                                entity.setStop(filteredStopEntity);
+                            });
 
-            System.out.println("Added stopTime: " + stopTime.getStopId());
-
+                    allTrips.parallelStream().filter(tripEntity -> tripEntity.getTripId().equals(stopTime.getTripId()))
+                            .forEach(filteredTripEntity -> {
+                                filteredTripEntity.getStopTimes().add(entity);
+                                entity.setTrip(filteredTripEntity);
+                            });
+                }
+                System.out.println("Processed sublist number " + finalListNum);
+            }).start();
         }
         allStopTimes = stopTimeEntities;
         return stopTimeEntities;

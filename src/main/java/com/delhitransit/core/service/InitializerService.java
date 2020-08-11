@@ -43,7 +43,7 @@ public class InitializerService {
     private List<StopTimeEntity> allStopTimes;
 
     public void init() throws IOException {
-        AtomicReference<Short> threadCount = new AtomicReference<>((short) 0);
+        final AtomicReference<Short> threadCount = new AtomicReference<>((short) 0);
         new Thread(() -> {
             try {
                 initRoutesEntityList();
@@ -134,21 +134,18 @@ public class InitializerService {
             StopTimeEntity entity = new StopTimeEntity(stopTime);
             stopTimeEntities.add(entity);
 
-            new Thread(() -> {
-                allStops.parallelStream().filter(stopEntity -> stopEntity.getStopId() == stopTime.getStopId())
-                        .findFirst().ifPresent(filteredStopEntity -> {
-                    filteredStopEntity.getStopTimes().add(entity);
-                    entity.setStop(filteredStopEntity);
-                });
-            }).start();
+            allStops.parallelStream().filter(stopEntity -> stopEntity.getStopId() == stopTime.getStopId())
+                    .forEach(filteredStopEntity -> {
+                        filteredStopEntity.getStopTimes().add(entity);
+                        entity.setStop(filteredStopEntity);
+                    });
 
-            new Thread(() -> {
-                allTrips.parallelStream().filter(tripEntity -> tripEntity.getTripId().equals(stopTime.getTripId()))
-                        .findFirst().ifPresent(filteredTripEntity -> {
-                    filteredTripEntity.getStopTimes().add(entity);
-                    entity.setTrip(filteredTripEntity);
-                });
-            }).start();
+            allTrips.parallelStream().filter(tripEntity -> tripEntity.getTripId().equals(stopTime.getTripId()))
+                    .forEach(filteredTripEntity -> {
+                        filteredTripEntity.getStopTimes().add(entity);
+                        entity.setTrip(filteredTripEntity);
+                    });
+
             System.out.println("Added stopTime: " + stopTime.getStopId());
 
         }

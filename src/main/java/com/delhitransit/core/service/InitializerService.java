@@ -180,23 +180,29 @@ public class InitializerService {
 
         HashMap<Long, List<StopEntity>> stopsEntitiesHashMap = createStopsEntitiesHashMap();
 
-        for (StopTime stopTime : stopTimes) {
+        stopTimes.parallelStream().forEach(stopTime -> {
             StopTimeEntity entity = new StopTimeEntity(stopTime);
 
-            stopsEntitiesHashMap.get(stopTime.getStopId()).forEach(
-                    filteredStopEntity -> {
-                        filteredStopEntity.getStopTimes().add(entity);
-                        entity.setStop(filteredStopEntity);
-                    });
+            List<StopEntity> stopEntityList = stopsEntitiesHashMap.get(stopTime.getStopId());
+            if (stopEntityList != null) {
+                stopEntityList.forEach(
+                        filteredStopEntity -> {
+                            filteredStopEntity.getStopTimes().add(entity);
+                            entity.setStop(filteredStopEntity);
+                        });
+            }
 
-            tripsEntitiesHashMap.get(stopTime.getTripId()).forEach(
-                    filteredTripEntity -> {
-                        filteredTripEntity.getStopTimes().add(entity);
-                        entity.setTrip(filteredTripEntity);
-                    });
+            List<TripEntity> tripEntityList = tripsEntitiesHashMap.get(stopTime.getTripId());
+            if (tripEntityList != null) {
+                tripEntityList.forEach(
+                        filteredTripEntity -> {
+                            filteredTripEntity.getStopTimes().add(entity);
+                            entity.setTrip(filteredTripEntity);
+                        });
+            }
 
             stopTimeEntities.add(entity);
-        }
+        });
 
         allStopTimes = stopTimeEntities;
         return stopTimeEntities;

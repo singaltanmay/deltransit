@@ -23,8 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -137,6 +135,21 @@ public class InitializerService {
         return stopEntities;
     }
 
+    private HashMap<Long, List<StopEntity>> createStopsEntitiesHashMap() {
+        HashMap<Long, List<StopEntity>> map = new HashMap<>();
+        allStops.forEach(stopEntity -> {
+            Long stopId = stopEntity.getStopId();
+            if (map.containsKey(stopId)) {
+                map.get(stopId).add(stopEntity);
+            } else {
+                LinkedList<StopEntity> list = new LinkedList<>();
+                list.add(stopEntity);
+                map.put(stopId, list);
+            }
+        });
+        return map;
+    }
+
     private HashMap<String, List<TripEntity>> createTripsEntitiesHashMap() {
         HashMap<String, List<TripEntity>> map = new HashMap<>();
         allTrips.forEach(tripEntity -> {
@@ -156,13 +169,13 @@ public class InitializerService {
         List<StopTimeEntity> stopTimeEntities = new ArrayList<>();
         List<StopTime> stopTimes = new StopTimeReader().read();
 
+        HashMap<Long, List<StopEntity>> stopsEntitiesHashMap = createStopsEntitiesHashMap();
         HashMap<String, List<TripEntity>> tripsEntitiesHashMap = createTripsEntitiesHashMap();
 
         for (StopTime stopTime : stopTimes) {
             StopTimeEntity entity = new StopTimeEntity(stopTime);
 
-            allStops.parallelStream().filter(it -> it.getStopId() == stopTime.getStopId())
-                    .findFirst().ifPresent(
+            stopsEntitiesHashMap.get(stopTime.getStopId()).forEach(
                     filteredStopEntity -> {
                         filteredStopEntity.getStopTimes().add(entity);
                         entity.setStop(filteredStopEntity);

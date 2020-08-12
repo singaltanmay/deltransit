@@ -19,6 +19,8 @@ import com.delhitransit.core.reader.ShapePointReader;
 import com.delhitransit.core.reader.StopReader;
 import com.delhitransit.core.reader.StopTimeReader;
 import com.delhitransit.core.reader.TripReader;
+import com.delhitransit.core.repository.RouteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,17 +28,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import static java.lang.Thread.sleep;
 
 @Service
 public class InitializerService {
 
-    private final ExecutorService executorService = Executors.newCachedThreadPool(Executors.defaultThreadFactory());
+    private final RouteRepository routeRepository;
 
     private List<RouteEntity> allRoutes;
 
@@ -48,7 +47,14 @@ public class InitializerService {
 
     private List<StopTimeEntity> allStopTimes;
 
+    private HashMap<String, List<TripEntity>> tripsEntitiesHashMap;
+
     private List<Trip> rawTrips = new LinkedList<>();
+
+    @Autowired
+    public InitializerService(RouteRepository routeRepository) {
+        this.routeRepository = routeRepository;
+    }
 
     public void init() throws IOException {
         final AtomicReference<Short> threadCount = new AtomicReference<>((short) 0);
@@ -82,9 +88,12 @@ public class InitializerService {
             }
         }
         initTripsEntityList();
+        tripsEntitiesHashMap = createTripsEntitiesHashMap();
         initStopsEntityList();
         initStopTimesEntityList();
         linkTripsToShapePointsAndRoutes();
+
+        routeRepository.saveAll(allRoutes);
     }
 
     private List<RouteEntity> initRoutesEntityList() throws IOException {
@@ -170,7 +179,6 @@ public class InitializerService {
         List<StopTime> stopTimes = new StopTimeReader().read();
 
         HashMap<Long, List<StopEntity>> stopsEntitiesHashMap = createStopsEntitiesHashMap();
-        HashMap<String, List<TripEntity>> tripsEntitiesHashMap = createTripsEntitiesHashMap();
 
         for (StopTime stopTime : stopTimes) {
             StopTimeEntity entity = new StopTimeEntity(stopTime);
@@ -197,25 +205,26 @@ public class InitializerService {
     private void linkTripsToShapePointsAndRoutes() {
         rawTrips.parallelStream()
                 .forEach(rawTrip -> {
-                    List<TripEntity> tripEntities = allTrips.parallelStream()
-                                                            .filter(tripEntity -> tripEntity
-                                                                    .getTripId()
-                                                                    .equals(rawTrip.getTripId()))
-                                                            .collect(Collectors.toList());
-                    allShapePoints.parallelStream()
-                                  .filter(shapePointEntity -> shapePointEntity.getShapeId() == rawTrip.getShapeId())
-                                  .forEach(filteredShapePointEntity -> {
-                                      filteredShapePointEntity.setTrips(tripEntities);
-                                      tripEntities.forEach(
-                                              tripEntity -> tripEntity.setShapePoint(filteredShapePointEntity));
-                                  });
-                    allRoutes.parallelStream()
-                             .filter(routeEntity -> routeEntity.getRouteId() == rawTrip.getRouteId())
-                             .forEach(filteredRouteEntity -> {
-                                 filteredRouteEntity.setTrips(tripEntities);
-                                 tripEntities.forEach(tripEntity -> tripEntity.setRoute(filteredRouteEntity));
-                             });
+                    List<TripEntity> tripEntities = tripsEntitiesHashMap.get(rawTrip.getTripId());
+                    if (tripEntities != null) {
+
+                        allShapePoints.parallelStream()
+                                      .filter(shapePointEntity -> shapePointEntity.getShapeId() == rawTrip.getShapeId())
+                                      .forEach(filteredShapePointEntity -> {
+                                          filteredShapePointEntity.setTrips(tripEntities);
+                                          tripEntities.forEach(
+                                                  tripEntity -> tripEntity.setShapePoint(filteredShapePointEntity));
+                                      });
+
+                        allRoutes.parallelStream()
+                                 .filter(routeEntity -> routeEntity.getRouteId() == rawTrip.getRouteId())
+                                 .forEach(filteredRouteEntity -> {
+                                     filteredRouteEntity.setTrips(tripEntities);
+                                     tripEntities.forEach(tripEntity -> tripEntity.setRoute(filteredRouteEntity));
+                                 });
+                    }
                 });
+
     }
 
 }

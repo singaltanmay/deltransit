@@ -5,6 +5,7 @@
 package com.delhitransit.core.model.entity;
 
 import com.delhitransit.core.model.parseable.Stop;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -48,6 +49,7 @@ public class StopEntity {
     @Getter
     @Setter
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "stop", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<StopTimeEntity> stopTimes;
 
     public StopEntity(Stop stop) {

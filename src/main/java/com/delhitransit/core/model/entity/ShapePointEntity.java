@@ -5,6 +5,7 @@
 package com.delhitransit.core.model.entity;
 
 import com.delhitransit.core.model.parseable.ShapePoint;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -48,6 +49,7 @@ public class ShapePointEntity {
     @Getter
     @Setter
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "shapePoint", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<TripEntity> trips;
 
     public ShapePointEntity(ShapePoint shapePoint) {

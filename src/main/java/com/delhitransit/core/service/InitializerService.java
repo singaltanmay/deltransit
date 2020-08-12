@@ -23,11 +23,13 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -135,54 +137,44 @@ public class InitializerService {
         return stopEntities;
     }
 
+    private HashMap<String, List<TripEntity>> createTripsEntitiesHashMap() {
+        HashMap<String, List<TripEntity>> map = new HashMap<>();
+        allTrips.forEach(tripEntity -> {
+            String tripId = tripEntity.getTripId();
+            if (map.containsKey(tripId)) {
+                map.get(tripId).add(tripEntity);
+            } else {
+                LinkedList<TripEntity> list = new LinkedList<>();
+                list.add(tripEntity);
+                map.put(tripId, list);
+            }
+        });
+        return map;
+    }
+
     private List<StopTimeEntity> initStopTimesEntityList() throws IOException {
         List<StopTimeEntity> stopTimeEntities = new ArrayList<>();
         List<StopTime> stopTimes = new StopTimeReader().read();
-        List<Future<?>> futures = new LinkedList<>();
-        long listNum = 0;
-        while (stopTimes.size() > 0) {
-            List<StopTime> sublist;
-            int perThreadItemSize = 5000;
-            if (stopTimes.size() >= perThreadItemSize) {
-                List<StopTime> skipped10k = stopTimes.stream().skip(perThreadItemSize).collect(
-                        Collectors.toCollection(LinkedList::new));
-                sublist = stopTimes.subList(0, perThreadItemSize);
-                stopTimes = skipped10k;
-                listNum++;
-            } else {
-                sublist = stopTimes;
-            }
-            long finalListNum = listNum;
 
-            Runnable runnable = (() -> {
-                for (StopTime stopTime : sublist) {
+        HashMap<String, List<TripEntity>> tripsEntitiesHashMap = createTripsEntitiesHashMap();
 
-                    StopTimeEntity entity = new StopTimeEntity(stopTime);
-                    stopTimeEntities.add(entity);
+        for (StopTime stopTime : stopTimes) {
+            StopTimeEntity entity = new StopTimeEntity(stopTime);
 
-                    allStops.parallelStream().filter(stopEntity -> stopEntity.getStopId() == stopTime.getStopId())
-                            .forEach(filteredStopEntity -> {
-                                filteredStopEntity.getStopTimes().add(entity);
-                                entity.setStop(filteredStopEntity);
-                            });
+            allStops.parallelStream().filter(it -> it.getStopId() == stopTime.getStopId())
+                    .findFirst().ifPresent(
+                    filteredStopEntity -> {
+                        filteredStopEntity.getStopTimes().add(entity);
+                        entity.setStop(filteredStopEntity);
+                    });
 
-                    allTrips.parallelStream().filter(tripEntity -> tripEntity.getTripId().equals(stopTime.getTripId()))
-                            .forEach(filteredTripEntity -> {
-                                filteredTripEntity.getStopTimes().add(entity);
-                                entity.setTrip(filteredTripEntity);
-                            });
-                }
-                System.out.println("Processed sublist number " + finalListNum);
-            });
-            Future<?> future = executorService.submit(runnable);
-            futures.add(future);
-        }
+            tripsEntitiesHashMap.get(stopTime.getTripId()).forEach(
+                    filteredTripEntity -> {
+                        filteredTripEntity.getStopTimes().add(entity);
+                        entity.setTrip(filteredTripEntity);
+                    });
 
-        // Iterating over all futures as trying to get a future whose Thread hasn't finished executing will pause the
-        // loop temporarily
-        if (futures.size() > 0) {
-            futures.forEach(f -> {
-            });
+            stopTimeEntities.add(entity);
         }
 
         allStopTimes = stopTimeEntities;

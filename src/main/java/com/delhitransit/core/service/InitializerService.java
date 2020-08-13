@@ -20,6 +20,10 @@ import com.delhitransit.core.reader.StopReader;
 import com.delhitransit.core.reader.StopTimeReader;
 import com.delhitransit.core.reader.TripReader;
 import com.delhitransit.core.repository.RouteRepository;
+import com.delhitransit.core.repository.ShapePointRepository;
+import com.delhitransit.core.repository.StopRepository;
+import com.delhitransit.core.repository.StopTimeRepository;
+import com.delhitransit.core.repository.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +41,14 @@ public class InitializerService {
 
     private final RouteRepository routeRepository;
 
+    private final ShapePointRepository shapePointRepository;
+
+    private final TripRepository tripRepository;
+
+    private final StopTimeRepository stopTimeRepository;
+
+    private final StopRepository stopRepository;
+
     private List<RouteEntity> allRoutes;
 
     private List<StopEntity> allStops;
@@ -52,35 +64,43 @@ public class InitializerService {
     private List<Trip> rawTrips = new LinkedList<>();
 
     @Autowired
-    public InitializerService(RouteRepository routeRepository) {
+    public InitializerService(RouteRepository routeRepository,
+                              ShapePointRepository shapePointRepository,
+                              TripRepository tripRepository,
+                              StopTimeRepository stopTimeRepository,
+                              StopRepository stopRepository) {
         this.routeRepository = routeRepository;
+        this.shapePointRepository = shapePointRepository;
+        this.tripRepository = tripRepository;
+        this.stopTimeRepository = stopTimeRepository;
+        this.stopRepository = stopRepository;
     }
 
     public void init() throws IOException {
-        final AtomicReference<Short> threadCount = new AtomicReference<>((short) 0);
+        final AtomicReference<Short> initThreadCount = new AtomicReference<>((short) 0);
         new Thread(() -> {
             try {
                 initRoutesEntityList();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                threadCount.getAndSet((short) (threadCount.get() - 1));
+                initThreadCount.getAndSet((short) (initThreadCount.get() - 1));
             }
         }).start();
-        threadCount.getAndSet((short) (threadCount.get() + 1));
+        initThreadCount.getAndSet((short) (initThreadCount.get() + 1));
         new Thread(() -> {
             try {
                 initShapePointsEntityList();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                threadCount.getAndSet((short) (threadCount.get() - 1));
+                initThreadCount.getAndSet((short) (initThreadCount.get() - 1));
             }
         }).start();
-        threadCount.getAndSet((short) (threadCount.get() + 1));
+        initThreadCount.getAndSet((short) (initThreadCount.get() + 1));
 
         // Wait for threads to finish executing
-        while (threadCount.get() != 0) {
+        while (initThreadCount.get() != 0) {
             try {
                 sleep(1000);
             } catch (InterruptedException e) {
@@ -93,7 +113,41 @@ public class InitializerService {
         initStopTimesEntityList();
         linkTripsToShapePointsAndRoutes();
 
+        saveEntityListsToDatabase();
+    }
+
+    private void saveEntityListsToDatabase() {
+        stopTimeRepository.saveAll(allStopTimes);
+
+        final AtomicReference<Short> saveThreadCount = new AtomicReference<>((short) 0);
+        new Thread(() -> {
+            try {
+                stopRepository.saveAll(allStops);
+            } finally {
+                saveThreadCount.getAndSet((short) (saveThreadCount.get() - 1));
+            }
+        }).start();
+        saveThreadCount.getAndSet((short) (saveThreadCount.get() + 1));
+        new Thread(() -> {
+            try {
+                tripRepository.saveAll(allTrips);
+            } finally {
+                saveThreadCount.getAndSet((short) (saveThreadCount.get() - 1));
+            }
+        }).start();
+        saveThreadCount.getAndSet((short) (saveThreadCount.get() + 1));
+
+        // Wait for threads to finish executing
+        while (saveThreadCount.get() != 0) {
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         routeRepository.saveAll(allRoutes);
+        shapePointRepository.saveAll(allShapePoints);
     }
 
     private List<RouteEntity> initRoutesEntityList() throws IOException {
@@ -230,7 +284,6 @@ public class InitializerService {
                                  });
                     }
                 });
-
     }
 
 }

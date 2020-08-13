@@ -48,7 +48,7 @@ public class ShapePointEntity {
 
     @Getter
     @Setter
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shapePoint", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shapePoint", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<TripEntity> trips;
 

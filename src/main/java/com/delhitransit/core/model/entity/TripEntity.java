@@ -27,7 +27,7 @@ public class TripEntity {
 
     @Getter
     @Setter
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "trip", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "trip", cascade = CascadeType.REMOVE)
     @JsonIgnore
     List<StopTimeEntity> stopTimes;
 

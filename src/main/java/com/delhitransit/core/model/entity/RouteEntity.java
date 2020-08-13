@@ -48,7 +48,7 @@ public class RouteEntity {
 
     @Getter
     @Setter
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "route", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "route", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<TripEntity> trips;
 

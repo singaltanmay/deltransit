@@ -48,7 +48,7 @@ public class StopEntity {
 
     @Getter
     @Setter
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "stop", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "stop", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<StopTimeEntity> stopTimes;
 

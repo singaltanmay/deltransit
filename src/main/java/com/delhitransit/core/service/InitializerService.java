@@ -61,6 +61,10 @@ public class InitializerService {
 
     private HashMap<String, List<TripEntity>> tripsEntitiesHashMap;
 
+    private HashMap<Long, List<RouteEntity>> routesEntitiesHashMap;
+
+    private HashMap<Integer, List<ShapePointEntity>> shapePointsEntitiesHashMap;
+
     private List<Trip> rawTrips = new LinkedList<>();
 
     @Autowired
@@ -262,26 +266,68 @@ public class InitializerService {
         return stopTimeEntities;
     }
 
+    private HashMap<Long, List<RouteEntity>> createRoutesEntitiesHashMap() {
+        HashMap<Long, List<RouteEntity>> map = new HashMap<>();
+        allRoutes.forEach(routeEntity -> {
+            Long routeId = routeEntity.getRouteId();
+            if (map.containsKey(routeId)) {
+                map.get(routeId).add(routeEntity);
+            } else {
+                LinkedList<RouteEntity> list = new LinkedList<>();
+                list.add(routeEntity);
+                map.put(routeId, list);
+            }
+        });
+        return map;
+    }
+
+    private HashMap<Integer, List<ShapePointEntity>> createShapePointsEntitiesHashMap() {
+        HashMap<Integer, List<ShapePointEntity>> map = new HashMap<>();
+        allShapePoints.forEach(routeEntity -> {
+            int routeId = routeEntity.getShapeId();
+            if (map.containsKey(routeId)) {
+                map.get(routeId).add(routeEntity);
+            } else {
+                LinkedList<ShapePointEntity> list = new LinkedList<>();
+                list.add(routeEntity);
+                map.put(routeId, list);
+            }
+        });
+        return map;
+    }
+
     private void linkTripsToShapePointsAndRoutes() {
+
+        routesEntitiesHashMap = createRoutesEntitiesHashMap();
+        shapePointsEntitiesHashMap = createShapePointsEntitiesHashMap();
+
         rawTrips.parallelStream()
                 .forEach(rawTrip -> {
                     List<TripEntity> tripEntities = tripsEntitiesHashMap.get(rawTrip.getTripId());
-                    if (tripEntities != null) {
+                    if (tripEntities != null && tripEntities.size() > 0) {
 
-                        allShapePoints.parallelStream()
-                                      .filter(shapePointEntity -> shapePointEntity.getShapeId() == rawTrip.getShapeId())
-                                      .forEach(filteredShapePointEntity -> {
-                                          filteredShapePointEntity.setTrips(tripEntities);
-                                          tripEntities.forEach(
-                                                  tripEntity -> tripEntity.setShapePoint(filteredShapePointEntity));
-                                      });
+                        List<ShapePointEntity> shapePointEntities
+                                = shapePointsEntitiesHashMap.get(rawTrip.getShapeId());
 
-                        allRoutes.parallelStream()
-                                 .filter(routeEntity -> routeEntity.getRouteId() == rawTrip.getRouteId())
-                                 .forEach(filteredRouteEntity -> {
-                                     filteredRouteEntity.setTrips(tripEntities);
-                                     tripEntities.forEach(tripEntity -> tripEntity.setRoute(filteredRouteEntity));
-                                 });
+                        if (shapePointEntities != null && shapePointEntities.size() > 0) {
+                            shapePointEntities
+                                    .forEach(filteredShapePointEntity -> {
+                                        filteredShapePointEntity.setTrips(tripEntities);
+                                        tripEntities.forEach(
+                                                tripEntity -> tripEntity.setShapePoint(filteredShapePointEntity));
+                                    });
+                        }
+
+                        List<RouteEntity> routeEntities = routesEntitiesHashMap.get((long) rawTrip.getRouteId());
+
+                        if (routeEntities != null && routeEntities.size() > 0) {
+                            routeEntities
+                                    .parallelStream()
+                                    .forEach(filteredRouteEntity -> {
+                                        filteredRouteEntity.setTrips(tripEntities);
+                                        tripEntities.forEach(tripEntity -> tripEntity.setRoute(filteredRouteEntity));
+                                    });
+                        }
                     }
                 });
     }

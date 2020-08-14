@@ -238,7 +238,7 @@ public class InitializerService {
 
         HashMap<Long, List<StopEntity>> stopsEntitiesHashMap = createStopsEntitiesHashMap();
 
-        stopTimes.parallelStream().forEach(stopTime -> {
+        stopTimes.forEach(stopTime -> {
             StopTimeEntity entity = new StopTimeEntity(stopTime);
 
             List<StopEntity> stopEntityList = stopsEntitiesHashMap.get(stopTime.getStopId());

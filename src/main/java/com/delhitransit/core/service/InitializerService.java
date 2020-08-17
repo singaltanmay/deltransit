@@ -178,6 +178,7 @@ public class InitializerService {
         return shapePointEntities;
     }
 
+    // TODO Why isn't this being linked to routes and shape points here only?
     private List<TripEntity> initTripsEntityList() throws IOException {
         List<TripEntity> tripEntities = new ArrayList<>();
         rawTrips = new TripReader().read();

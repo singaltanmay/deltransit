@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("delhitransit/v1")
+@RequestMapping("v1")
 public class DelhiTransitController {
 
     private final RouteService routeService;

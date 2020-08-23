@@ -44,27 +44,27 @@ public class DelhiTransitController {
 
     @GetMapping("routes")
     public List<RouteEntity> getAllRoutes() {
-        return routeService.getAllRoutes().subList(0, 19);
+        return routeService.getAllRoutes();
     }
 
     @GetMapping("trips")
     public List<TripEntity> getAllTrips() {
-        return tripService.getAllTrips().subList(0, 19);
+        return tripService.getAllTrips();
     }
 
     @GetMapping("shapePoints")
     public List<ShapePointEntity> getAllShapePoints() {
-        return shapePointService.getAllShapePoints().subList(0, 19);
+        return shapePointService.getAllShapePoints();
     }
 
     @GetMapping("stops")
     public List<StopEntity> getAllStops() {
-        return stopService.getAllStops().subList(0, 19);
+        return stopService.getAllStops();
     }
 
     @GetMapping("stopTimes")
     public List<StopTimeEntity> getAllStopTimes() {
-        return stopTimeService.getAllStopTimes().subList(0, 19);
+        return stopTimeService.getAllStopTimes();
     }
 
 }

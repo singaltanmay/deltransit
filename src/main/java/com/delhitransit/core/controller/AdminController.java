@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("delhitransit-admin/v1")
+@RequestMapping("v1/admin")
 public class AdminController {
 
     private final RouteService routeService;

@@ -25,6 +25,10 @@ public class StopService {
         return stopRepository.findAll();
     }
 
+    public List<StopEntity> getStopsByName(String stopName) {
+        return stopRepository.findByName(stopName);
+    }
+
     private void insertStops(List<StopEntity> stopEntities) {
         if (stopEntities != null && stopEntities.size() > 0) {
             stopRepository.saveAll(stopEntities);

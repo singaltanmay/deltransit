@@ -4,7 +4,6 @@
 
 package com.delhitransit.core.model.parseable;
 
-import com.delhitransit.core.model.entity.RouteEntity.ROUTE_TYPE;
 import lombok.Getter;
 
 /**

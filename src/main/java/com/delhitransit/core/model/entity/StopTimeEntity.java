@@ -37,6 +37,10 @@ public class StopTimeEntity {
 
     @Getter
     @Setter
+    private int stopSequence;
+
+    @Getter
+    @Setter
     @ManyToOne(cascade = CascadeType.ALL)
     private TripEntity trip;
 
@@ -44,10 +48,6 @@ public class StopTimeEntity {
     @Setter
     @ManyToOne(cascade = CascadeType.ALL)
     private StopEntity stop;
-
-    @Getter
-    @Setter
-    private int stopSequence;
 
     public StopTimeEntity(StopTime stopTime) {
         this.setArrival(stopTime.getArrival());

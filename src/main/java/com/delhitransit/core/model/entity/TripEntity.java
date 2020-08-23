@@ -5,9 +5,10 @@
 package com.delhitransit.core.model.entity;
 
 import com.delhitransit.core.model.parseable.Trip;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,7 +27,8 @@ public class TripEntity {
 
     @Getter
     @Setter
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "trip", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "trip", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     List<StopTimeEntity> stopTimes;
 
     @Getter

@@ -4,8 +4,8 @@
 
 package com.delhitransit.core.model.entity;
 
-import org.junit.jupiter.api.Test;
 import com.delhitransit.core.model.parseable.Trip;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

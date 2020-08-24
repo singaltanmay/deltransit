@@ -22,7 +22,20 @@ public class RouteService {
     }
 
     public List<RouteEntity> getAllRoutes() {
-        return routeRepository.findAll();
+        return removeTripsFromRoutes(routeRepository.findAll());
+    }
+
+    public List<RouteEntity> getRouteByRouteId(long routeId) {
+        return removeTripsFromRoutes(routeRepository.findAllByRouteId(routeId));
+    }
+
+    private List<RouteEntity> removeTripsFromRoutes(List<RouteEntity> routes) {
+        if (routes != null && routes.size() > 0) {
+            for (RouteEntity route : routes) {
+                route.setTrips(null);
+            }
+        }
+        return routes;
     }
 
     private void insertRoutes(List<RouteEntity> routes) {

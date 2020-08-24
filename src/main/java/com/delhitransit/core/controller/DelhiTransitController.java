@@ -12,6 +12,7 @@ import com.delhitransit.core.service.StopTimeService;
 import com.delhitransit.core.service.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,6 +46,11 @@ public class DelhiTransitController {
     @GetMapping("routes")
     public List<RouteEntity> getAllRoutes() {
         return routeService.getAllRoutes();
+    }
+
+    @GetMapping("routes/id/{id}")
+    public List<RouteEntity> getRoutesByRouteId(@PathVariable(name = "id") long routeId) {
+        return routeService.getRouteByRouteId(routeId);
     }
 
     @GetMapping("trips")

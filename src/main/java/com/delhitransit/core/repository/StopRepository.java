@@ -15,6 +15,5 @@ import java.util.List;
 @Repository
 public interface StopRepository extends JpaRepository<StopEntity, Long> {
 
-    @Query("from StopEntity where name = ?1")
-    List<StopEntity> findByName(String StopName);
+    List<StopEntity> findStopEntitiesByNameStartingWith(String preStopName);
 }

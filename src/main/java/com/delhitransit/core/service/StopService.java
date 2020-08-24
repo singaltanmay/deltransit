@@ -25,8 +25,8 @@ public class StopService {
         return stopRepository.findAll();
     }
 
-    public List<StopEntity> getStopsByName(String stopName) {
-        return stopRepository.findByName(stopName);
+    public List<StopEntity> getStopsByNameStartingWith(String preStopName) {
+        return stopRepository.findStopEntitiesByNameStartingWith(preStopName);
     }
 
     private void insertStops(List<StopEntity> stopEntities) {

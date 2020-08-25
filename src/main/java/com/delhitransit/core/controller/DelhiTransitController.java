@@ -11,12 +11,9 @@ import com.delhitransit.core.service.StopService;
 import com.delhitransit.core.service.StopTimeService;
 import com.delhitransit.core.service.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -52,7 +49,7 @@ public class DelhiTransitController {
     }
 
     @GetMapping("routes/id/{id}")
-    public List<RouteEntity> getRoutesByRouteId(@PathVariable(name = "id") long routeId) {
+    public List<RouteEntity> getRoutesByRouteId(@PathVariable("id") long routeId) {
         return routeService.getRouteByRouteId(routeId);
     }
 
@@ -71,15 +68,15 @@ public class DelhiTransitController {
         return stopService.getAllStops();
     }
 
+    @GetMapping("stops/prefix/{preName}")
+    public List<StopEntity> getStopsByNameContaining(@PathVariable("preName") String preStopName) {
+        return stopService.getStopsByNameContains(preStopName);
+    }
+
     @GetMapping("stopTimes")
     public List<StopTimeEntity> getAllStopTimes() {
         return stopTimeService.getAllStopTimes();
     }
 
-    @GetMapping("stops/search")
-    @ResponseBody
-    public List<StopEntity> getStopsByNameStartingWith(@RequestParam("name") String preStopName){
-        return stopService.getStopsByNameStartingWith( preStopName);
-    }
 
 }

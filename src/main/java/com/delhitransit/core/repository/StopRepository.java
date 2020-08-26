@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface StopRepository extends JpaRepository<StopEntity, Long> {
 
-    List<StopEntity> findAllByName(String name);
+    List<StopEntity> findAllByNameIgnoreCase(String name);
 
-    List<StopEntity> findAllByNameContains(String preStopName);
+    List<StopEntity> findAllByNameContainsIgnoreCase(String preStopName);
 }

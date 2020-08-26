@@ -26,11 +26,11 @@ public class StopService {
     }
 
     public List<StopEntity> getStopsByName(String name) {
-        return removeStopTimesFromStops(stopRepository.findAllByName(name));
+        return removeStopTimesFromStops(stopRepository.findAllByNameIgnoreCase(name));
     }
 
     public List<StopEntity> getStopsByNameContains(String preStopName) {
-        return removeStopTimesFromStops(stopRepository.findAllByNameContains(preStopName));
+        return removeStopTimesFromStops(stopRepository.findAllByNameContainsIgnoreCase(preStopName));
     }
 
     private List<StopEntity> removeStopTimesFromStops(List<StopEntity> stops) {

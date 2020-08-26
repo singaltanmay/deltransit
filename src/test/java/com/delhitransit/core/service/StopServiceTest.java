@@ -30,9 +30,9 @@ public class StopServiceTest {
 
         List<StopEntity> listOfStopEntity = Collections.singletonList(stopEntity);
 
-        Mockito.when(mockStopRepository.findAllByNameContains(stopEntity.getName()))
+        Mockito.when(mockStopRepository.findAllByNameContainsIgnoreCase(stopEntity.getName()))
                .thenReturn(listOfStopEntity);
-        Mockito.when(mockStopRepository.findAllByName(stopEntity.getName()))
+        Mockito.when(mockStopRepository.findAllByNameIgnoreCase(stopEntity.getName()))
                .thenReturn(listOfStopEntity);
 
         stopService = new StopService(mockStopRepository);

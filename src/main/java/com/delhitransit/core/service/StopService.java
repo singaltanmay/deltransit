@@ -22,14 +22,18 @@ public class StopService {
     }
 
     public List<StopEntity> getAllStops() {
-        return stopRepository.findAll();
+        return removeStopTimesFromStops(stopRepository.findAll());
+    }
+
+    public List<StopEntity> getStopsByName(String name) {
+        return removeStopTimesFromStops(stopRepository.findAllByName(name));
     }
 
     public List<StopEntity> getStopsByNameContains(String preStopName) {
-        return removeStopTimesfromStops(stopRepository.findAllByNameContains(preStopName));
+        return removeStopTimesFromStops(stopRepository.findAllByNameContains(preStopName));
     }
 
-    private List<StopEntity> removeStopTimesfromStops(List<StopEntity> stops) {
+    private List<StopEntity> removeStopTimesFromStops(List<StopEntity> stops) {
         if (stops != null && stops.size() > 0) {
             for (StopEntity stop : stops) {
                 stop.setStopTimes(null);

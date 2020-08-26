@@ -59,7 +59,6 @@ public class StopEntity {
         this.setName(stop.getName());
         this.setLatitude(stop.getLatitude());
         this.setLongitude(stop.getLongitude());
-
     }
 
 }

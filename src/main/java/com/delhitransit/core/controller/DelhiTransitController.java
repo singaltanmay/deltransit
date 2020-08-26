@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("v1")
@@ -68,9 +70,15 @@ public class DelhiTransitController {
         return stopService.getAllStops();
     }
 
-    @GetMapping("stops/prefix/{preName}")
-    public List<StopEntity> getStopsByNameContaining(@PathVariable("preName") String preStopName) {
-        return stopService.getStopsByNameContains(preStopName);
+    @GetMapping("stops/name/{name}")
+    public List<StopEntity> getStopsByName(
+            @PathVariable String name,
+            @RequestParam(name = "exact") Optional<Boolean> matchType) {
+        if (matchType != null && matchType.isPresent() && !matchType.get()) {
+            return stopService.getStopsByNameContains(name);
+        } else {
+            return stopService.getStopsByName(name);
+        }
     }
 
     @GetMapping("stopTimes")

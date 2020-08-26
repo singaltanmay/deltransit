@@ -7,7 +7,6 @@ package com.delhitransit.core;
 import com.delhitransit.core.model.entity.RouteEntity;
 import com.delhitransit.core.model.entity.StopEntity;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -41,7 +40,7 @@ public class EntityGenerator {
             stopEntity.setName("Stop Name : " + randomLongString);
             stopEntity.setLongitude(randomDouble);
             stopEntity.setLatitude(randomDouble);
-            stopEntity.setStopTimes(new ArrayList<>());
+            stopEntity.setStopTimes(new LinkedList<>());
 
             return stopEntity;
         }

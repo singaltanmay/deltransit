@@ -20,22 +20,32 @@ import static org.mockito.Mockito.mock;
 
 public class StopServiceTest {
 
-    private StopEntity stopEntity = StopEntityGenerator.generateStops();
+    private final StopEntity stopEntity = StopEntityGenerator.generateStops();
 
     private StopService stopService;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         StopRepository mockStopRepository = mock(StopRepository.class);
 
+        List<StopEntity> listOfStopEntity = Collections.singletonList(stopEntity);
+
         Mockito.when(mockStopRepository.findAllByNameContains(stopEntity.getName()))
-               .thenReturn(Collections.singletonList(stopEntity));
+               .thenReturn(listOfStopEntity);
+        Mockito.when(mockStopRepository.findAllByName(stopEntity.getName()))
+               .thenReturn(listOfStopEntity);
 
         stopService = new StopService(mockStopRepository);
     }
 
     @Test
-    void findAllByStopNameStartingWith() {
+    void findAllByExactNameTest() {
+        List<StopEntity> stopEntities = stopService.getStopsByName(stopEntity.getName());
+        assertEntityIdenticalToStopEntity(stopEntities);
+    }
+
+    @Test
+    void findAllByNameSubsequenceTest() {
         List<StopEntity> stopEntities = stopService.getStopsByNameContains(stopEntity.getName());
         assertEntityIdenticalToStopEntity(stopEntities);
     }

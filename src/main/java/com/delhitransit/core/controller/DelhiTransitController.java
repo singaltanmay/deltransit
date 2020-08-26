@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("v1")
@@ -49,7 +51,7 @@ public class DelhiTransitController {
     }
 
     @GetMapping("routes/id/{id}")
-    public List<RouteEntity> getRoutesByRouteId(@PathVariable(name = "id") long routeId) {
+    public List<RouteEntity> getRoutesByRouteId(@PathVariable("id") long routeId) {
         return routeService.getRouteByRouteId(routeId);
     }
 
@@ -68,9 +70,21 @@ public class DelhiTransitController {
         return stopService.getAllStops();
     }
 
+    @GetMapping("stops/name/{name}")
+    public List<StopEntity> getStopsByName(
+            @PathVariable String name,
+            @RequestParam(name = "exact") Optional<Boolean> matchType) {
+        if (matchType != null && matchType.isPresent() && !matchType.get()) {
+            return stopService.getStopsByNameContains(name);
+        } else {
+            return stopService.getStopsByName(name);
+        }
+    }
+
     @GetMapping("stopTimes")
     public List<StopTimeEntity> getAllStopTimes() {
         return stopTimeService.getAllStopTimes();
     }
+
 
 }

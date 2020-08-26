@@ -5,6 +5,7 @@
 package com.delhitransit.core;
 
 import com.delhitransit.core.model.entity.RouteEntity;
+import com.delhitransit.core.model.entity.StopEntity;
 
 import java.util.LinkedList;
 import java.util.Random;
@@ -24,7 +25,25 @@ public class EntityGenerator {
             routeEntity.setTrips(new LinkedList<>());
             return routeEntity;
         }
+    }
 
+    public static class StopEntityGenerator {
+
+        public static StopEntity generateStops() {
+            StopEntity stopEntity = new StopEntity();
+
+            long randomLong = new Random().nextLong();
+            String randomLongString = Long.toString(randomLong);
+            double randomDouble = new Random().nextDouble();
+
+            stopEntity.setStopId(randomLong);
+            stopEntity.setName("Stop Name : " + randomLongString);
+            stopEntity.setLongitude(randomDouble);
+            stopEntity.setLatitude(randomDouble);
+            stopEntity.setStopTimes(new LinkedList<>());
+
+            return stopEntity;
+        }
     }
 
 }

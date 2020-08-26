@@ -5,7 +5,7 @@
 package com.delhitransit.core.model.entity;
 
 import com.delhitransit.core.model.parseable.Stop;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +19,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.List;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Entity
 @NoArgsConstructor
@@ -49,7 +51,7 @@ public class StopEntity {
     @Getter
     @Setter
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "stop", cascade = CascadeType.REMOVE)
-    @JsonIgnore
+    @JsonInclude(NON_NULL)
     private List<StopTimeEntity> stopTimes;
 
     public StopEntity(Stop stop) {
@@ -57,7 +59,6 @@ public class StopEntity {
         this.setName(stop.getName());
         this.setLatitude(stop.getLatitude());
         this.setLongitude(stop.getLongitude());
-
     }
 
 }

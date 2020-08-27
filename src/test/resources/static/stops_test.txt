@@ -1,5 +1,0 @@
-stop_id,stop_name,stop_lat,stop_lon
-0,Adarsh Nagar / Bharola Village,28.715917,77.170867
-1,British High Comission,28.598533000000003
-
-2,Azad Market,28.6647,77.2084

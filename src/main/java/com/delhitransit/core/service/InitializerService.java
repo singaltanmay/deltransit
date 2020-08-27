@@ -14,17 +14,14 @@ import com.delhitransit.core.model.parseable.ShapePoint;
 import com.delhitransit.core.model.parseable.Stop;
 import com.delhitransit.core.model.parseable.StopTime;
 import com.delhitransit.core.model.parseable.Trip;
-import com.delhitransit.core.reader.RouteReader;
-import com.delhitransit.core.reader.ShapePointReader;
-import com.delhitransit.core.reader.StopReader;
-import com.delhitransit.core.reader.StopTimeReader;
-import com.delhitransit.core.reader.TripReader;
 import com.delhitransit.core.repository.StopTimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,6 +31,8 @@ import static java.lang.Thread.sleep;
 
 @Service
 public class InitializerService {
+
+    private final OtdParserConnector otdParserConnector;
 
     private final StopTimeRepository stopTimeRepository;
 
@@ -48,30 +47,22 @@ public class InitializerService {
     private List<StopTimeEntity> allStopTimes;
 
     @Autowired
-    public InitializerService(StopTimeRepository stopTimeRepository) {
+    public InitializerService(RestTemplateBuilder restTemplateBuilder,
+                              StopTimeRepository stopTimeRepository) {
+        this.otdParserConnector = new OtdParserConnector(restTemplateBuilder.build());
         this.stopTimeRepository = stopTimeRepository;
     }
 
-    public void init() throws IOException {
+    public void init() {
         final AtomicReference<Short> initThreadCount = new AtomicReference<>((short) 0);
         new Thread(() -> {
-            try {
-                initRoutesEntityList();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                initThreadCount.getAndSet((short) (initThreadCount.get() - 1));
-            }
+            initRoutesEntityList();
+            initThreadCount.getAndSet((short) (initThreadCount.get() - 1));
         }).start();
         initThreadCount.getAndSet((short) (initThreadCount.get() + 1));
         new Thread(() -> {
-            try {
-                initShapePointsEntityList();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                initThreadCount.getAndSet((short) (initThreadCount.get() - 1));
-            }
+            initShapePointsEntityList();
+            initThreadCount.getAndSet((short) (initThreadCount.get() - 1));
         }).start();
         initThreadCount.getAndSet((short) (initThreadCount.get() + 1));
 
@@ -90,8 +81,8 @@ public class InitializerService {
         stopTimeRepository.saveAll(allStopTimes);
     }
 
-    private void initRoutesEntityList() throws IOException {
-        List<Route> routes = new RouteReader().read();
+    private void initRoutesEntityList() {
+        List<Route> routes = otdParserConnector.getAllRoutes();
         for (Route route : routes) {
             RouteEntity entity = new RouteEntity(route);
             entity.setTrips(new LinkedList<>());
@@ -107,8 +98,8 @@ public class InitializerService {
         }
     }
 
-    private void initShapePointsEntityList() throws IOException {
-        List<ShapePoint> shapePoints = new ShapePointReader().read();
+    private void initShapePointsEntityList() {
+        List<ShapePoint> shapePoints = otdParserConnector.getAllShapePoints();
         for (ShapePoint shapePoint : shapePoints) {
             ShapePointEntity entity = new ShapePointEntity(shapePoint);
             entity.setTrips(new LinkedList<>());
@@ -125,8 +116,8 @@ public class InitializerService {
         }
     }
 
-    private void initTripsEntityList() throws IOException {
-        List<Trip> rawTrips = new TripReader().read();
+    private void initTripsEntityList() {
+        List<Trip> rawTrips = otdParserConnector.getAllTrips();
         for (Trip trip : rawTrips) {
             TripEntity entity = new TripEntity(trip);
             entity.setStopTimes(new LinkedList<>());
@@ -155,8 +146,8 @@ public class InitializerService {
         }
     }
 
-    private void initStopsEntityList() throws IOException {
-        List<Stop> stops = new StopReader().read();
+    private void initStopsEntityList() {
+        List<Stop> stops = otdParserConnector.getAllStops();
         for (Stop stop : stops) {
             StopEntity entity = new StopEntity(stop);
             entity.setStopTimes(new LinkedList<>());
@@ -173,9 +164,9 @@ public class InitializerService {
         }
     }
 
-    private List<StopTimeEntity> initStopTimesEntityList() throws IOException {
+    private List<StopTimeEntity> initStopTimesEntityList() {
         List<StopTimeEntity> stopTimeEntities = new ArrayList<>();
-        List<StopTime> stopTimes = new StopTimeReader().read();
+        List<StopTime> stopTimes = otdParserConnector.getAllStopTimes();
 
         stopTimes.forEach(stopTime -> {
             StopTimeEntity entity = new StopTimeEntity(stopTime);
@@ -203,6 +194,49 @@ public class InitializerService {
 
         allStopTimes = stopTimeEntities;
         return stopTimeEntities;
+    }
+
+    private class OtdParserConnector {
+
+        private final RestTemplate restTemplate;
+
+        private final String SERVER_BASE_URL = "https://otd-parser.herokuapp.com/v1/";
+
+        private OtdParserConnector(RestTemplate restTemplate) {
+            this.restTemplate = restTemplate;
+        }
+
+        public List<Route> getAllRoutes() {
+            String url = SERVER_BASE_URL + "routes";
+            Route[] routes = this.restTemplate.getForObject(url, Route[].class);
+            return Arrays.asList(routes);
+        }
+
+        public List<Trip> getAllTrips() {
+            String url = SERVER_BASE_URL + "trips";
+            Trip[] trips = this.restTemplate.getForObject(url, Trip[].class);
+            return Arrays.asList(trips);
+        }
+
+        public List<Stop> getAllStops() {
+            String url = SERVER_BASE_URL + "stops";
+            Stop[] stops = this.restTemplate.getForObject(url, Stop[].class);
+            return Arrays.asList(stops);
+        }
+
+        public List<StopTime> getAllStopTimes() {
+            String url = SERVER_BASE_URL + "stopTimes";
+            StopTime[] stopTimes = this.restTemplate.getForObject(url, StopTime[].class);
+            return Arrays.asList(stopTimes);
+        }
+
+        public List<ShapePoint> getAllShapePoints() {
+            String url = SERVER_BASE_URL + "shapePoints";
+            ShapePoint[] shapePoints = this.restTemplate.getForObject(url, ShapePoint[].class);
+            return Arrays.asList(shapePoints);
+        }
+
+
     }
 
 }

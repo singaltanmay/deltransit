@@ -86,5 +86,4 @@ public class DelhiTransitController {
         return stopTimeService.getAllStopTimes();
     }
 
-
 }

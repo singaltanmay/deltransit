@@ -1,4 +1,4 @@
-package com.delhitransit.core.controller;
+package com.delhitransit.core.api.controller;
 
 import com.delhitransit.core.model.entity.RouteEntity;
 import com.delhitransit.core.model.entity.ShapePointEntity;

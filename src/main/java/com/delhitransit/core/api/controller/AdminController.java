@@ -1,4 +1,4 @@
-package com.delhitransit.core.controller;
+package com.delhitransit.core.api.controller;
 
 import com.delhitransit.core.service.InitializerService;
 import org.springframework.beans.factory.annotation.Autowired;

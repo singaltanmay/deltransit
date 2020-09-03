@@ -52,7 +52,34 @@ public class DelhiTransitController {
 
     @GetMapping("routes/id/{id}")
     public List<RouteEntity> getRoutesByRouteId(@PathVariable("id") long routeId) {
-        return routeService.getRouteByRouteId(routeId);
+        return routeService.getRoutesByRouteId(routeId);
+    }
+
+    @GetMapping("routes/name/{name}")
+    public List<RouteEntity> getRoutesByRouteName(
+            @PathVariable("name") String name,
+            @RequestParam(name = "exact") Optional<Boolean> matchType,
+            @RequestParam(name = "short") Optional<Boolean> nameType) {
+        boolean isExactMatch = matchType != null && matchType.isPresent() && matchType.get();
+        boolean isShortName = nameType != null && nameType.isPresent() && nameType.get();
+        if (isShortName) {
+            if (isExactMatch) {
+                return routeService.getRoutesByShortNameIgnoreCase(name);
+            } else {
+                return routeService.getRoutesByShortNameContainsIgnoreCase(name);
+            }
+        } else {
+            if (isExactMatch) {
+                return routeService.getRoutesByLongNameIgnoreCase(name);
+            } else {
+                return routeService.getRoutesByLongNameContainsIgnoreCase(name);
+            }
+        }
+    }
+
+    @GetMapping("routes/type/{type}")
+    public List<RouteEntity> getRoutesByRouteType(@PathVariable("type") int type) {
+        return routeService.getRoutesByType(type);
     }
 
     @GetMapping("trips")
@@ -74,12 +101,14 @@ public class DelhiTransitController {
     public List<StopEntity> getStopsByName(
             @PathVariable String name,
             @RequestParam(name = "exact") Optional<Boolean> matchType) {
-        if (matchType != null && matchType.isPresent() && !matchType.get()) {
-            return stopService.getStopsByNameContains(name);
+        boolean isExactMatch = matchType != null && matchType.isPresent() && matchType.get();
+        if (isExactMatch) {
+            return stopService.getStopsByNameIgnoreCase(name);
         } else {
-            return stopService.getStopsByName(name);
+            return stopService.getStopsByNameContainsIgnoreCase(name);
         }
     }
+
 
     @GetMapping("stopTimes")
     public List<StopTimeEntity> getAllStopTimes() {

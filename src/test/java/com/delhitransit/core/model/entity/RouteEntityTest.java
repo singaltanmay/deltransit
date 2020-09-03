@@ -50,7 +50,9 @@ public class RouteEntityTest {
         assertEquals(routeId, entity.getRouteId());
         assertEquals(shortName, entity.getShortName());
         assertEquals(longName, entity.getLongName());
-        assertEquals(CABLE_TRAM, entity.getType());
+        RouteEntity.ROUTE_TYPE type = entity.getType();
+        assertEquals(CABLE_TRAM, type);
+        assertEquals(RouteEntity.getRouteType(CABLE_TRAM), RouteEntity.getRouteType(type));
     }
 
 }

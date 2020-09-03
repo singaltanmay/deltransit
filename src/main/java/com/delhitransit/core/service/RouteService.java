@@ -25,8 +25,33 @@ public class RouteService {
         return removeTripsFromRoutes(routeRepository.findAll());
     }
 
-    public List<RouteEntity> getRouteByRouteId(long routeId) {
+    public List<RouteEntity> getRoutesByRouteId(long routeId) {
         return removeTripsFromRoutes(routeRepository.findAllByRouteId(routeId));
+    }
+
+    public List<RouteEntity> getRoutesByShortNameIgnoreCase(String name) {
+        return removeTripsFromRoutes(routeRepository.findAllByShortNameIgnoreCase(name));
+    }
+
+    public List<RouteEntity> getRoutesByShortNameContainsIgnoreCase(String name) {
+        return removeTripsFromRoutes(routeRepository.findAllByShortNameContainsIgnoreCase(name));
+    }
+
+    public List<RouteEntity> getRoutesByLongNameIgnoreCase(String name) {
+        return removeTripsFromRoutes(routeRepository.findAllByLongNameIgnoreCase(name));
+    }
+
+    public List<RouteEntity> getRoutesByLongNameContainsIgnoreCase(String name) {
+        return removeTripsFromRoutes(routeRepository.findAllByLongNameContainsIgnoreCase(name));
+    }
+
+    public List<RouteEntity> getRoutesByType(int type) {
+        RouteEntity.ROUTE_TYPE routeType = RouteEntity.getRouteType(type);
+        return getRoutesByType(routeType);
+    }
+
+    public List<RouteEntity> getRoutesByType(RouteEntity.ROUTE_TYPE type) {
+        return removeTripsFromRoutes(routeRepository.findAllByType(type));
     }
 
     private List<RouteEntity> removeTripsFromRoutes(List<RouteEntity> routes) {

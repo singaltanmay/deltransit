@@ -20,6 +20,16 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.List;
 
+import static com.delhitransit.core.model.entity.RouteEntity.ROUTE_TYPE.AERIAL_LIFT;
+import static com.delhitransit.core.model.entity.RouteEntity.ROUTE_TYPE.BUS;
+import static com.delhitransit.core.model.entity.RouteEntity.ROUTE_TYPE.CABLE_TRAM;
+import static com.delhitransit.core.model.entity.RouteEntity.ROUTE_TYPE.FERRY;
+import static com.delhitransit.core.model.entity.RouteEntity.ROUTE_TYPE.FUNICULAR;
+import static com.delhitransit.core.model.entity.RouteEntity.ROUTE_TYPE.MONORAIL;
+import static com.delhitransit.core.model.entity.RouteEntity.ROUTE_TYPE.RAIL;
+import static com.delhitransit.core.model.entity.RouteEntity.ROUTE_TYPE.STREET_LEVEL_RAIL;
+import static com.delhitransit.core.model.entity.RouteEntity.ROUTE_TYPE.SUBWAY;
+import static com.delhitransit.core.model.entity.RouteEntity.ROUTE_TYPE.TROLLEYBUS;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Entity
@@ -46,7 +56,7 @@ public class RouteEntity {
 
     @Getter
     @Setter
-    private ROUTE_TYPE type = ROUTE_TYPE.BUS;
+    private ROUTE_TYPE type = BUS;
 
     @Getter
     @Setter
@@ -62,28 +72,33 @@ public class RouteEntity {
     }
 
     public static ROUTE_TYPE getRouteType(int routeType) {
-        switch (routeType) {
-            case 0:
-                return ROUTE_TYPE.STREET_LEVEL_RAIL;
-            case 1:
-                return ROUTE_TYPE.SUBWAY;
-            case 2:
-                return ROUTE_TYPE.RAIL;
-            case 4:
-                return ROUTE_TYPE.FERRY;
-            case 5:
-                return ROUTE_TYPE.CABLE_TRAM;
-            case 6:
-                return ROUTE_TYPE.AERIAL_LIFT;
-            case 7:
-                return ROUTE_TYPE.FUNICULAR;
-            case 8:
-                return ROUTE_TYPE.TROLLEYBUS;
-            case 9:
-                return ROUTE_TYPE.MONORAIL;
-            default:
-                return ROUTE_TYPE.BUS;
-        }
+        return switch (routeType) {
+            case 0 -> STREET_LEVEL_RAIL;
+            case 1 -> SUBWAY;
+            case 2 -> RAIL;
+            case 4 -> FERRY;
+            case 5 -> CABLE_TRAM;
+            case 6 -> AERIAL_LIFT;
+            case 7 -> FUNICULAR;
+            case 8 -> TROLLEYBUS;
+            case 9 -> MONORAIL;
+            default -> BUS;
+        };
+    }
+
+    public static int getRouteType(ROUTE_TYPE routeType) {
+        return switch (routeType) {
+            case STREET_LEVEL_RAIL -> 0;
+            case SUBWAY -> 1;
+            case RAIL -> 2;
+            case FERRY -> 4;
+            case CABLE_TRAM -> 5;
+            case AERIAL_LIFT -> 6;
+            case FUNICULAR -> 7;
+            case TROLLEYBUS -> 8;
+            case MONORAIL -> 9;
+            default -> 3;
+        };
     }
 
     public enum ROUTE_TYPE {

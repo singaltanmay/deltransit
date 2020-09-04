@@ -40,13 +40,13 @@ public class StopServiceTest {
 
     @Test
     void findAllByExactNameTest() {
-        List<StopEntity> stopEntities = stopService.getStopsByName(stopEntity.getName());
+        List<StopEntity> stopEntities = stopService.getStopsByNameIgnoreCase(stopEntity.getName());
         assertEntityIdenticalToStopEntity(stopEntities);
     }
 
     @Test
     void findAllByNameSubsequenceTest() {
-        List<StopEntity> stopEntities = stopService.getStopsByNameContains(stopEntity.getName());
+        List<StopEntity> stopEntities = stopService.getStopsByNameContainsIgnoreCase(stopEntity.getName());
         assertEntityIdenticalToStopEntity(stopEntities);
     }
 

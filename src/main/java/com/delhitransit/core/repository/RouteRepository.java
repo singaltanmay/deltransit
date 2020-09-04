@@ -15,4 +15,14 @@ public interface RouteRepository extends JpaRepository<RouteEntity, Long> {
 
     List<RouteEntity> findAllByRouteId(long routeId);
 
+    List<RouteEntity> findAllByShortNameIgnoreCase(String name);
+
+    List<RouteEntity> findAllByShortNameContainsIgnoreCase(String name);
+
+    List<RouteEntity> findAllByLongNameIgnoreCase(String name);
+
+    List<RouteEntity> findAllByLongNameContainsIgnoreCase(String name);
+
+    List<RouteEntity> findAllByType(RouteEntity.ROUTE_TYPE type);
+
 }

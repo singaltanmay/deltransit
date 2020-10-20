@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class StopTimeService {
 
-    StopTimeRepository stopTimeRepository;
+    private final StopTimeRepository stopTimeRepository;
 
     @Autowired
     public StopTimeService(StopTimeRepository stopTimeRepository) {
@@ -23,6 +23,10 @@ public class StopTimeService {
 
     public List<StopTimeEntity> getAllStopTimes() {
         return stopTimeRepository.findAll();
+    }
+
+    public List<StopTimeEntity> getAllStopTimesByStopId(long stopId){
+        return stopTimeRepository.findAllByStop_StopId(stopId);
     }
 
     private void insertStopTimes(List<StopTimeEntity> stopTimeEntities) {

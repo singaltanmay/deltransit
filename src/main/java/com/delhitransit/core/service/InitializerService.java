@@ -18,6 +18,7 @@ import com.delhitransit.core.repository.StopTimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.lang.Thread.sleep;
@@ -196,7 +198,7 @@ public class InitializerService {
         return stopTimeEntities;
     }
 
-    private class OtdParserConnector {
+    private static class OtdParserConnector {
 
         private final RestTemplate restTemplate;
 
@@ -206,34 +208,71 @@ public class InitializerService {
             this.restTemplate = restTemplate;
         }
 
+        /**
+         * Calling this method before making an OTD=parser API call will try to ensure initialization of OTD. This
+         * method calls the 'status' endpoint exposed by OTD-parser's Admin API to get it's init status. If upstream
+         * hasn't been initialized yet, the method backs-off for a random amount of time (between 1 to 5 seconds) to
+         * give some time for resource to become available. The algorithm stops trying after a set number of
+         * unsuccessful attempts.
+         */
+        private void backOffTillUpstreamInitialized() {
+            String url = SERVER_BASE_URL + "admin/init/status";
+            boolean isInitialized = isOtdParserAvailable(url);
+            short attempts = 5;
+            while (attempts-- > 0 && !isInitialized) {
+                try {
+                    Thread.sleep((new Random().nextInt(4) + 1) * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                isInitialized = isOtdParserAvailable(url);
+                System.err.println("OTD parser connection attempts remaining: " + attempts);
+            }
+        }
+
+        private boolean isOtdParserAvailable(String url) {
+            Boolean isInitialized = false;
+            try {
+                isInitialized = this.restTemplate.getForObject(url, Boolean.class);
+            } catch (HttpServerErrorException e) {
+                System.err.println("OTD parser is not available.");
+            }
+            return isInitialized != null && isInitialized;
+        }
+
         public List<Route> getAllRoutes() {
+            backOffTillUpstreamInitialized();
             String url = SERVER_BASE_URL + "routes";
             Route[] routes = this.restTemplate.getForObject(url, Route[].class);
-            return Arrays.asList(routes);
+            return Arrays.asList(routes != null ? routes : new Route[0]);
         }
 
         public List<Trip> getAllTrips() {
+            backOffTillUpstreamInitialized();
             String url = SERVER_BASE_URL + "trips";
             Trip[] trips = this.restTemplate.getForObject(url, Trip[].class);
-            return Arrays.asList(trips);
+            return Arrays.asList(trips != null ? trips : new Trip[0]);
         }
 
         public List<Stop> getAllStops() {
+            backOffTillUpstreamInitialized();
             String url = SERVER_BASE_URL + "stops";
             Stop[] stops = this.restTemplate.getForObject(url, Stop[].class);
-            return Arrays.asList(stops);
+            return Arrays.asList(stops != null ? stops : new Stop[0]);
         }
 
         public List<StopTime> getAllStopTimes() {
+            backOffTillUpstreamInitialized();
             String url = SERVER_BASE_URL + "stopTimes";
             StopTime[] stopTimes = this.restTemplate.getForObject(url, StopTime[].class);
-            return Arrays.asList(stopTimes);
+            return Arrays.asList(stopTimes != null ? stopTimes : new StopTime[0]);
         }
 
         public List<ShapePoint> getAllShapePoints() {
+            backOffTillUpstreamInitialized();
             String url = SERVER_BASE_URL + "shapePoints";
             ShapePoint[] shapePoints = this.restTemplate.getForObject(url, ShapePoint[].class);
-            return Arrays.asList(shapePoints);
+            return Arrays.asList(shapePoints != null ? shapePoints : new ShapePoint[0]);
         }
 
 

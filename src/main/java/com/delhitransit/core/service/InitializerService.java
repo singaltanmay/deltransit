@@ -207,12 +207,20 @@ public class InitializerService {
             this.restTemplate = restTemplate;
         }
 
+        /**
+         * Calling this method before making an OTD=parser API call will try to ensure initialization of OTD. This
+         * method calls the 'status' endpoint exposed by OTD-parser's Admin API to get it's init status. If upstream
+         * hasn't been initialized yet, the method backs-off for a random amount of time (between 1 to 5 seconds) to
+         * give some time for resource to become available. The algorithm stops trying after a set number of
+         * unsuccessful attempts.
+         */
         private void backOffTillUpstreamInitialized() {
             String url = SERVER_BASE_URL + "admin/init/status";
             Boolean isInitialized = this.restTemplate.getForObject(url, Boolean.class);
-            while (isInitialized == null || !isInitialized) {
+            short attempts = 5;
+            while (attempts-- > 0 && (isInitialized == null || !isInitialized)) {
                 try {
-                    wait(new Random().nextInt(5) * 1000);
+                    wait((new Random().nextInt(4) + 1) * 1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

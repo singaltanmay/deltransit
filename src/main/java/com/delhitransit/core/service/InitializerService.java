@@ -18,6 +18,7 @@ import com.delhitransit.core.repository.StopTimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -216,16 +217,27 @@ public class InitializerService {
          */
         private void backOffTillUpstreamInitialized() {
             String url = SERVER_BASE_URL + "admin/init/status";
-            Boolean isInitialized = this.restTemplate.getForObject(url, Boolean.class);
+            boolean isInitialized = isOtdParserAvailable(url);
             short attempts = 5;
-            while (attempts-- > 0 && (isInitialized == null || !isInitialized)) {
+            while (attempts-- > 0 && !isInitialized) {
                 try {
-                    wait((new Random().nextInt(4) + 1) * 1000);
+                    Thread.sleep((new Random().nextInt(4) + 1) * 1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                isInitialized = this.restTemplate.getForObject(url, Boolean.class);
+                isInitialized = isOtdParserAvailable(url);
+                System.err.println("OTD parser connection attempts remaining: " + attempts);
             }
+        }
+
+        private boolean isOtdParserAvailable(String url) {
+            Boolean isInitialized = false;
+            try {
+                isInitialized = this.restTemplate.getForObject(url, Boolean.class);
+            } catch (HttpServerErrorException e) {
+                System.err.println("OTD parser is not available.");
+            }
+            return isInitialized != null && isInitialized;
         }
 
         public List<Route> getAllRoutes() {

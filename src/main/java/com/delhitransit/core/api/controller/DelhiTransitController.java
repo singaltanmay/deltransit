@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -109,6 +110,15 @@ public class DelhiTransitController {
         }
     }
 
+    @GetMapping("stops/nearby")
+    public List<StopEntity> getStopsNearLocation(
+            @RequestParam(name = "lat") Optional<Double> latitude,
+            @RequestParam(name = "lon") Optional<Double> longitude,
+            @RequestParam(name = "dist", required = false) Optional<Double> distance) {
+        if (latitude != null && latitude.isPresent() && longitude != null && longitude.isPresent()) {
+            return stopService.getStopsNearLocation(latitude.get(), longitude.get(), distance.orElse(null));
+        } else return Collections.emptyList();
+    }
 
     @GetMapping("stopTimes")
     public List<StopTimeEntity> getAllStopTimes() {

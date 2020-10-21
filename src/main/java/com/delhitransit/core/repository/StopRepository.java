@@ -16,4 +16,6 @@ public interface StopRepository extends JpaRepository<StopEntity, Long> {
     List<StopEntity> findAllByNameIgnoreCase(String name);
 
     List<StopEntity> findAllByNameContainsIgnoreCase(String preStopName);
+
+    List<StopEntity> findAllByLatitudeBetweenAndLongitudeBetween(double lat1, double lat2, double lon1, double lon2);
 }

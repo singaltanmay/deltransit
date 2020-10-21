@@ -5,6 +5,7 @@
 package com.delhitransit.core.service;
 
 import com.delhitransit.core.EntityGenerator.StopEntityGenerator;
+import com.delhitransit.core.GeoLocationHelper;
 import com.delhitransit.core.model.entity.StopEntity;
 import com.delhitransit.core.repository.StopRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,15 @@ public class StopServiceTest {
         Mockito.when(mockStopRepository.findAllByNameIgnoreCase(stopEntity.getName()))
                .thenReturn(listOfStopEntity);
 
+        GeoLocationHelper location = GeoLocationHelper.fromDegrees(stopEntity.getLatitude(), stopEntity.getLongitude());
+        GeoLocationHelper[] coordinates = location.boundingCoordinates(1L, null);
+        Mockito.when(mockStopRepository.findAllByLatitudeBetweenAndLongitudeBetween(
+                coordinates[0].getLatitudeInDegrees(),
+                coordinates[1].getLatitudeInDegrees(),
+                coordinates[0].getLongitudeInDegrees(),
+                coordinates[1].getLongitudeInDegrees()
+        )).thenReturn(listOfStopEntity);
+
         stopService = new StopService(mockStopRepository);
     }
 
@@ -47,6 +57,13 @@ public class StopServiceTest {
     @Test
     void findAllByNameSubsequenceTest() {
         List<StopEntity> stopEntities = stopService.getStopsByNameContainsIgnoreCase(stopEntity.getName());
+        assertEntityIdenticalToStopEntity(stopEntities);
+    }
+
+    @Test
+    void findAllByLatitudeBetweenAndLongitudeBetweenTest() {
+        List<StopEntity> stopEntities = stopService.getStopsNearLocation(
+                stopEntity.getLatitude(), stopEntity.getLongitude(), null);
         assertEntityIdenticalToStopEntity(stopEntities);
     }
 

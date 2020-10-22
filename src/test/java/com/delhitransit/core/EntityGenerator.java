@@ -29,19 +29,16 @@ public class EntityGenerator {
 
     public static class StopEntityGenerator {
 
-        public static StopEntity generateStops() {
+        public static StopEntity generate() {
             StopEntity stopEntity = new StopEntity();
-
             long randomLong = new Random().nextLong();
             String randomLongString = Long.toString(randomLong);
             double randomDouble = new Random().nextDouble();
-
             stopEntity.setStopId(randomLong);
             stopEntity.setName("Stop Name : " + randomLongString);
             stopEntity.setLongitude(randomDouble);
             stopEntity.setLatitude(randomDouble);
             stopEntity.setStopTimes(new LinkedList<>());
-
             return stopEntity;
         }
     }

@@ -81,6 +81,7 @@ public class InitializerService {
         initStopTimesEntityList();
 
         stopTimeRepository.saveAll(allStopTimes);
+        System.out.println(this.getClass().getSimpleName() + ": Database has been initialized successfully.");
     }
 
     private void initRoutesEntityList() {

@@ -9,19 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.IOException;
-
 @SpringBootApplication
 public class CoreApplication {
 
-    static InitializerService service;
+    private static InitializerService service;
 
     @Autowired
     public CoreApplication(InitializerService service) {
         CoreApplication.service = service;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         SpringApplication.run(CoreApplication.class, args);
         service.init();
     }

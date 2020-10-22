@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
 
 public class StopServiceTest {
 
-    private final StopEntity stopEntity = StopEntityGenerator.generateStops();
+    private final StopEntity stopEntity = StopEntityGenerator.generate();
 
     private StopService stopService;
 

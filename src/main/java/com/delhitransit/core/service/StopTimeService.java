@@ -25,7 +25,7 @@ public class StopTimeService {
         return stopTimeRepository.findAll();
     }
 
-    public List<StopTimeEntity> getAllStopTimesByStopId(long stopId){
+    public List<StopTimeEntity> getAllStopTimesByStopId(long stopId) {
         return stopTimeRepository.findAllByStop_StopId(stopId);
     }
 

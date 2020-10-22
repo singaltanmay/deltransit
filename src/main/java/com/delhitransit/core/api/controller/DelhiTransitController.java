@@ -5,6 +5,7 @@ import com.delhitransit.core.model.entity.ShapePointEntity;
 import com.delhitransit.core.model.entity.StopEntity;
 import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
+import com.delhitransit.core.service.AppService;
 import com.delhitransit.core.service.RouteService;
 import com.delhitransit.core.service.ShapePointService;
 import com.delhitransit.core.service.StopService;
@@ -34,15 +35,18 @@ public class DelhiTransitController {
 
     private final StopTimeService stopTimeService;
 
+    private final AppService appService;
+
     @Autowired
     public DelhiTransitController(RouteService routeService, TripService tripService,
                                   ShapePointService shapePointService, StopService stopService,
-                                  StopTimeService stopTimeService) {
+                                  StopTimeService stopTimeService, AppService appService) {
         this.routeService = routeService;
         this.tripService = tripService;
         this.shapePointService = shapePointService;
         this.stopService = stopService;
         this.stopTimeService = stopTimeService;
+        this.appService = appService;
     }
 
     @GetMapping("routes")
@@ -80,6 +84,11 @@ public class DelhiTransitController {
     @GetMapping("routes/type/{type}")
     public List<RouteEntity> getRoutesByRouteType(@PathVariable("type") int type) {
         return routeService.getRoutesByType(type);
+    }
+
+    @GetMapping("routes/between")
+    public List<RouteEntity> getRoutesBetweenStops(@RequestParam long source, @RequestParam long destination) {
+        return appService.getRoutesBetweenTwoStops(source, destination);
     }
 
     @GetMapping("trips")

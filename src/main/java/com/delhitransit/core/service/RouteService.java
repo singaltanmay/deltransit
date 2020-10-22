@@ -21,6 +21,15 @@ public class RouteService {
         this.routeRepository = routeRepository;
     }
 
+    static List<RouteEntity> removeTripsFromRoutes(List<RouteEntity> routes) {
+        if (routes != null && routes.size() > 0) {
+            for (RouteEntity route : routes) {
+                route.setTrips(null);
+            }
+        }
+        return routes;
+    }
+
     public List<RouteEntity> getAllRoutes() {
         return removeTripsFromRoutes(routeRepository.findAll());
     }
@@ -52,15 +61,6 @@ public class RouteService {
 
     public List<RouteEntity> getRoutesByType(RouteEntity.ROUTE_TYPE type) {
         return removeTripsFromRoutes(routeRepository.findAllByType(type));
-    }
-
-    private List<RouteEntity> removeTripsFromRoutes(List<RouteEntity> routes) {
-        if (routes != null && routes.size() > 0) {
-            for (RouteEntity route : routes) {
-                route.setTrips(null);
-            }
-        }
-        return routes;
     }
 
     private void insertRoutes(List<RouteEntity> routes) {

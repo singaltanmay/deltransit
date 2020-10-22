@@ -6,8 +6,9 @@ import com.delhitransit.core.model.entity.TripEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AppService {
@@ -33,17 +34,18 @@ public class AppService {
         this.tripService = tripService;
     }
 
-    public List<RouteEntity> routesBetweenTwoStops(long stop1, long stop2) {
-        List<RouteEntity> routes = new LinkedList<>();
-        List<StopTimeEntity> stopTimeEntities = stopTimeService.getAllStopTimesByStopId(stop1);
-        for (StopTimeEntity stopTimeEntity : stopTimeEntities) {
-            TripEntity trip = stopTimeEntity.getTrip();
-            for (StopTimeEntity stopTime : trip.getStopTimes()) {
-                if (stopTime.getStop().getStopId() == stop2) {
-                    routes.add(trip.getRoute());
+    public List<RouteEntity> getRoutesBetweenTwoStops(long sourceStopId, long destinationStopId) {
+        HashSet<RouteEntity> routes = new HashSet<>();
+        List<StopTimeEntity> sourceStopTimes = stopTimeService.getAllStopTimesByStopId(sourceStopId);
+        for (StopTimeEntity sourceStopTime : sourceStopTimes) {
+            TripEntity tripContainingBothStops = sourceStopTime.getTrip();
+            for (StopTimeEntity destinationStopTime : tripContainingBothStops.getStopTimes()) {
+                if (destinationStopTime.getStop().getStopId() == destinationStopId &&
+                        destinationStopTime.getStopSequence() > sourceStopTime.getStopSequence()) {
+                    routes.add(tripContainingBothStops.getRoute());
                 }
             }
         }
-        return routes;
+        return RouteService.removeTripsFromRoutes(routes.parallelStream().collect(Collectors.toList()));
     }
 }

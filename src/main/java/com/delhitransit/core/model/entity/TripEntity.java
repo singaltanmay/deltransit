@@ -44,6 +44,7 @@ public class TripEntity {
     @Getter
     @Setter
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     private RouteEntity route;
 
     @Getter

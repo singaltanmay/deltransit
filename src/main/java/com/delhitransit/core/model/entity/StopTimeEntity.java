@@ -5,6 +5,7 @@
 package com.delhitransit.core.model.entity;
 
 import com.delhitransit.core.model.parseable.StopTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -42,11 +43,13 @@ public class StopTimeEntity {
     @Getter
     @Setter
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     private TripEntity trip;
 
     @Getter
     @Setter
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     private StopEntity stop;
 
     public StopTimeEntity(StopTime stopTime) {

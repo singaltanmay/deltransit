@@ -43,7 +43,6 @@ public class StopTimeEntity {
     @Getter
     @Setter
     @ManyToOne(cascade = CascadeType.ALL)
-    @JsonIgnore
     private TripEntity trip;
 
     @Getter

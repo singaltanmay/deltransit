@@ -46,6 +46,6 @@ public class AppService {
                 }
             }
         }
-        return RouteService.removeTripsFromRoutes(routes.parallelStream().collect(Collectors.toList()));
+        return routes.parallelStream().collect(Collectors.toList());
     }
 }

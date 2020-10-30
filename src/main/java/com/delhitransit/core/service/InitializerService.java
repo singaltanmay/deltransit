@@ -128,7 +128,12 @@ public class InitializerService {
             List<ShapePointEntity> shapePointEntities = shapePointsEntitiesHashMap.get(trip.getShapeId());
             shapePointEntities.forEach(it -> {
                 it.getTrips().add(entity);
-                entity.setShapePoint(it);
+                List<ShapePointEntity> shapePoints = entity.getShapePoints();
+                if (shapePoints == null){
+                    shapePoints = new LinkedList<>();
+                    entity.setShapePoints(shapePoints);
+                }
+                shapePoints.add(it);
             });
 
             List<RouteEntity> routeEntities = routesEntitiesHashMap.get((long) trip.getRouteId());

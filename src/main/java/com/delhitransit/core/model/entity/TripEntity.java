@@ -17,6 +17,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.List;
@@ -49,11 +50,11 @@ public class TripEntity {
 
     @Getter
     @Setter
-    @ManyToOne(cascade = CascadeType.ALL)
-    private ShapePointEntity shapePoint;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ShapePointEntity> shapePoints;
 
     public TripEntity(Trip trip) {
         this.setTripId(trip.getTripId());
-
     }
 }

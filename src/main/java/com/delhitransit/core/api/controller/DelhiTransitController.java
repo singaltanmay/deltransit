@@ -102,6 +102,11 @@ public class DelhiTransitController {
         return shapePointService.getAllShapePoints();
     }
 
+    @GetMapping("shapePoints/trip/{trip}")
+    public List<ShapePointEntity> getAllShapePointsByTripId(@PathVariable(name = "trip") String tripId) {
+        return shapePointService.getAllShapePointsByTripId(tripId);
+    }
+
     @GetMapping("stops")
     public List<StopEntity> getAllStops() {
         return stopService.getAllStops();

@@ -17,7 +17,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import java.util.List;
 
 @Entity
@@ -48,7 +48,7 @@ public class ShapePointEntity {
 
     @Getter
     @Setter
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shapePoint", cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "shapePoints", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<TripEntity> trips;
 

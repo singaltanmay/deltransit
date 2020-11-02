@@ -29,6 +29,10 @@ public class StopTimeService {
         return stopTimeRepository.findAllByStop_StopId(stopId);
     }
 
+    public List<StopTimeEntity> getAllStopTimesByTripId(String tripId) {
+        return stopTimeRepository.findAllByTrip_TripId(tripId);
+    }
+
     private void insertStopTimes(List<StopTimeEntity> stopTimeEntities) {
         if (stopTimeEntities != null && stopTimeEntities.size() > 0) {
             stopTimeRepository.saveAll(stopTimeEntities);

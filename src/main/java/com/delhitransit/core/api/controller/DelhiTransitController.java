@@ -139,4 +139,8 @@ public class DelhiTransitController {
         return stopTimeService.getAllStopTimes();
     }
 
+    @GetMapping("stopTimes/trip/{trip}")
+    public List<StopTimeEntity> getAllStopTimesByTripId(@PathVariable(name = "trip") String tripId) {
+        return stopTimeService.getAllStopTimesByTripId(tripId);
+    }
 }

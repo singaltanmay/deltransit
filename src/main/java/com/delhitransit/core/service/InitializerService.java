@@ -208,7 +208,7 @@ public class InitializerService {
 
         private final RestTemplate restTemplate;
 
-        private final String SERVER_BASE_URL = "https://otd-parser.herokuapp.com/v1/";
+        private final String SERVER_BASE_URL = "http://localhost:8080/v1/";
 
         private OtdParserConnector(RestTemplate restTemplate) {
             this.restTemplate = restTemplate;

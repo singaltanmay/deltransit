@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -43,11 +45,13 @@ public class StopTimeEntity {
     @Getter
     @Setter
     @ManyToOne(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.TRUE)
     private TripEntity trip;
 
     @Getter
     @Setter
     @ManyToOne(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.TRUE)
     @JsonIgnore
     private StopEntity stop;
 

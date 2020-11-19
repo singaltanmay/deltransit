@@ -9,11 +9,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,7 +49,8 @@ public class ShapePointEntity {
 
     @Getter
     @Setter
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "shapePoints", cascade = CascadeType.REMOVE)
+    @ManyToMany(mappedBy = "shapePoints", cascade = CascadeType.REMOVE)
+    @LazyCollection(LazyCollectionOption.TRUE)
     @JsonIgnore
     private List<TripEntity> trips;
 

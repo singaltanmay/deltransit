@@ -9,11 +9,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,7 +29,8 @@ public class TripEntity {
 
     @Getter
     @Setter
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "trip", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.REMOVE)
+    @LazyCollection(LazyCollectionOption.TRUE)
     @JsonIgnore
     List<StopTimeEntity> stopTimes;
 
@@ -45,12 +47,14 @@ public class TripEntity {
     @Getter
     @Setter
     @ManyToOne(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.TRUE)
     @JsonIgnore
     private RouteEntity route;
 
     @Getter
     @Setter
     @ManyToMany(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.TRUE)
     @JsonIgnore
     private List<ShapePointEntity> shapePoints;
 

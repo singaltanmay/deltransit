@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -61,6 +63,7 @@ public class RouteEntity {
     @Getter
     @Setter
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "route", cascade = CascadeType.REMOVE)
+    @LazyCollection(LazyCollectionOption.TRUE)
     @JsonInclude(NON_NULL)
     private List<TripEntity> trips;
 

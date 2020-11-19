@@ -21,7 +21,7 @@ public class CoreApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CoreApplication.class, args);
-        //service.init(Optional.empty());
+        service.init(Optional.empty());
     }
 
 }

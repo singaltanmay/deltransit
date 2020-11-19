@@ -50,7 +50,7 @@ public class ShapePointEntity {
 
     @Getter
     @Setter
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "shapePoints", cascade = CascadeType.REMOVE)
+    @ManyToMany(mappedBy = "shapePoints", cascade = CascadeType.REMOVE)
     @LazyCollection(LazyCollectionOption.TRUE)
     @JsonIgnore
     private List<TripEntity> trips;

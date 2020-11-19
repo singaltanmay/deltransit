@@ -15,6 +15,7 @@ import com.delhitransit.core.model.parseable.Stop;
 import com.delhitransit.core.model.parseable.StopTime;
 import com.delhitransit.core.model.parseable.Trip;
 import com.delhitransit.core.repository.StopTimeRepository;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -55,7 +57,13 @@ public class InitializerService {
         this.stopTimeRepository = stopTimeRepository;
     }
 
-    public void init() {
+    public void init(Optional<String> otdUrl) {
+        if (otdUrl != null && otdUrl.isPresent()){
+            String s = otdUrl.get();
+            if (!s.isBlank()){
+                otdParserConnector.setServerBaseUrl(s);
+            }
+        }
         final AtomicReference<Short> initThreadCount = new AtomicReference<>((short) 0);
         new Thread(() -> {
             initRoutesEntityList();
@@ -208,7 +216,8 @@ public class InitializerService {
 
         private final RestTemplate restTemplate;
 
-        private final String SERVER_BASE_URL = "https://otd-parser.herokuapp.com/v1/";
+        @Setter
+        private String serverBaseUrl = "https://otd-parser.herokuapp.com/v1/";
 
         private OtdParserConnector(RestTemplate restTemplate) {
             this.restTemplate = restTemplate;
@@ -222,7 +231,7 @@ public class InitializerService {
          * unsuccessful attempts.
          */
         private void backOffTillUpstreamInitialized() {
-            String url = SERVER_BASE_URL + "admin/init/status";
+            String url = serverBaseUrl + "admin/init/status";
             boolean isInitialized = isOtdParserAvailable(url);
             short attempts = 5;
             while (attempts-- > 0 && !isInitialized) {
@@ -248,35 +257,35 @@ public class InitializerService {
 
         public List<Route> getAllRoutes() {
             backOffTillUpstreamInitialized();
-            String url = SERVER_BASE_URL + "routes";
+            String url = serverBaseUrl + "routes";
             Route[] routes = this.restTemplate.getForObject(url, Route[].class);
             return Arrays.asList(routes != null ? routes : new Route[0]);
         }
 
         public List<Trip> getAllTrips() {
             backOffTillUpstreamInitialized();
-            String url = SERVER_BASE_URL + "trips";
+            String url = serverBaseUrl + "trips";
             Trip[] trips = this.restTemplate.getForObject(url, Trip[].class);
             return Arrays.asList(trips != null ? trips : new Trip[0]);
         }
 
         public List<Stop> getAllStops() {
             backOffTillUpstreamInitialized();
-            String url = SERVER_BASE_URL + "stops";
+            String url = serverBaseUrl + "stops";
             Stop[] stops = this.restTemplate.getForObject(url, Stop[].class);
             return Arrays.asList(stops != null ? stops : new Stop[0]);
         }
 
         public List<StopTime> getAllStopTimes() {
             backOffTillUpstreamInitialized();
-            String url = SERVER_BASE_URL + "stopTimes";
+            String url = serverBaseUrl + "stopTimes";
             StopTime[] stopTimes = this.restTemplate.getForObject(url, StopTime[].class);
             return Arrays.asList(stopTimes != null ? stopTimes : new StopTime[0]);
         }
 
         public List<ShapePoint> getAllShapePoints() {
             backOffTillUpstreamInitialized();
-            String url = SERVER_BASE_URL + "shapePoints";
+            String url = serverBaseUrl + "shapePoints";
             ShapePoint[] shapePoints = this.restTemplate.getForObject(url, ShapePoint[].class);
             return Arrays.asList(shapePoints != null ? shapePoints : new ShapePoint[0]);
         }

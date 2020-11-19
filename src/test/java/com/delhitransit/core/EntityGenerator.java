@@ -7,6 +7,7 @@ package com.delhitransit.core;
 import com.delhitransit.core.model.entity.RouteEntity;
 import com.delhitransit.core.model.entity.ShapePointEntity;
 import com.delhitransit.core.model.entity.StopEntity;
+import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
 
 import java.util.LinkedList;
@@ -70,6 +71,21 @@ public class EntityGenerator {
             tripEntity.setStopTimes(new LinkedList<>());
             tripEntity.setShapePoints(new LinkedList<>());
             return tripEntity;
+        }
+    }
+
+    public static class StopTimeEntityGenerator {
+
+        public static StopTimeEntity generate(){
+            StopTimeEntity stopTimeEntity = new StopTimeEntity();
+            Random random = new Random();
+
+            stopTimeEntity.setArrival("Arrival " +String.valueOf(random.nextLong()));
+            stopTimeEntity.setDeparture("Departure "+String.valueOf(random.nextLong()));
+            stopTimeEntity.setStopSequence(random.nextInt());
+            stopTimeEntity.setTrip(new TripEntity());
+            stopTimeEntity.setStop(new StopEntity());
+            return stopTimeEntity;
         }
     }
 

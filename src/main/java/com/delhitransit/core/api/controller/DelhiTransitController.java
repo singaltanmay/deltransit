@@ -11,7 +11,12 @@ import com.delhitransit.core.service.ShapePointService;
 import com.delhitransit.core.service.StopService;
 import com.delhitransit.core.service.StopTimeService;
 import com.delhitransit.core.service.TripService;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +31,12 @@ import java.util.Optional;
 @RequestMapping("v1")
 public class DelhiTransitController {
 
+    public static final int DEFAULT_PAGE_NUMBER = 0;
+
+    public static final int DEFAULT_PAGE_SIZE = 10;
+
+    public static final PageRequest DEFAULT_PAGE_REQUEST = PageRequest.of(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
+
     private final RouteService routeService;
 
     private final TripService tripService;
@@ -37,6 +48,13 @@ public class DelhiTransitController {
     private final StopTimeService stopTimeService;
 
     private final AppService appService;
+
+    public static final String PAGE_NUMBER_DESCRIPTION = "You can provide a page index to return only a subset of" +
+            " the data. Page numbers start from 0 and if not specified then default page number is 0.";
+
+    public static final String PAGE_SIZE_DESCRIPTION = "You can provide a page size to return only a subset of"
+            + " the data. Page size should be greater than 0 and if not specified then default page size is 10 " +
+            "results per page.";
 
     @Autowired
     public DelhiTransitController(RouteService routeService, TripService tripService,
@@ -50,9 +68,43 @@ public class DelhiTransitController {
         this.appService = appService;
     }
 
+    public static PageRequest createPageRequest(Integer page, Integer size) {
+
+        int pagex = DEFAULT_PAGE_NUMBER, sizex = DEFAULT_PAGE_SIZE;
+
+        if (page != null) {
+            pagex = page;
+        }
+        if (size != null) {
+            sizex = size;
+        }
+
+        if (pagex == DEFAULT_PAGE_NUMBER && sizex == DEFAULT_PAGE_SIZE) {
+            return DEFAULT_PAGE_REQUEST;
+        } else {
+            return PageRequest.of(pagex, sizex);
+        }
+    }
+
+    public static boolean isPageParamsValid(Integer page, Integer size) {
+        return (page == null || page >= 0) && (size == null || size >= 0);
+    }
+
+    public static <T> ResponseEntity<List<T>> createAppropriateResponseEntity(Page<T> page) {
+        if (page != null && !page.isEmpty()) {
+            return new ResponseEntity<>(page.toList(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
+
     @GetMapping("routes")
-    public List<RouteEntity> getAllRoutes() {
-        return routeService.getAllRoutes();
+    public ResponseEntity<List<RouteEntity>> getAllRoutes(
+        @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
+        @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize)
+    {
+        if(!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+        return createAppropriateResponseEntity(routeService.getAllRoutes(createPageRequest(pageNumber, pageSize)));
     }
 
     @GetMapping("routes/id/{id}")

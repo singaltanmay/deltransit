@@ -7,6 +7,8 @@ package com.delhitransit.core.service;
 import com.delhitransit.core.model.entity.RouteEntity;
 import com.delhitransit.core.repository.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,8 +32,17 @@ public class RouteService {
         return routes;
     }
 
-    public List<RouteEntity> getAllRoutes() {
-        return removeTripsFromRoutes(routeRepository.findAll());
+    private RouteEntity removeTripsFromRoute(RouteEntity route) {
+        if (route != null) {
+            route.setTrips(null);
+        }
+        return route;
+    }
+
+    public Page<RouteEntity> getAllRoutes(Pageable request) {
+        Page<RouteEntity> page = routeRepository.findAll(request);
+        page.forEach(this::removeTripsFromRoute);
+        return page;
     }
 
     public List<RouteEntity> getRoutesByRouteId(long routeId) {

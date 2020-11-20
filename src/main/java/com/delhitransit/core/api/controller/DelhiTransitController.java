@@ -89,7 +89,7 @@ public class DelhiTransitController {
 
     @GetMapping("routes/between")
     public List<RouteEntity> getRoutesBetweenStops(@RequestParam long source, @RequestParam long destination) {
-        return appService.getRoutesBetweenTwoStops(source, destination);
+        return appService.getRoutesBetweenTwoStopsNewImplementation(source, destination);
     }
 
     @GetMapping("trips")

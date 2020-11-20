@@ -1,6 +1,7 @@
 package com.delhitransit.core.service;
 
 import com.delhitransit.core.model.entity.RouteEntity;
+import com.delhitransit.core.model.entity.StopEntity;
 import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,4 +49,29 @@ public class AppService {
         }
         return routes.parallelStream().collect(Collectors.toList());
     }
+
+    public List<RouteEntity> getRoutesBetweenTwoStopsNewImplementation(long sourceStopId, long destinationStopId) {
+        List<StopTimeEntity> sourceStopTimes = stopTimeService.getAllStopTimesByStopId(sourceStopId);
+        List<StopTimeEntity> destinationStopTimes = stopTimeService.getAllStopTimesByStopId(destinationStopId);
+
+        HashSet<String> sourceTrips = new HashSet<>();
+        for(StopTimeEntity stopTime : sourceStopTimes){
+            sourceTrips.add(stopTime.getTrip().getTripId());
+        }
+
+        HashSet<TripEntity> candidateTrips = new HashSet<>();
+        for(StopTimeEntity stopTime : destinationStopTimes){
+            TripEntity trip = stopTime.getTrip();
+            if (sourceTrips.contains(trip.getTripId())){
+                candidateTrips.add(trip);
+            }
+        }
+
+        HashSet<RouteEntity> routes = new HashSet<>();
+        for(TripEntity trip : candidateTrips){
+            routes.add(trip.getRoute());
+        }
+        return routes.parallelStream().collect(Collectors.toList());
+    }
+
 }

@@ -32,10 +32,4 @@ public class StopTimeService {
         return stopTimeRepository.findAllByStop_StopId(stopId);
     }
 
-    private void insertStopTimes(List<StopTimeEntity> stopTimeEntities) {
-        if (stopTimeEntities != null && stopTimeEntities.size() > 0) {
-            stopTimeRepository.saveAll(stopTimeEntities);
-        }
-    }
-
 }

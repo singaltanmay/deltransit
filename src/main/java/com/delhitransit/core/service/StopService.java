@@ -12,8 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class StopService {
 
@@ -56,26 +54,11 @@ public class StopService {
         return stopEntityPage;
     }
 
-    private List<StopEntity> removeStopTimesFromStops(List<StopEntity> stops) {
-        if (stops != null && stops.size() > 0) {
-            for (StopEntity stop : stops) {
-                stop.setStopTimes(null);
-            }
-        }
-        return stops;
-    }
-
     private StopEntity removeStopTimesFromStop(StopEntity stop) {
         if (stop != null) {
             stop.setStopTimes(null);
         }
         return stop;
-    }
-
-    private void insertStops(List<StopEntity> stopEntities) {
-        if (stopEntities != null && stopEntities.size() > 0) {
-            stopRepository.saveAll(stopEntities);
-        }
     }
 
 }

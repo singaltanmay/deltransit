@@ -106,39 +106,48 @@ public class DelhiTransitController {
         return createAppropriateResponseEntity(routeService.getAllRoutes(createPageRequest(pageNumber, pageSize)));
     }
 
-    //TODO PAGINATION
     @GetMapping("routes/id/{id}")
-    public List<RouteEntity> getRoutesByRouteId(@PathVariable("id") long routeId) {
-        return routeService.getRoutesByRouteId(routeId);
+    public ResponseEntity<List<RouteEntity>> getRoutesByRouteId(@PathVariable("id") long routeId,
+                                                @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
+                                                @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize ) {
+        if (isPageParamsInvalid(pageNumber, pageSize)) return new ResponseEntity<>(
+                HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+        return createAppropriateResponseEntity(routeService.getRoutesByRouteId(routeId,createPageRequest(pageNumber, pageSize)));
     }
 
-    //TODO PAGINATION
     @GetMapping("routes/name/{name}")
-    public List<RouteEntity> getRoutesByRouteName(
+    public ResponseEntity<List<RouteEntity>> getRoutesByRouteName(
             @PathVariable("name") String name,
             @RequestParam(name = "exact") Optional<Boolean> matchType,
-            @RequestParam(name = "short") Optional<Boolean> nameType) {
+            @RequestParam(name = "short") Optional<Boolean> nameType,
+            @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
+            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize ) {
         boolean isExactMatch = matchType != null && matchType.isPresent() && matchType.get();
         boolean isShortName = nameType != null && nameType.isPresent() && nameType.get();
+        if (isPageParamsInvalid(pageNumber, pageSize)) return new ResponseEntity<>(
+                HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         if (isShortName) {
             if (isExactMatch) {
-                return routeService.getRoutesByShortNameIgnoreCase(name);
+                return createAppropriateResponseEntity(routeService.getRoutesByShortNameIgnoreCase(name, createPageRequest(pageNumber, pageSize)));
             } else {
-                return routeService.getRoutesByShortNameContainsIgnoreCase(name);
+                return createAppropriateResponseEntity(routeService.getRoutesByShortNameContainsIgnoreCase(name, createPageRequest(pageNumber, pageSize)));
             }
         } else {
             if (isExactMatch) {
-                return routeService.getRoutesByLongNameIgnoreCase(name);
+                return createAppropriateResponseEntity(routeService.getRoutesByLongNameIgnoreCase(name, createPageRequest(pageNumber, pageSize)));
             } else {
-                return routeService.getRoutesByLongNameContainsIgnoreCase(name);
+                return createAppropriateResponseEntity(routeService.getRoutesByLongNameContainsIgnoreCase(name, createPageRequest(pageNumber, pageSize)));
             }
         }
     }
 
-    //TODO PAGINATION
     @GetMapping("routes/type/{type}")
-    public List<RouteEntity> getRoutesByRouteType(@PathVariable("type") int type) {
-        return routeService.getRoutesByType(type);
+    public ResponseEntity<List<RouteEntity>> getRoutesByRouteType(@PathVariable("type") int type,
+                                                  @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
+                                                  @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize ) {
+        if (isPageParamsInvalid(pageNumber, pageSize)) return new ResponseEntity<>(
+                HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+        return createAppropriateResponseEntity(routeService.getRoutesByType(type, createPageRequest(pageNumber, pageSize)));
     }
 
     @GetMapping("routes/between")

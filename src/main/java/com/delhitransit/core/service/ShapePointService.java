@@ -28,10 +28,4 @@ public class ShapePointService {
         return shapePointEntityPage;
     }
 
-    private void insertShapePoints(List<ShapePointEntity> shapePointEntities) {
-        if (shapePointEntities != null && shapePointEntities.size() > 0) {
-            shapePointRepository.saveAll(shapePointEntities);
-        }
-    }
-
 }

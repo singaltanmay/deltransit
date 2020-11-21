@@ -11,8 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class TripService {
 
@@ -24,14 +22,7 @@ public class TripService {
     }
 
     public Page<TripEntity> getAllTrips(Pageable request) {
-        Page<TripEntity> tripEntityPage = tripRepository.findAll(request);
-        return tripEntityPage;
-    }
-
-    private void insertTrips(List<TripEntity> tripEntities) {
-        if (tripEntities != null && tripEntities.size() > 0) {
-            tripRepository.saveAll(tripEntities);
-        }
+        return tripRepository.findAll(request);
     }
 
     public TripEntity getTripByTripId(String tripId) {

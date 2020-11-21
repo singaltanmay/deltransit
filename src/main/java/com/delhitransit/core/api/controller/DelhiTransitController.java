@@ -106,11 +106,13 @@ public class DelhiTransitController {
         return createAppropriateResponseEntity(routeService.getAllRoutes(createPageRequest(pageNumber, pageSize)));
     }
 
+    //TODO PAGINATION
     @GetMapping("routes/id/{id}")
     public List<RouteEntity> getRoutesByRouteId(@PathVariable("id") long routeId) {
         return routeService.getRoutesByRouteId(routeId);
     }
 
+    //TODO PAGINATION
     @GetMapping("routes/name/{name}")
     public List<RouteEntity> getRoutesByRouteName(
             @PathVariable("name") String name,
@@ -133,11 +135,13 @@ public class DelhiTransitController {
         }
     }
 
+    //TODO PAGINATION
     @GetMapping("routes/type/{type}")
     public List<RouteEntity> getRoutesByRouteType(@PathVariable("type") int type) {
         return routeService.getRoutesByType(type);
     }
 
+    //TODO PAGINATION
     @GetMapping("routes/between")
     public List<RouteEntity> getRoutesBetweenStops(@RequestParam long source, @RequestParam long destination) {
         return appService.getRoutesBetweenTwoStops(source, destination);

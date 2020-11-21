@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -154,8 +153,13 @@ public class DelhiTransitController {
     }
 
     @GetMapping("shapePoints")
-    public List<ShapePointEntity> getAllShapePoints() {
-        return shapePointService.getAllShapePoints();
+    public ResponseEntity<List<ShapePointEntity>> getAllShapePoints(
+            @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
+            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
+        if (!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(
+                HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+        return createAppropriateResponseEntity(
+                shapePointService.getAllShapePoints(createPageRequest(pageNumber, pageSize)));
     }
 
     @GetMapping("shapePoints/trip/{trip}")

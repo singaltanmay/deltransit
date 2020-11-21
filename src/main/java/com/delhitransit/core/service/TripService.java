@@ -8,6 +8,8 @@ import com.delhitransit.core.model.entity.StopEntity;
 import com.delhitransit.core.model.entity.TripEntity;
 import com.delhitransit.core.repository.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,14 +25,8 @@ public class TripService {
         this.tripRepository = tripRepository;
     }
 
-    public List<TripEntity> getAllTrips() {
-        return tripRepository.findAll();
-    }
-
-    private void insertTrips(List<TripEntity> tripEntities) {
-        if (tripEntities != null && tripEntities.size() > 0) {
-            tripRepository.saveAll(tripEntities);
-        }
+    public Page<TripEntity> getAllTrips(Pageable request) {
+        return tripRepository.findAll(request);
     }
 
     public TripEntity getTripByTripId(String tripId) {

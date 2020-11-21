@@ -5,6 +5,8 @@
 package com.delhitransit.core.repository;
 
 import com.delhitransit.core.model.entity.StopEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,9 +15,11 @@ import java.util.List;
 @Repository
 public interface StopRepository extends JpaRepository<StopEntity, Long> {
 
-    List<StopEntity> findAllByNameIgnoreCase(String name);
+    Page<StopEntity> findAll(Pageable request);
 
-    List<StopEntity> findAllByNameContainsIgnoreCase(String preStopName);
+    Page<StopEntity> findAllByNameIgnoreCase(String name, Pageable request);
 
-    List<StopEntity> findAllByLatitudeBetweenAndLongitudeBetween(double lat1, double lat2, double lon1, double lon2);
+    Page<StopEntity> findAllByNameContainsIgnoreCase(String preStopName, Pageable request);
+
+    Page<StopEntity> findAllByLatitudeBetweenAndLongitudeBetween(double lat1, double lat2, double lon1, double lon2, Pageable request);
 }

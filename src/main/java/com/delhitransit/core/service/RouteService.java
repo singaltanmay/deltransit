@@ -7,9 +7,9 @@ package com.delhitransit.core.service;
 import com.delhitransit.core.model.entity.RouteEntity;
 import com.delhitransit.core.repository.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class RouteService {
@@ -21,52 +21,58 @@ public class RouteService {
         this.routeRepository = routeRepository;
     }
 
-    static List<RouteEntity> removeTripsFromRoutes(List<RouteEntity> routes) {
-        if (routes != null && routes.size() > 0) {
-            for (RouteEntity route : routes) {
-                route.setTrips(null);
-            }
+    private RouteEntity removeTripsFromRoute(RouteEntity route) {
+        if (route != null) {
+            route.setTrips(null);
         }
-        return routes;
+        return route;
     }
 
-    public List<RouteEntity> getAllRoutes() {
-        return removeTripsFromRoutes(routeRepository.findAll());
+    public Page<RouteEntity> getAllRoutes(Pageable request) {
+        Page<RouteEntity> page = routeRepository.findAll(request);
+        page.forEach(this::removeTripsFromRoute);
+        return page;
     }
 
-    public List<RouteEntity> getRoutesByRouteId(long routeId) {
-        return removeTripsFromRoutes(routeRepository.findAllByRouteId(routeId));
+    public Page<RouteEntity> getRoutesByRouteId(long routeId, Pageable request) {
+        Page<RouteEntity> page = routeRepository.findAllByRouteId(routeId, request);
+        page.forEach(this::removeTripsFromRoute);
+        return page;
     }
 
-    public List<RouteEntity> getRoutesByShortNameIgnoreCase(String name) {
-        return removeTripsFromRoutes(routeRepository.findAllByShortNameIgnoreCase(name));
+    public Page<RouteEntity> getRoutesByShortNameIgnoreCase(String name, Pageable request) {
+        Page<RouteEntity> page = routeRepository.findAllByShortNameIgnoreCase(name, request);
+        page.forEach(this::removeTripsFromRoute);
+        return page;
     }
 
-    public List<RouteEntity> getRoutesByShortNameContainsIgnoreCase(String name) {
-        return removeTripsFromRoutes(routeRepository.findAllByShortNameContainsIgnoreCase(name));
+    public Page<RouteEntity> getRoutesByShortNameContainsIgnoreCase(String name, Pageable request) {
+        Page<RouteEntity> page = routeRepository.findAllByShortNameContainsIgnoreCase(name, request);
+        page.forEach(this::removeTripsFromRoute);
+        return page;
     }
 
-    public List<RouteEntity> getRoutesByLongNameIgnoreCase(String name) {
-        return removeTripsFromRoutes(routeRepository.findAllByLongNameIgnoreCase(name));
+    public Page<RouteEntity> getRoutesByLongNameIgnoreCase(String name, Pageable request) {
+        Page<RouteEntity> page = routeRepository.findAllByLongNameIgnoreCase(name, request);
+        page.forEach(this::removeTripsFromRoute);
+        return page;
     }
 
-    public List<RouteEntity> getRoutesByLongNameContainsIgnoreCase(String name) {
-        return removeTripsFromRoutes(routeRepository.findAllByLongNameContainsIgnoreCase(name));
+    public Page<RouteEntity> getRoutesByLongNameContainsIgnoreCase(String name, Pageable request) {
+        Page<RouteEntity> page = routeRepository.findAllByLongNameContainsIgnoreCase(name, request);
+        page.forEach(this::removeTripsFromRoute);
+        return page;
     }
 
-    public List<RouteEntity> getRoutesByType(int type) {
+    public Page<RouteEntity> getRoutesByType(int type, Pageable request) {
         RouteEntity.ROUTE_TYPE routeType = RouteEntity.getRouteType(type);
-        return getRoutesByType(routeType);
+        return getRoutesByType(routeType, request);
     }
 
-    public List<RouteEntity> getRoutesByType(RouteEntity.ROUTE_TYPE type) {
-        return removeTripsFromRoutes(routeRepository.findAllByType(type));
-    }
-
-    private void insertRoutes(List<RouteEntity> routes) {
-        if (routes != null && routes.size() > 0) {
-            routeRepository.saveAll(routes);
-        }
+    public Page<RouteEntity> getRoutesByType(RouteEntity.ROUTE_TYPE type, Pageable request) {
+        Page<RouteEntity> page = routeRepository.findAllByType(type, request);
+        page.forEach(this::removeTripsFromRoute);
+        return page;
     }
 
 }

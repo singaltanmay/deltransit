@@ -8,6 +8,8 @@ import com.delhitransit.core.GeoLocationHelper;
 import com.delhitransit.core.model.entity.StopEntity;
 import com.delhitransit.core.repository.StopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,8 +24,10 @@ public class StopService {
         this.stopRepository = stopRepository;
     }
 
-    public List<StopEntity> getAllStops() {
-        return removeStopTimesFromStops(stopRepository.findAll());
+    public Page<StopEntity> getAllStops(Pageable request) {
+        Page<StopEntity> stopEntityPage = stopRepository.findAll(request);
+        stopEntityPage.forEach(this::removeStopTimesFromStop);
+        return stopEntityPage;
     }
 
     public List<StopEntity> getStopsByNameIgnoreCase(String name) {
@@ -53,6 +57,13 @@ public class StopService {
             }
         }
         return stops;
+    }
+
+    private StopEntity removeStopTimesFromStop(StopEntity stop) {
+        if (stop != null) {
+            stop.setStopTimes(null);
+        }
+        return stop;
     }
 
     private void insertStops(List<StopEntity> stopEntities) {

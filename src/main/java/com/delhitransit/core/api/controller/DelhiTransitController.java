@@ -37,6 +37,13 @@ public class DelhiTransitController {
 
     public static final PageRequest DEFAULT_PAGE_REQUEST = PageRequest.of(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
 
+    public static final String PAGE_NUMBER_DESCRIPTION = "You can provide a page index to return only a subset of" +
+            " the data. Page numbers start from 0 and if not specified then default page number is 0.";
+
+    public static final String PAGE_SIZE_DESCRIPTION = "You can provide a page size to return only a subset of"
+            + " the data. Page size should be greater than 0 and if not specified then default page size is 10 " +
+            "results per page.";
+
     private final RouteService routeService;
 
     private final TripService tripService;
@@ -48,13 +55,6 @@ public class DelhiTransitController {
     private final StopTimeService stopTimeService;
 
     private final AppService appService;
-
-    public static final String PAGE_NUMBER_DESCRIPTION = "You can provide a page index to return only a subset of" +
-            " the data. Page numbers start from 0 and if not specified then default page number is 0.";
-
-    public static final String PAGE_SIZE_DESCRIPTION = "You can provide a page size to return only a subset of"
-            + " the data. Page size should be greater than 0 and if not specified then default page size is 10 " +
-            "results per page.";
 
     @Autowired
     public DelhiTransitController(RouteService routeService, TripService tripService,
@@ -100,10 +100,10 @@ public class DelhiTransitController {
 
     @GetMapping("routes")
     public ResponseEntity<List<RouteEntity>> getAllRoutes(
-        @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
-        @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize)
-    {
-        if(!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+            @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
+            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
+        if (!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(
+                HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         return createAppropriateResponseEntity(routeService.getAllRoutes(createPageRequest(pageNumber, pageSize)));
     }
 
@@ -147,9 +147,9 @@ public class DelhiTransitController {
     @GetMapping("trips")
     public ResponseEntity<List<TripEntity>> getAllTrips(
             @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
-            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize)
-    {
-        if(!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
+        if (!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(
+                HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         return createAppropriateResponseEntity(tripService.getAllTrips(createPageRequest(pageNumber, pageSize)));
     }
 
@@ -164,8 +164,12 @@ public class DelhiTransitController {
     }
 
     @GetMapping("stops")
-    public List<StopEntity> getAllStops() {
-        return stopService.getAllStops();
+    public ResponseEntity<List<StopEntity>> getAllStops(
+            @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
+            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
+        if (!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(
+                HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+        return createAppropriateResponseEntity(stopService.getAllStops(createPageRequest(pageNumber, pageSize)));
     }
 
     @GetMapping("stops/name/{name}")

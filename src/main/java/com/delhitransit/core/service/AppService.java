@@ -1,11 +1,13 @@
 package com.delhitransit.core.service;
 
 import com.delhitransit.core.model.entity.RouteEntity;
+import com.delhitransit.core.model.entity.ShapePointEntity;
 import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -58,5 +60,9 @@ public class AppService {
         return routes.parallelStream().collect(Collectors.toList());
     }
 
+    public List<ShapePointEntity> getShapePointsByTripId(String tripId) {
+        TripEntity trip = tripService.getTripByTripId(tripId);
+        return trip != null ? trip.getShapePoints() : Collections.emptyList();
+    }
 
 }

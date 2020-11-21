@@ -188,13 +188,16 @@ public class DelhiTransitController {
     }
 
     @GetMapping("stops/nearby")
-    public List<StopEntity> getStopsNearLocation(
+    public ResponseEntity<List<StopEntity>> getStopsNearLocation(
             @RequestParam(name = "lat") Optional<Double> latitude,
             @RequestParam(name = "lon") Optional<Double> longitude,
-            @RequestParam(name = "dist", required = false) Optional<Double> distance) {
+            @RequestParam(name = "dist", required = false) Optional<Double> distance,
+            @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
+            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize ) {
         if (latitude != null && latitude.isPresent() && longitude != null && longitude.isPresent()) {
-            return stopService.getStopsNearLocation(latitude.get(), longitude.get(), distance.orElse(null));
-        } else return Collections.emptyList();
+            if(!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+            return createAppropriateResponseEntity(stopService.getStopsNearLocation(latitude.get(), longitude.get(), distance.orElse(null), createPageRequest(pageNumber, pageSize)));
+        } else return (ResponseEntity<List<StopEntity>>) Collections.emptyList();
     }
 
     @GetMapping("stopTimes")

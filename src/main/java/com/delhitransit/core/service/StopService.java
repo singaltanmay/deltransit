@@ -42,16 +42,18 @@ public class StopService {
         return stopEntityPage;
     }
 
-    public List<StopEntity> getStopsNearLocation(double myLat, double myLon, Double distance) {
+    public Page<StopEntity> getStopsNearLocation(double myLat, double myLon, Double distance, Pageable request) {
         GeoLocationHelper location = GeoLocationHelper.fromDegrees(myLat, myLon);
         GeoLocationHelper[] coordinates = location.boundingCoordinates(distance != null ? distance : 1L, null);
-        List<StopEntity> entities = stopRepository
+        Page<StopEntity> stopEntityPage = stopRepository
                 .findAllByLatitudeBetweenAndLongitudeBetween(
                         coordinates[0].getLatitudeInDegrees(),
                         coordinates[1].getLatitudeInDegrees(),
                         coordinates[0].getLongitudeInDegrees(),
-                        coordinates[1].getLongitudeInDegrees());
-        return removeStopTimesFromStops(entities);
+                        coordinates[1].getLongitudeInDegrees(),
+                        request);
+        stopEntityPage.forEach(this::removeStopTimesFromStop);
+        return stopEntityPage;
     }
 
     private List<StopEntity> removeStopTimesFromStops(List<StopEntity> stops) {

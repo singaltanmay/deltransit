@@ -212,8 +212,13 @@ public class DelhiTransitController {
     }
 
     @GetMapping("stopTimes")
-    public List<StopTimeEntity> getAllStopTimes() {
-        return stopTimeService.getAllStopTimes();
+    public ResponseEntity<List<StopTimeEntity>> getAllStopTimes(
+            @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
+            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
+        if (!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(
+                HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+        return createAppropriateResponseEntity(
+                stopTimeService.getAllStopTimes(createPageRequest(pageNumber, pageSize)));
     }
 
 }

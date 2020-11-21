@@ -164,6 +164,13 @@ public class DelhiTransitController {
         return createAppropriateResponseEntity(tripService.getAllTrips(createPageRequest(pageNumber, pageSize)));
     }
 
+    @GetMapping("trips/id/{id}/travelTime")
+    public Long getTripTravelTimeBetweenTwoStops(
+            @PathVariable("id") String tripId,
+            @RequestParam long source, @RequestParam long destination) {
+        return tripService.getTripTravelTimeBetweenTwoStops(tripId, source, destination);
+    }
+
     @GetMapping("shapePoints")
     public ResponseEntity<List<ShapePointEntity>> getAllShapePoints(
             @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,

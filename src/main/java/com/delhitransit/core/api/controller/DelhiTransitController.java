@@ -145,8 +145,12 @@ public class DelhiTransitController {
     }
 
     @GetMapping("trips")
-    public List<TripEntity> getAllTrips() {
-        return tripService.getAllTrips();
+    public ResponseEntity<List<TripEntity>> getAllTrips(
+            @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
+            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize)
+    {
+        if(!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+        return createAppropriateResponseEntity(tripService.getAllTrips(createPageRequest(pageNumber, pageSize)));
     }
 
     @GetMapping("shapePoints")

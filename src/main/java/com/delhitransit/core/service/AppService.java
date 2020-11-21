@@ -1,12 +1,12 @@
 package com.delhitransit.core.service;
 
 import com.delhitransit.core.model.entity.RouteEntity;
-import com.delhitransit.core.model.entity.StopEntity;
 import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,42 +36,27 @@ public class AppService {
     }
 
     public List<RouteEntity> getRoutesBetweenTwoStops(long sourceStopId, long destinationStopId) {
-        HashSet<RouteEntity> routes = new HashSet<>();
-        List<StopTimeEntity> sourceStopTimes = stopTimeService.getAllStopTimesByStopId(sourceStopId);
-        for (StopTimeEntity sourceStopTime : sourceStopTimes) {
-            TripEntity tripContainingBothStops = sourceStopTime.getTrip();
-            for (StopTimeEntity destinationStopTime : tripContainingBothStops.getStopTimes()) {
-                if (destinationStopTime.getStop().getStopId() == destinationStopId &&
-                        destinationStopTime.getStopSequence() > sourceStopTime.getStopSequence()) {
-                    routes.add(tripContainingBothStops.getRoute());
-                }
-            }
-        }
-        return routes.parallelStream().collect(Collectors.toList());
-    }
-
-    public List<RouteEntity> getRoutesBetweenTwoStopsNewImplementation(long sourceStopId, long destinationStopId) {
         List<StopTimeEntity> sourceStopTimes = stopTimeService.getAllStopTimesByStopId(sourceStopId);
         List<StopTimeEntity> destinationStopTimes = stopTimeService.getAllStopTimesByStopId(destinationStopId);
 
-        HashSet<String> sourceTrips = new HashSet<>();
-        for(StopTimeEntity stopTime : sourceStopTimes){
-            sourceTrips.add(stopTime.getTrip().getTripId());
+        HashMap<String, Long> sourceTrips = new HashMap<>();
+        for (StopTimeEntity stopTime : sourceStopTimes) {
+            sourceTrips.putIfAbsent(stopTime.getTrip().getTripId(), stopTime.getArrival());
         }
 
         HashSet<TripEntity> candidateTrips = new HashSet<>();
-        for(StopTimeEntity stopTime : destinationStopTimes){
+        for (StopTimeEntity stopTime : destinationStopTimes) {
             TripEntity trip = stopTime.getTrip();
-            if (sourceTrips.contains(trip.getTripId())){
+            if (sourceTrips.containsKey(trip.getTripId()) &&
+                    sourceTrips.get(trip.getTripId()) <= stopTime.getArrival()) {
                 candidateTrips.add(trip);
             }
         }
 
         HashSet<RouteEntity> routes = new HashSet<>();
-        for(TripEntity trip : candidateTrips){
-            routes.add(trip.getRoute());
-        }
+        candidateTrips.forEach(it -> routes.add(it.getRoute()));
         return routes.parallelStream().collect(Collectors.toList());
     }
+
 
 }

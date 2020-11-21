@@ -50,6 +50,8 @@ public class AppServiceTest {
 
         Mockito.when(mockStopTimeService.getAllStopTimesByStopId(sourceStop.getStopId()))
                .thenReturn(Collections.singletonList(sourceStopTime));
+        Mockito.when(mockStopTimeService.getAllStopTimesByStopId(destinationStop.getStopId()))
+               .thenReturn(Collections.singletonList(destinationStopTime));
 
         service = new AppService(null, null, null, mockStopTimeService, null);
 

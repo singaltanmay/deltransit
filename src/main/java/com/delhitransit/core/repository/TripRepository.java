@@ -15,4 +15,6 @@ public interface TripRepository extends JpaRepository<TripEntity, Long> {
 
     Page<TripEntity> findAll(Pageable request);
 
+    TripEntity findFirstByTripId(String tripId);
+
 }

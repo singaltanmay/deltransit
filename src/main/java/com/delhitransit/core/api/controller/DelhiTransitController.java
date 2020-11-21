@@ -164,7 +164,7 @@ public class DelhiTransitController {
 
     @GetMapping("shapePoints/trip/{trip}")
     public List<ShapePointEntity> getAllShapePointsByTripId(@PathVariable(name = "trip") String tripId) {
-        return shapePointService.getAllShapePointsByTripId(tripId);
+        return appService.getShapePointsByTripId(tripId);
     }
 
     @GetMapping("stops")

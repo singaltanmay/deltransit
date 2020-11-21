@@ -34,4 +34,7 @@ public class TripService {
         }
     }
 
+    public TripEntity getTripByTripId(String tripId) {
+        return tripRepository.findFirstByTripId(tripId);
+    }
 }

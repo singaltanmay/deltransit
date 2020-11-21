@@ -2,6 +2,7 @@ package com.delhitransit.core.service;
 
 import com.delhitransit.core.EntityGenerator;
 import com.delhitransit.core.model.entity.RouteEntity;
+import com.delhitransit.core.model.entity.ShapePointEntity;
 import com.delhitransit.core.model.entity.StopEntity;
 import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
@@ -24,6 +25,10 @@ public class AppServiceTest {
 
     private final RouteEntity routeEntity = EntityGenerator.RouteEntityGenerator.generate();
 
+    private final ShapePointEntity shapePointEntity = EntityGenerator.ShapePointEntityGenerator.generate();
+
+    private TripEntity tripEntity;
+
     private AppService service;
 
     @BeforeEach
@@ -37,21 +42,31 @@ public class AppServiceTest {
         destinationStopTime.setStop(destinationStop);
         destinationStopTime.setStopSequence(sourceStopTime.getStopSequence() + 1);
 
-        TripEntity trip = new TripEntity();
-        trip.setRoute(routeEntity);
+        tripEntity = new TripEntity();
+        tripEntity.setRoute(routeEntity);
         List<StopTimeEntity> stopTimesList = new LinkedList<>();
         stopTimesList.add(sourceStopTime);
         stopTimesList.add(destinationStopTime);
-        trip.setStopTimes(stopTimesList);
-        sourceStopTime.setTrip(trip);
-        destinationStopTime.setTrip(trip);
+        tripEntity.setStopTimes(stopTimesList);
+        sourceStopTime.setTrip(tripEntity);
+        destinationStopTime.setTrip(tripEntity);
 
         StopTimeService mockStopTimeService = Mockito.mock(StopTimeService.class);
 
         Mockito.when(mockStopTimeService.getAllStopTimesByStopId(sourceStop.getStopId()))
                .thenReturn(Collections.singletonList(sourceStopTime));
+        Mockito.when(mockStopTimeService.getAllStopTimesByStopId(destinationStop.getStopId()))
+               .thenReturn(Collections.singletonList(destinationStopTime));
 
-        service = new AppService(null, null, null, mockStopTimeService, null);
+        TripService mockTripService = Mockito.mock(TripService.class);
+        List<TripEntity> trips = shapePointEntity.getTrips();
+        if (trips == null) trips = new LinkedList<>();
+        trips.add(tripEntity);
+        tripEntity.setShapePoints(Collections.singletonList(shapePointEntity));
+        Mockito.when(mockTripService.getTripByTripId(tripEntity.getTripId()))
+               .thenReturn(tripEntity);
+
+        service = new AppService(null, null, null, mockStopTimeService, mockTripService);
 
     }
 
@@ -62,10 +77,22 @@ public class AppServiceTest {
         assertEntityListIdenticalToRouteEntity(routes);
     }
 
+    @Test
+    void findAllShapePointsByTripIdTest() {
+        List<ShapePointEntity> entities = service.getShapePointsByTripId(tripEntity.getTripId());
+        assertEntityIdenticalToShapePointEntity(entities);
+    }
+
     void assertEntityListIdenticalToRouteEntity(List<RouteEntity> routes) {
         assertNotNull(routes);
         assertEquals(1, routes.size());
         assertEquals(routeEntity, routes.get(0));
+    }
+
+    void assertEntityIdenticalToShapePointEntity(List<ShapePointEntity> shapePointEntities) {
+        assertNotNull(shapePointEntities);
+        assertEquals(1, shapePointEntities.size());
+        assertEquals(shapePointEntity, shapePointEntities.get(0));
     }
 
 }

@@ -85,8 +85,8 @@ public class DelhiTransitController {
         }
     }
 
-    public static boolean isPageParamsValid(Integer page, Integer size) {
-        return (page == null || page >= 0) && (size == null || size >= 0);
+    public static boolean isPageParamsInvalid(Integer page, Integer size) {
+        return (page != null && page < 0) || (size != null && size < 0);
     }
 
     public static <T> ResponseEntity<List<T>> createAppropriateResponseEntity(Page<T> page) {
@@ -101,7 +101,7 @@ public class DelhiTransitController {
     public ResponseEntity<List<RouteEntity>> getAllRoutes(
             @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
             @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
-        if (!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(
+        if (isPageParamsInvalid(pageNumber, pageSize)) return new ResponseEntity<>(
                 HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         return createAppropriateResponseEntity(routeService.getAllRoutes(createPageRequest(pageNumber, pageSize)));
     }
@@ -141,7 +141,6 @@ public class DelhiTransitController {
         return routeService.getRoutesByType(type);
     }
 
-    //TODO PAGINATION
     @GetMapping("routes/between")
     public List<RouteEntity> getRoutesBetweenStops(@RequestParam long source, @RequestParam long destination) {
         return appService.getRoutesBetweenTwoStops(source, destination);
@@ -151,7 +150,7 @@ public class DelhiTransitController {
     public ResponseEntity<List<TripEntity>> getAllTrips(
             @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
             @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
-        if (!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(
+        if (isPageParamsInvalid(pageNumber, pageSize)) return new ResponseEntity<>(
                 HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         return createAppropriateResponseEntity(tripService.getAllTrips(createPageRequest(pageNumber, pageSize)));
     }
@@ -160,7 +159,7 @@ public class DelhiTransitController {
     public ResponseEntity<List<ShapePointEntity>> getAllShapePoints(
             @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
             @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
-        if (!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(
+        if (isPageParamsInvalid(pageNumber, pageSize)) return new ResponseEntity<>(
                 HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         return createAppropriateResponseEntity(
                 shapePointService.getAllShapePoints(createPageRequest(pageNumber, pageSize)));
@@ -175,7 +174,7 @@ public class DelhiTransitController {
     public ResponseEntity<List<StopEntity>> getAllStops(
             @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
             @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
-        if (!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(
+        if (isPageParamsInvalid(pageNumber, pageSize)) return new ResponseEntity<>(
                 HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         return createAppropriateResponseEntity(stopService.getAllStops(createPageRequest(pageNumber, pageSize)));
     }
@@ -187,7 +186,7 @@ public class DelhiTransitController {
             @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
             @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
         boolean isExactMatch = matchType != null && matchType.isPresent() && matchType.get();
-        if (!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(
+        if (isPageParamsInvalid(pageNumber, pageSize)) return new ResponseEntity<>(
                 HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         if (isExactMatch) {
             return createAppropriateResponseEntity(
@@ -206,7 +205,7 @@ public class DelhiTransitController {
             @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
             @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
         if (latitude != null && latitude.isPresent() && longitude != null && longitude.isPresent()) {
-            if (!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(
+            if (isPageParamsInvalid(pageNumber, pageSize)) return new ResponseEntity<>(
                     HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
             return createAppropriateResponseEntity(stopService.getStopsNearLocation(latitude.get(), longitude.get(),
                                                                                     distance.orElse(null),
@@ -219,7 +218,7 @@ public class DelhiTransitController {
     public ResponseEntity<List<StopTimeEntity>> getAllStopTimes(
             @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
             @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
-        if (!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(
+        if (isPageParamsInvalid(pageNumber, pageSize)) return new ResponseEntity<>(
                 HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         return createAppropriateResponseEntity(
                 stopTimeService.getAllStopTimes(createPageRequest(pageNumber, pageSize)));

@@ -97,6 +97,13 @@ public class DelhiTransitController {
         return tripService.getAllTrips();
     }
 
+    @GetMapping("trips/id/{id}/travelTime")
+    public Long getTripTravelTimeBetweenTwoStops(
+            @PathVariable("id") String tripId,
+            @RequestParam long source, @RequestParam long destination) {
+        return tripService.getTripTravelTimeBetweenTwoStops(tripId, source, destination);
+    }
+
     @GetMapping("shapePoints")
     public List<ShapePointEntity> getAllShapePoints() {
         return shapePointService.getAllShapePoints();

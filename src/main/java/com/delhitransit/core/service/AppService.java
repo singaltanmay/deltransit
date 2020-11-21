@@ -6,6 +6,7 @@ import com.delhitransit.core.model.entity.TripEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,17 +36,27 @@ public class AppService {
     }
 
     public List<RouteEntity> getRoutesBetweenTwoStops(long sourceStopId, long destinationStopId) {
-        HashSet<RouteEntity> routes = new HashSet<>();
         List<StopTimeEntity> sourceStopTimes = stopTimeService.getAllStopTimesByStopId(sourceStopId);
-        for (StopTimeEntity sourceStopTime : sourceStopTimes) {
-            TripEntity tripContainingBothStops = sourceStopTime.getTrip();
-            for (StopTimeEntity destinationStopTime : tripContainingBothStops.getStopTimes()) {
-                if (destinationStopTime.getStop().getStopId() == destinationStopId &&
-                        destinationStopTime.getStopSequence() > sourceStopTime.getStopSequence()) {
-                    routes.add(tripContainingBothStops.getRoute());
-                }
+        List<StopTimeEntity> destinationStopTimes = stopTimeService.getAllStopTimesByStopId(destinationStopId);
+
+        HashMap<String, Long> sourceTrips = new HashMap<>();
+        for (StopTimeEntity stopTime : sourceStopTimes) {
+            sourceTrips.putIfAbsent(stopTime.getTrip().getTripId(), stopTime.getArrival());
+        }
+
+        HashSet<TripEntity> candidateTrips = new HashSet<>();
+        for (StopTimeEntity stopTime : destinationStopTimes) {
+            TripEntity trip = stopTime.getTrip();
+            if (sourceTrips.containsKey(trip.getTripId()) &&
+                    sourceTrips.get(trip.getTripId()) <= stopTime.getArrival()) {
+                candidateTrips.add(trip);
             }
         }
+
+        HashSet<RouteEntity> routes = new HashSet<>();
+        candidateTrips.forEach(it -> routes.add(it.getRoute()));
         return routes.parallelStream().collect(Collectors.toList());
     }
+
+
 }

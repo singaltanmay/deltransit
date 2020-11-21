@@ -33,7 +33,7 @@ public class StopService {
     public Page<StopEntity> getStopsByNameIgnoreCase(String name, Pageable request) {
         Page<StopEntity> stopEntityPage = stopRepository.findAllByNameIgnoreCase(name, request);
         stopEntityPage.forEach(this::removeStopTimesFromStop);
-        return  stopEntityPage;
+        return stopEntityPage;
     }
 
     public Page<StopEntity> getStopsByNameContainsIgnoreCase(String preStopName, Pageable request) {

@@ -177,13 +177,16 @@ public class DelhiTransitController {
             @PathVariable String name,
             @RequestParam(name = "exact") Optional<Boolean> matchType,
             @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
-            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize ) {
+            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
         boolean isExactMatch = matchType != null && matchType.isPresent() && matchType.get();
-        if(!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+        if (!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(
+                HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         if (isExactMatch) {
-            return createAppropriateResponseEntity(stopService.getStopsByNameIgnoreCase(name, createPageRequest(pageNumber, pageSize)));
+            return createAppropriateResponseEntity(
+                    stopService.getStopsByNameIgnoreCase(name, createPageRequest(pageNumber, pageSize)));
         } else {
-            return createAppropriateResponseEntity(stopService.getStopsByNameContainsIgnoreCase(name, createPageRequest(pageNumber,pageSize)));
+            return createAppropriateResponseEntity(
+                    stopService.getStopsByNameContainsIgnoreCase(name, createPageRequest(pageNumber, pageSize)));
         }
     }
 
@@ -193,11 +196,15 @@ public class DelhiTransitController {
             @RequestParam(name = "lon") Optional<Double> longitude,
             @RequestParam(name = "dist", required = false) Optional<Double> distance,
             @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
-            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize ) {
+            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
         if (latitude != null && latitude.isPresent() && longitude != null && longitude.isPresent()) {
-            if(!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
-            return createAppropriateResponseEntity(stopService.getStopsNearLocation(latitude.get(), longitude.get(), distance.orElse(null), createPageRequest(pageNumber, pageSize)));
-        } else return (ResponseEntity<List<StopEntity>>) Collections.emptyList();
+            if (!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(
+                    HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+            return createAppropriateResponseEntity(stopService.getStopsNearLocation(latitude.get(), longitude.get(),
+                                                                                    distance.orElse(null),
+                                                                                    createPageRequest(pageNumber,
+                                                                                                      pageSize)));
+        } else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("stopTimes")

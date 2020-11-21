@@ -173,14 +173,17 @@ public class DelhiTransitController {
     }
 
     @GetMapping("stops/name/{name}")
-    public List<StopEntity> getStopsByName(
+    public ResponseEntity<List<StopEntity>> getStopsByName(
             @PathVariable String name,
-            @RequestParam(name = "exact") Optional<Boolean> matchType) {
+            @RequestParam(name = "exact") Optional<Boolean> matchType,
+            @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
+            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize ) {
         boolean isExactMatch = matchType != null && matchType.isPresent() && matchType.get();
+        if(!isPageParamsValid(pageNumber, pageSize)) return new ResponseEntity<>(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         if (isExactMatch) {
-            return stopService.getStopsByNameIgnoreCase(name);
+            return createAppropriateResponseEntity(stopService.getStopsByNameIgnoreCase(name, createPageRequest(pageNumber, pageSize)));
         } else {
-            return stopService.getStopsByNameContainsIgnoreCase(name);
+            return createAppropriateResponseEntity(stopService.getStopsByNameContainsIgnoreCase(name, createPageRequest(pageNumber,pageSize)));
         }
     }
 

@@ -30,12 +30,16 @@ public class StopService {
         return stopEntityPage;
     }
 
-    public List<StopEntity> getStopsByNameIgnoreCase(String name) {
-        return removeStopTimesFromStops(stopRepository.findAllByNameIgnoreCase(name));
+    public Page<StopEntity> getStopsByNameIgnoreCase(String name, Pageable request) {
+        Page<StopEntity> stopEntityPage = stopRepository.findAllByNameIgnoreCase(name, request);
+        stopEntityPage.forEach(this::removeStopTimesFromStop);
+        return  stopEntityPage;
     }
 
-    public List<StopEntity> getStopsByNameContainsIgnoreCase(String preStopName) {
-        return removeStopTimesFromStops(stopRepository.findAllByNameContainsIgnoreCase(preStopName));
+    public Page<StopEntity> getStopsByNameContainsIgnoreCase(String preStopName, Pageable request) {
+        Page<StopEntity> stopEntityPage = stopRepository.findAllByNameContainsIgnoreCase(preStopName, request);
+        stopEntityPage.forEach(this::removeStopTimesFromStop);
+        return stopEntityPage;
     }
 
     public List<StopEntity> getStopsNearLocation(double myLat, double myLon, Double distance) {

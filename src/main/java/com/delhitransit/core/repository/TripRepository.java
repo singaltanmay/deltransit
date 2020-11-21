@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TripRepository extends JpaRepository<TripEntity, Long> {
 
+    TripEntity findFirstByTripId(String tripId);
+
 }

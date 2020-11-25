@@ -32,4 +32,4 @@ jobs:
       uses :  actions/upload-artifact@v2
       with:
         name: JAR file
-        path: .
+        path: core-0.0.1-SNAPSHOT.jar

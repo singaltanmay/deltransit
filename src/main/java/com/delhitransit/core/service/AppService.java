@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,6 +64,18 @@ public class AppService {
     public List<ShapePointEntity> getShapePointsByTripId(String tripId) {
         TripEntity trip = tripService.getTripByTripId(tripId);
         return trip != null ? trip.getShapePoints() : Collections.emptyList();
+    }
+
+    public List<RouteEntity> getRoutesByStopIdAndStopTimeArrivalTime(long stopId, long arrivalTime) {
+        List<StopTimeEntity> stopTimes = stopTimeService
+                .getAllStopTimesByStopIdAndArrivalTimeAfter(stopId, arrivalTime);
+        HashSet<RouteEntity> routes = new HashSet<>();
+        for (StopTimeEntity stopTime : stopTimes) {
+            RouteEntity route = stopTime.getTrip().getRoute();
+            route.setTrips(null);
+            routes.add(route);
+        }
+        return new LinkedList<>(routes);
     }
 
 }

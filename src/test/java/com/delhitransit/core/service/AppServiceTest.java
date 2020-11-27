@@ -15,7 +15,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
 
 public class AppServiceTest {
 
@@ -37,6 +39,12 @@ public class AppServiceTest {
         StopTimeEntity sourceStopTime = new StopTimeEntity();
         sourceStopTime.setStop(sourceStop);
         sourceStopTime.setStopSequence(1);
+        List<StopTimeEntity> sourceStopTimes = sourceStop.getStopTimes();
+        if (sourceStopTimes == null) {
+            sourceStopTimes = new LinkedList<>();
+            sourceStop.setStopTimes(sourceStopTimes);
+        }
+        sourceStopTimes.add(sourceStopTime);
 
         StopTimeEntity destinationStopTime = new StopTimeEntity();
         destinationStopTime.setStop(destinationStop);
@@ -53,9 +61,9 @@ public class AppServiceTest {
 
         StopTimeService mockStopTimeService = Mockito.mock(StopTimeService.class);
 
-        Mockito.when(mockStopTimeService.getAllStopTimesByStopId(sourceStop.getStopId()))
+        when(mockStopTimeService.getAllStopTimesByStopId(sourceStop.getStopId()))
                .thenReturn(Collections.singletonList(sourceStopTime));
-        Mockito.when(mockStopTimeService.getAllStopTimesByStopId(destinationStop.getStopId()))
+        when(mockStopTimeService.getAllStopTimesByStopId(destinationStop.getStopId()))
                .thenReturn(Collections.singletonList(destinationStopTime));
 
         TripService mockTripService = Mockito.mock(TripService.class);
@@ -63,9 +71,11 @@ public class AppServiceTest {
         if (trips == null) trips = new LinkedList<>();
         trips.add(tripEntity);
         tripEntity.setShapePoints(Collections.singletonList(shapePointEntity));
-        Mockito.when(mockTripService.getTripByTripId(tripEntity.getTripId()))
+        when(mockTripService.getTripByTripId(tripEntity.getTripId()))
                .thenReturn(tripEntity);
 
+        when(mockStopTimeService.getAllStopTimesByStopIdAndArrivalTimeAfter(sourceStop.getStopId(), sourceStopTime.getArrival()))
+                .thenReturn(Collections.singletonList(sourceStopTime));
         service = new AppService(null, null, null, mockStopTimeService, mockTripService);
 
     }
@@ -81,6 +91,15 @@ public class AppServiceTest {
     void findAllShapePointsByTripIdTest() {
         List<ShapePointEntity> entities = service.getShapePointsByTripId(tripEntity.getTripId());
         assertEntityIdenticalToShapePointEntity(entities);
+    }
+
+    @Test
+    void getRoutesByStopIdAndStopTimeArrivalTimeTest(){
+        List<RouteEntity> routes = service.getRoutesByStopIdAndStopTimeArrivalTime(
+                sourceStop.getStopId(), sourceStop.getStopTimes().get(0).getArrival());
+        assertNotNull(routes);
+        assertFalse(routes.isEmpty());
+        assertEquals(routeEntity,routes.get(0));
     }
 
     void assertEntityListIdenticalToRouteEntity(List<RouteEntity> routes) {

@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
+import static com.delhitransit.core.model.entity.StopTimeEntity.getSecondsSince12AM;
+
 @RestController
 @RequestMapping("v1")
 public class DelhiTransitController {
@@ -108,11 +110,12 @@ public class DelhiTransitController {
 
     @GetMapping("routes/id/{id}")
     public ResponseEntity<List<RouteEntity>> getRoutesByRouteId(@PathVariable("id") long routeId,
-                                                @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
-                                                @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize ) {
+                                                                @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
+                                                                @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
         if (isPageParamsInvalid(pageNumber, pageSize)) return new ResponseEntity<>(
                 HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
-        return createAppropriateResponseEntity(routeService.getRoutesByRouteId(routeId,createPageRequest(pageNumber, pageSize)));
+        return createAppropriateResponseEntity(
+                routeService.getRoutesByRouteId(routeId, createPageRequest(pageNumber, pageSize)));
     }
 
     @GetMapping("routes/name/{name}")
@@ -121,38 +124,55 @@ public class DelhiTransitController {
             @RequestParam(name = "exact") Optional<Boolean> matchType,
             @RequestParam(name = "short") Optional<Boolean> nameType,
             @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
-            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize ) {
+            @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
         boolean isExactMatch = matchType != null && matchType.isPresent() && matchType.get();
         boolean isShortName = nameType != null && nameType.isPresent() && nameType.get();
         if (isPageParamsInvalid(pageNumber, pageSize)) return new ResponseEntity<>(
                 HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         if (isShortName) {
             if (isExactMatch) {
-                return createAppropriateResponseEntity(routeService.getRoutesByShortNameIgnoreCase(name, createPageRequest(pageNumber, pageSize)));
+                return createAppropriateResponseEntity(
+                        routeService.getRoutesByShortNameIgnoreCase(name, createPageRequest(pageNumber, pageSize)));
             } else {
-                return createAppropriateResponseEntity(routeService.getRoutesByShortNameContainsIgnoreCase(name, createPageRequest(pageNumber, pageSize)));
+                return createAppropriateResponseEntity(routeService.getRoutesByShortNameContainsIgnoreCase(name,
+                                                                                                           createPageRequest(
+                                                                                                                   pageNumber,
+                                                                                                                   pageSize)));
             }
         } else {
             if (isExactMatch) {
-                return createAppropriateResponseEntity(routeService.getRoutesByLongNameIgnoreCase(name, createPageRequest(pageNumber, pageSize)));
+                return createAppropriateResponseEntity(
+                        routeService.getRoutesByLongNameIgnoreCase(name, createPageRequest(pageNumber, pageSize)));
             } else {
-                return createAppropriateResponseEntity(routeService.getRoutesByLongNameContainsIgnoreCase(name, createPageRequest(pageNumber, pageSize)));
+                return createAppropriateResponseEntity(routeService.getRoutesByLongNameContainsIgnoreCase(name,
+                                                                                                          createPageRequest(
+                                                                                                                  pageNumber,
+                                                                                                                  pageSize)));
             }
         }
     }
 
     @GetMapping("routes/type/{type}")
     public ResponseEntity<List<RouteEntity>> getRoutesByRouteType(@PathVariable("type") int type,
-                                                  @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
-                                                  @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize ) {
+                                                                  @RequestParam(required = false, name = "page") @ApiParam(value = PAGE_NUMBER_DESCRIPTION) Integer pageNumber,
+                                                                  @RequestParam(required = false, name = "size") @ApiParam(value = PAGE_SIZE_DESCRIPTION) Integer pageSize) {
         if (isPageParamsInvalid(pageNumber, pageSize)) return new ResponseEntity<>(
                 HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
-        return createAppropriateResponseEntity(routeService.getRoutesByType(type, createPageRequest(pageNumber, pageSize)));
+        return createAppropriateResponseEntity(
+                routeService.getRoutesByType(type, createPageRequest(pageNumber, pageSize)));
     }
 
     @GetMapping("routes/between")
     public List<RouteEntity> getRoutesBetweenStops(@RequestParam long source, @RequestParam long destination) {
         return appService.getRoutesBetweenTwoStops(source, destination);
+    }
+
+    @GetMapping("routes/stop/{stop}")
+    public List<RouteEntity> getRoutesByStopIdAndEarliestArrivalTime(
+            @PathVariable("stop") long stopId,
+            @RequestParam(required = false, name = "time") Optional<Long> time
+    ) {
+        return appService.getRoutesByStopIdAndStopTimeArrivalTime(stopId, time.orElse(getSecondsSince12AM()));
     }
 
     @GetMapping("trips")

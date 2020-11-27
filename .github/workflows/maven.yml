@@ -19,9 +19,7 @@ jobs:
       with:
         java-version: 14
     - name: List what is in the target directory
-      run: |
-        cd target
-        ls -a
+      run: ls -a
     - name: Upload artifact
       uses :  actions/upload-artifact@v2
       with:

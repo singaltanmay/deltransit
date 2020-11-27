@@ -16,6 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AppServiceTest {
 
@@ -81,6 +82,14 @@ public class AppServiceTest {
     void findAllShapePointsByTripIdTest() {
         List<ShapePointEntity> entities = service.getShapePointsByTripId(tripEntity.getTripId());
         assertEntityIdenticalToShapePointEntity(entities);
+    }
+
+    @Test
+    void getStopsByTripIdTest() {
+        List<StopEntity> stops = service.getStopsByTripId(tripEntity.getTripId());
+        assertNotNull(stops);
+        assertTrue(stops.contains(sourceStop));
+        assertTrue(stops.contains(destinationStop));
     }
 
     void assertEntityListIdenticalToRouteEntity(List<RouteEntity> routes) {

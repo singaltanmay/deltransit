@@ -2,14 +2,17 @@ package com.delhitransit.core.service;
 
 import com.delhitransit.core.model.entity.RouteEntity;
 import com.delhitransit.core.model.entity.ShapePointEntity;
+import com.delhitransit.core.model.entity.StopEntity;
 import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,7 +65,15 @@ public class AppService {
 
     public List<ShapePointEntity> getShapePointsByTripId(String tripId) {
         TripEntity trip = tripService.getTripByTripId(tripId);
-        return trip != null ? trip.getShapePoints() : Collections.emptyList();
+        List<ShapePointEntity> entities = trip != null ? trip.getShapePoints() : Collections.emptyList();
+        entities.sort(Comparator.comparingInt(ShapePointEntity::getSequence));
+        return entities;
     }
 
+    public List<StopEntity> getStopsByTripId(String tripId){
+        TripEntity trip = tripService.getTripByTripId(tripId);
+        List<StopEntity> stops = new LinkedList<>();
+        trip.getStopTimes().forEach(it -> stops.add(it.getStop()));
+        return stops;
+    }
 }

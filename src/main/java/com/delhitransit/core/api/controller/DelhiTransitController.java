@@ -243,6 +243,12 @@ public class DelhiTransitController {
         } else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("stops/route/{route}")
+    public List<StopEntity> getStopsByRouteId(
+            @PathVariable(name = "route") long routeId) {
+        return appService.getStopsByRouteId(routeId);
+    }
+
     @GetMapping("stops/trip/{trip}")
     public List<StopEntity> getStopsByTripId(
             @PathVariable(name = "trip") String tripId) {

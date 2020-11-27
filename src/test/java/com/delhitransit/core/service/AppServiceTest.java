@@ -17,6 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 public class AppServiceTest {
 
@@ -54,18 +55,20 @@ public class AppServiceTest {
 
         StopTimeService mockStopTimeService = Mockito.mock(StopTimeService.class);
 
-        Mockito.when(mockStopTimeService.getAllStopTimesByStopId(sourceStop.getStopId()))
-               .thenReturn(Collections.singletonList(sourceStopTime));
-        Mockito.when(mockStopTimeService.getAllStopTimesByStopId(destinationStop.getStopId()))
-               .thenReturn(Collections.singletonList(destinationStopTime));
+        when(mockStopTimeService.getAllStopTimesByStopId(sourceStop.getStopId()))
+                .thenReturn(Collections.singletonList(sourceStopTime));
+        when(mockStopTimeService.getAllStopTimesByStopId(destinationStop.getStopId()))
+                .thenReturn(Collections.singletonList(destinationStopTime));
 
         TripService mockTripService = Mockito.mock(TripService.class);
         List<TripEntity> trips = shapePointEntity.getTrips();
         if (trips == null) trips = new LinkedList<>();
         trips.add(tripEntity);
         tripEntity.setShapePoints(Collections.singletonList(shapePointEntity));
-        Mockito.when(mockTripService.getTripByTripId(tripEntity.getTripId()))
-               .thenReturn(tripEntity);
+        when(mockTripService.getTripByTripId(tripEntity.getTripId()))
+                .thenReturn(tripEntity);
+        when(mockTripService.getTripByRouteId(routeEntity.getRouteId()))
+                .thenReturn(tripEntity);
 
         service = new AppService(null, null, null, mockStopTimeService, mockTripService);
 
@@ -87,6 +90,16 @@ public class AppServiceTest {
     @Test
     void getStopsByTripIdTest() {
         List<StopEntity> stops = service.getStopsByTripId(tripEntity.getTripId());
+        assertStopEntityListContainsStops(stops);
+    }
+
+    @Test
+    void getStopsByRouteIdTest() {
+        List<StopEntity> stops = service.getStopsByRouteId(routeEntity.getRouteId());
+        assertStopEntityListContainsStops(stops);
+    }
+
+    private void assertStopEntityListContainsStops(List<StopEntity> stops) {
         assertNotNull(stops);
         assertTrue(stops.contains(sourceStop));
         assertTrue(stops.contains(destinationStop));

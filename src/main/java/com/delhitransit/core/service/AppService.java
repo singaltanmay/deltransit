@@ -70,6 +70,18 @@ public class AppService {
         return entities;
     }
 
+    public List<RouteEntity> getRoutesByStopIdAndStopTimeArrivalTime(long stopId, long arrivalTime) {
+        List<StopTimeEntity> stopTimes = stopTimeService
+                .getAllStopTimesByStopIdAndArrivalTimeAfter(stopId, arrivalTime);
+        HashSet<RouteEntity> routes = new HashSet<>();
+        for (StopTimeEntity stopTime : stopTimes) {
+            RouteEntity route = stopTime.getTrip().getRoute();
+            route.setTrips(null);
+            routes.add(route);
+        }
+        return new LinkedList<>(routes);
+    }
+
     public List<StopEntity> getStopsByTripId(String tripId) {
         TripEntity trip = tripService.getTripByTripId(tripId);
         List<StopTimeEntity> stopTimes = trip.getStopTimes();

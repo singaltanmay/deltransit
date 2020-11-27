@@ -32,4 +32,7 @@ public class StopTimeService {
         return stopTimeRepository.findAllByStop_StopId(stopId);
     }
 
+    public List<StopTimeEntity> getAllStopTimesByStopIdAndArrivalTimeAfter(long stopId, long earliestArrivalTime) {
+        return stopTimeRepository.findAllByStop_StopIdAndArrivalAfterOrderByArrival(stopId, earliestArrivalTime);
+    }
 }

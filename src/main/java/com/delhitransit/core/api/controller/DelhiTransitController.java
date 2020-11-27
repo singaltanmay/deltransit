@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
+import static com.delhitransit.core.model.entity.StopTimeEntity.getSecondsSince12AM;
+
 @RestController
 @RequestMapping("v1")
 public class DelhiTransitController {
@@ -166,6 +168,14 @@ public class DelhiTransitController {
     public List<RouteEntity> getRoutesBetweenStops(
             @RequestParam long source, @RequestParam long destination) {
         return appService.getRoutesBetweenTwoStops(source, destination);
+    }
+
+    @GetMapping("routes/stop/{stop}")
+    public List<RouteEntity> getRoutesByStopIdAndEarliestArrivalTime(
+            @PathVariable("stop") long stopId,
+            @RequestParam(required = false, name = "time") Optional<Long> time
+    ) {
+        return appService.getRoutesByStopIdAndStopTimeArrivalTime(stopId, time.orElse(getSecondsSince12AM()));
     }
 
     @GetMapping("trips")

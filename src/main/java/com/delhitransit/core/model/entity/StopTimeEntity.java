@@ -19,6 +19,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -61,14 +62,23 @@ public class StopTimeEntity {
         this.setStopSequence(stopTime.getStopSequence());
     }
 
+    public static long getTimeLongFromString(String timeString) {
+        String[] split = timeString.split(":");
+        return Long.parseLong(split[0]) * 3600 + Long.parseLong(split[1]) * 60 + Long.parseLong(split[2]);
+    }
+
+    public static long getSecondsSince12AM() {
+        LocalDateTime now = LocalDateTime.now();
+        String timeString = now.getHour() + ":" + now.getMinute() + ":" + now.getSecond();
+        return getTimeLongFromString(timeString);
+    }
+
     public void setArrival(String arrival) {
-        this.arrival = Long.parseLong(arrival.substring(0, 2)) * 3600 + Long.parseLong(
-                arrival.substring(3, 5)) * 60 + Long.parseLong(arrival.substring(6, 8));
+        this.arrival = getTimeLongFromString(arrival);
     }
 
     public void setDeparture(String departure) {
-        this.departure = Long.parseLong(departure.substring(0, 2)) * 3600 + Long.parseLong(
-                departure.substring(3, 5)) * 60 + Long.parseLong(departure.substring(6, 8));
+        this.departure = getTimeLongFromString(departure);
     }
 
     public String getArrivalString() {

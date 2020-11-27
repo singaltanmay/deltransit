@@ -8,11 +8,11 @@ import com.delhitransit.core.model.entity.TripEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,10 +70,15 @@ public class AppService {
         return entities;
     }
 
-    public List<StopEntity> getStopsByTripId(String tripId){
+    public List<StopEntity> getStopsByTripId(String tripId) {
         TripEntity trip = tripService.getTripByTripId(tripId);
-        List<StopEntity> stops = new LinkedList<>();
-        trip.getStopTimes().forEach(it -> stops.add(it.getStop()));
-        return stops;
+        List<StopTimeEntity> stopTimes = trip.getStopTimes();
+        StopEntity[] stops = new StopEntity[stopTimes.size()];
+        stopTimes.forEach(it -> {
+            StopEntity stop = it.getStop();
+            stop.setStopTimes(null);
+            stops[it.getStopSequence()] = stop;
+        });
+        return Arrays.asList(stops);
     }
 }

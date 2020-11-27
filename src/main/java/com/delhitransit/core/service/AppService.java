@@ -2,12 +2,14 @@ package com.delhitransit.core.service;
 
 import com.delhitransit.core.model.entity.RouteEntity;
 import com.delhitransit.core.model.entity.ShapePointEntity;
+import com.delhitransit.core.model.entity.StopEntity;
 import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -63,7 +65,9 @@ public class AppService {
 
     public List<ShapePointEntity> getShapePointsByTripId(String tripId) {
         TripEntity trip = tripService.getTripByTripId(tripId);
-        return trip != null ? trip.getShapePoints() : Collections.emptyList();
+        List<ShapePointEntity> entities = trip != null ? trip.getShapePoints() : Collections.emptyList();
+        entities.sort(Comparator.comparingInt(ShapePointEntity::getSequence));
+        return entities;
     }
 
     public List<RouteEntity> getRoutesByStopIdAndStopTimeArrivalTime(long stopId, long arrivalTime) {
@@ -78,4 +82,21 @@ public class AppService {
         return new LinkedList<>(routes);
     }
 
+    public List<StopEntity> getStopsByTripId(String tripId) {
+        TripEntity trip = tripService.getTripByTripId(tripId);
+        List<StopTimeEntity> stopTimes = trip.getStopTimes();
+        stopTimes.sort(Comparator.comparingLong(StopTimeEntity::getArrival));
+        List<StopEntity> stops = new LinkedList<>();
+        stopTimes.forEach(it -> {
+            StopEntity stop = it.getStop();
+            stop.setStopTimes(null);
+            stops.add(stop);
+        });
+        return stops;
+    }
+
+    public List<StopEntity> getStopsByRouteId(long routeId) {
+        TripEntity trip = tripService.getTripByRouteId(routeId);
+        return getStopsByTripId(trip.getTripId());
+    }
 }

@@ -17,6 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 public class AppServiceTest {
@@ -72,7 +73,9 @@ public class AppServiceTest {
         trips.add(tripEntity);
         tripEntity.setShapePoints(Collections.singletonList(shapePointEntity));
         when(mockTripService.getTripByTripId(tripEntity.getTripId()))
-               .thenReturn(tripEntity);
+                .thenReturn(tripEntity);
+        when(mockTripService.getTripByRouteId(routeEntity.getRouteId()))
+                .thenReturn(tripEntity);
 
         when(mockStopTimeService.getAllStopTimesByStopIdAndArrivalTimeAfter(sourceStop.getStopId(), sourceStopTime.getArrival()))
                 .thenReturn(Collections.singletonList(sourceStopTime));
@@ -100,6 +103,24 @@ public class AppServiceTest {
         assertNotNull(routes);
         assertFalse(routes.isEmpty());
         assertEquals(routeEntity,routes.get(0));
+    }
+
+    @Test
+    void getStopsByTripIdTest() {
+        List<StopEntity> stops = service.getStopsByTripId(tripEntity.getTripId());
+        assertStopEntityListContainsStops(stops);
+    }
+
+    @Test
+    void getStopsByRouteIdTest() {
+        List<StopEntity> stops = service.getStopsByRouteId(routeEntity.getRouteId());
+        assertStopEntityListContainsStops(stops);
+    }
+
+    private void assertStopEntityListContainsStops(List<StopEntity> stops) {
+        assertNotNull(stops);
+        assertTrue(stops.contains(sourceStop));
+        assertTrue(stops.contains(destinationStop));
     }
 
     void assertEntityListIdenticalToRouteEntity(List<RouteEntity> routes) {

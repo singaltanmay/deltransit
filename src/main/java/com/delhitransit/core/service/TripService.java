@@ -32,6 +32,10 @@ public class TripService {
         return tripRepository.findFirstByTripId(tripId);
     }
 
+    public TripEntity getTripByRouteId(long routeId){
+        return tripRepository.findFirstByRoute_RouteId(routeId);
+    }
+
     public Long getTripTravelTimeBetweenTwoStops(String tripId, long source, long destination) {
         TripEntity trip = getTripByTripId(tripId);
         AtomicLong sourceStopTime = new AtomicLong();

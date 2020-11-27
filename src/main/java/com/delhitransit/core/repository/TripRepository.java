@@ -17,4 +17,5 @@ public interface TripRepository extends JpaRepository<TripEntity, Long> {
 
     TripEntity findFirstByTripId(String tripId);
 
+    TripEntity findFirstByRoute_RouteId(long routeId);
 }

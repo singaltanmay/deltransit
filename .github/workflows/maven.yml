@@ -18,7 +18,9 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 14
-    - name: List what is in the target directory
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+    - name: List what's in the target directory
       run: ls -a
     - name: Upload artifact
       uses :  actions/upload-artifact@v2

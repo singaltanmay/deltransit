@@ -15,6 +15,7 @@ import com.delhitransit.core.model.parseable.Stop;
 import com.delhitransit.core.model.parseable.StopTime;
 import com.delhitransit.core.model.parseable.Trip;
 import com.delhitransit.core.repository.StopTimeRepository;
+import com.delhitransit.core.repository.TripRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -24,7 +25,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +43,8 @@ public class InitializerService {
 
     private final StopTimeRepository stopTimeRepository;
 
+    private final TripRepository tripRepository;
+
     private final HashMap<String, List<TripEntity>> tripsEntitiesHashMap = new HashMap<>();
 
     private final HashMap<Long, List<RouteEntity>> routesEntitiesHashMap = new HashMap<>();
@@ -52,15 +57,16 @@ public class InitializerService {
 
     @Autowired
     public InitializerService(RestTemplateBuilder restTemplateBuilder,
-                              StopTimeRepository stopTimeRepository) {
+                              StopTimeRepository stopTimeRepository, TripRepository tripRepository) {
         this.otdParserConnector = new OtdParserConnector(restTemplateBuilder.build());
         this.stopTimeRepository = stopTimeRepository;
+        this.tripRepository = tripRepository;
     }
 
     public void init(Optional<String> otdUrl) {
-        if (otdUrl != null && otdUrl.isPresent()){
+        if (otdUrl != null && otdUrl.isPresent()) {
             String s = otdUrl.get();
-            if (!s.isBlank()){
+            if (!s.isBlank()) {
                 otdParserConnector.setServerBaseUrl(s);
             }
         }
@@ -88,7 +94,14 @@ public class InitializerService {
         initStopsEntityList();
         initStopTimesEntityList();
 
-        stopTimeRepository.saveAll(allStopTimes);
+        HashSet<TripEntity> tripEntities = new HashSet<>();
+        Collection<List<TripEntity>> values = tripsEntitiesHashMap.values();
+        for (List<TripEntity> it : values) {
+            tripEntities.addAll(it);
+        }
+        tripRepository.saveAll(tripEntities);
+        //stopTimeRepository.saveAll(allStopTimes);
+
         System.out.println(this.getClass().getSimpleName() + ": Database has been initialized successfully.");
     }
 
@@ -107,6 +120,7 @@ public class InitializerService {
                 routesEntitiesHashMap.put(routeId, list);
             }
         }
+        System.out.println("All routes initialized");
     }
 
     private void initShapePointsEntityList() {
@@ -123,8 +137,8 @@ public class InitializerService {
                 list.add(entity);
                 shapePointsEntitiesHashMap.put(shapeId, list);
             }
-
         }
+        System.out.println("All shape points initialized");
     }
 
     private void initTripsEntityList() {
@@ -134,21 +148,25 @@ public class InitializerService {
             entity.setStopTimes(new LinkedList<>());
 
             List<ShapePointEntity> shapePointEntities = shapePointsEntitiesHashMap.get(trip.getShapeId());
-            shapePointEntities.forEach(it -> {
-                it.getTrips().add(entity);
-                List<ShapePointEntity> shapePoints = entity.getShapePoints();
-                if (shapePoints == null){
-                    shapePoints = new LinkedList<>();
-                    entity.setShapePoints(shapePoints);
+            if (shapePointEntities != null && !shapePointEntities.isEmpty()) {
+                for (ShapePointEntity shapePointEntity : shapePointEntities) {
+                    shapePointEntity.getTrips().add(entity);
+                    List<ShapePointEntity> shapePoints = entity.getShapePoints();
+                    if (shapePoints == null) {
+                        shapePoints = new LinkedList<>();
+                        entity.setShapePoints(shapePoints);
+                    }
+                    shapePoints.add(shapePointEntity);
                 }
-                shapePoints.add(it);
-            });
+            }
 
             List<RouteEntity> routeEntities = routesEntitiesHashMap.get((long) trip.getRouteId());
-            routeEntities.forEach(it -> {
-                it.getTrips().add(entity);
-                entity.setRoute(it);
-            });
+            if (routeEntities != null && !routeEntities.isEmpty()) {
+                routeEntities.forEach(it -> {
+                    it.getTrips().add(entity);
+                    entity.setRoute(it);
+                });
+            }
 
             String tripId = entity.getTripId();
             if (tripsEntitiesHashMap.containsKey(tripId)) {
@@ -158,8 +176,8 @@ public class InitializerService {
                 list.add(entity);
                 tripsEntitiesHashMap.put(tripId, list);
             }
-
         }
+        System.out.println("All trips initialized");
     }
 
     private void initStopsEntityList() {
@@ -176,39 +194,42 @@ public class InitializerService {
                 list.add(entity);
                 stopsEntitiesHashMap.put(stopId, list);
             }
-
         }
+        System.out.println("All stops initialized");
     }
 
     private List<StopTimeEntity> initStopTimesEntityList() {
         List<StopTimeEntity> stopTimeEntities = new ArrayList<>();
         List<StopTime> stopTimes = otdParserConnector.getAllStopTimes();
 
-        stopTimes.forEach(stopTime -> {
-            StopTimeEntity entity = new StopTimeEntity(stopTime);
+        if (stopTimes != null && !stopTimes.isEmpty()) {
+            stopTimes.forEach(stopTime -> {
+                StopTimeEntity entity = new StopTimeEntity(stopTime);
 
-            List<StopEntity> stopEntityList = stopsEntitiesHashMap.get(stopTime.getStopId());
-            if (stopEntityList != null) {
-                stopEntityList.forEach(
-                        filteredStopEntity -> {
-                            filteredStopEntity.getStopTimes().add(entity);
-                            entity.setStop(filteredStopEntity);
-                        });
-            }
+                List<StopEntity> stopEntityList = stopsEntitiesHashMap.get(stopTime.getStopId());
+                if (stopEntityList != null) {
+                    stopEntityList.forEach(
+                            filteredStopEntity -> {
+                                filteredStopEntity.getStopTimes().add(entity);
+                                entity.setStop(filteredStopEntity);
+                            });
+                }
 
-            List<TripEntity> tripEntityList = tripsEntitiesHashMap.get(stopTime.getTripId());
-            if (tripEntityList != null) {
-                tripEntityList.forEach(
-                        filteredTripEntity -> {
-                            filteredTripEntity.getStopTimes().add(entity);
-                            entity.setTrip(filteredTripEntity);
-                        });
-            }
+                List<TripEntity> tripEntityList = tripsEntitiesHashMap.get(stopTime.getTripId());
+                if (tripEntityList != null) {
+                    tripEntityList.forEach(
+                            filteredTripEntity -> {
+                                filteredTripEntity.getStopTimes().add(entity);
+                                entity.setTrip(filteredTripEntity);
+                            });
+                }
 
-            stopTimeEntities.add(entity);
-        });
+                stopTimeEntities.add(entity);
+            });
+            allStopTimes = stopTimeEntities;
+        }
 
-        allStopTimes = stopTimeEntities;
+        System.out.println("All stop times initialized");
         return stopTimeEntities;
     }
 

@@ -94,6 +94,7 @@ public class InitializerService {
         initTripsEntityList();
         initStopsEntityList();
         initStopTimesEntityList();
+
         HashSet<TripEntity> tripEntities = new HashSet<>();
         Collection<List<TripEntity>> values = tripsEntitiesHashMap.values();
         for (List<TripEntity> it : values) {
@@ -101,6 +102,7 @@ public class InitializerService {
         }
         tripRepository.saveAll(tripEntities);
         //stopTimeRepository.saveAll(allStopTimes);
+
         System.out.println(this.getClass().getSimpleName() + ": Database has been initialized successfully.");
     }
 
@@ -147,22 +149,25 @@ public class InitializerService {
             entity.setStopTimes(new LinkedList<>());
 
             List<ShapePointEntity> shapePointEntities = shapePointsEntitiesHashMap.get(trip.getShapeId());
-            if(shapePointEntities==null || shapePointEntities.isEmpty()) continue;
-            for (ShapePointEntity shapePointEntity : shapePointEntities) {
-                shapePointEntity.getTrips().add(entity);
-                List<ShapePointEntity> shapePoints = entity.getShapePoints();
-                if (shapePoints == null) {
-                    shapePoints = new LinkedList<>();
-                    entity.setShapePoints(shapePoints);
+            if(shapePointEntities!=null && !shapePointEntities.isEmpty()) {
+                for (ShapePointEntity shapePointEntity : shapePointEntities) {
+                    shapePointEntity.getTrips().add(entity);
+                    List<ShapePointEntity> shapePoints = entity.getShapePoints();
+                    if (shapePoints == null) {
+                        shapePoints = new LinkedList<>();
+                        entity.setShapePoints(shapePoints);
+                    }
+                    shapePoints.add(shapePointEntity);
                 }
-                shapePoints.add(shapePointEntity);
             }
 
             List<RouteEntity> routeEntities = routesEntitiesHashMap.get((long) trip.getRouteId());
-            routeEntities.forEach(it -> {
-                it.getTrips().add(entity);
-                entity.setRoute(it);
-            });
+            if (routeEntities != null && !routeEntities.isEmpty()) {
+                routeEntities.forEach(it -> {
+                    it.getTrips().add(entity);
+                    entity.setRoute(it);
+                });
+            }
 
             String tripId = entity.getTripId();
             if (tripsEntitiesHashMap.containsKey(tripId)) {

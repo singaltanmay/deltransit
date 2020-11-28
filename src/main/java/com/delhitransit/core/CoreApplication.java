@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.Optional;
-
 @SpringBootApplication
 public class CoreApplication {
 
@@ -23,7 +21,7 @@ public class CoreApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CoreApplication.class, args);
-        service.init(Optional.of("http://localhost:8088/v1/"));
+        //service.init(Optional.empty());
     }
 
 }

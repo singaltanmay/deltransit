@@ -45,7 +45,7 @@ public class StopTimeEntity {
 
     @Getter
     @Setter
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @LazyCollection(LazyCollectionOption.TRUE)
     private TripEntity trip;
 

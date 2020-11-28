@@ -15,6 +15,7 @@ import com.delhitransit.core.model.parseable.Stop;
 import com.delhitransit.core.model.parseable.StopTime;
 import com.delhitransit.core.model.parseable.Trip;
 import com.delhitransit.core.repository.StopTimeRepository;
+import com.delhitransit.core.repository.TripRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -24,12 +25,15 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static java.lang.Thread.sleep;
 
@@ -39,6 +43,8 @@ public class InitializerService {
     private final OtdParserConnector otdParserConnector;
 
     private final StopTimeRepository stopTimeRepository;
+
+    private final TripRepository tripRepository;
 
     private final HashMap<String, List<TripEntity>> tripsEntitiesHashMap = new HashMap<>();
 
@@ -52,9 +58,10 @@ public class InitializerService {
 
     @Autowired
     public InitializerService(RestTemplateBuilder restTemplateBuilder,
-                              StopTimeRepository stopTimeRepository) {
+                              StopTimeRepository stopTimeRepository, TripRepository tripRepository) {
         this.otdParserConnector = new OtdParserConnector(restTemplateBuilder.build());
         this.stopTimeRepository = stopTimeRepository;
+        this.tripRepository = tripRepository;
     }
 
     public void init(Optional<String> otdUrl) {
@@ -87,8 +94,13 @@ public class InitializerService {
         initTripsEntityList();
         initStopsEntityList();
         initStopTimesEntityList();
-
-        stopTimeRepository.saveAll(allStopTimes);
+        HashSet<TripEntity> tripEntities = new HashSet<>();
+        Collection<List<TripEntity>> values = tripsEntitiesHashMap.values();
+        for (List<TripEntity> it : values) {
+            tripEntities.addAll(it);
+        }
+        tripRepository.saveAll(tripEntities);
+        //stopTimeRepository.saveAll(allStopTimes);
         System.out.println(this.getClass().getSimpleName() + ": Database has been initialized successfully.");
     }
 
@@ -107,6 +119,7 @@ public class InitializerService {
                 routesEntitiesHashMap.put(routeId, list);
             }
         }
+        System.out.println("All routes initialized");
     }
 
     private void initShapePointsEntityList() {
@@ -123,8 +136,8 @@ public class InitializerService {
                 list.add(entity);
                 shapePointsEntitiesHashMap.put(shapeId, list);
             }
-
         }
+        System.out.println("All shape points initialized");
     }
 
     private void initTripsEntityList() {
@@ -134,15 +147,16 @@ public class InitializerService {
             entity.setStopTimes(new LinkedList<>());
 
             List<ShapePointEntity> shapePointEntities = shapePointsEntitiesHashMap.get(trip.getShapeId());
-            shapePointEntities.forEach(it -> {
-                it.getTrips().add(entity);
+            if(shapePointEntities==null || shapePointEntities.isEmpty()) continue;
+            for (ShapePointEntity shapePointEntity : shapePointEntities) {
+                shapePointEntity.getTrips().add(entity);
                 List<ShapePointEntity> shapePoints = entity.getShapePoints();
-                if (shapePoints == null){
+                if (shapePoints == null) {
                     shapePoints = new LinkedList<>();
                     entity.setShapePoints(shapePoints);
                 }
-                shapePoints.add(it);
-            });
+                shapePoints.add(shapePointEntity);
+            }
 
             List<RouteEntity> routeEntities = routesEntitiesHashMap.get((long) trip.getRouteId());
             routeEntities.forEach(it -> {
@@ -158,8 +172,8 @@ public class InitializerService {
                 list.add(entity);
                 tripsEntitiesHashMap.put(tripId, list);
             }
-
         }
+        System.out.println("All trips initialized");
     }
 
     private void initStopsEntityList() {
@@ -176,8 +190,8 @@ public class InitializerService {
                 list.add(entity);
                 stopsEntitiesHashMap.put(stopId, list);
             }
-
         }
+        System.out.println("All stops initialized");
     }
 
     private List<StopTimeEntity> initStopTimesEntityList() {
@@ -207,8 +221,8 @@ public class InitializerService {
 
             stopTimeEntities.add(entity);
         });
-
         allStopTimes = stopTimeEntities;
+        System.out.println("All stop times initialized");
         return stopTimeEntities;
     }
 

@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import static java.lang.Thread.sleep;
 
@@ -65,9 +64,9 @@ public class InitializerService {
     }
 
     public void init(Optional<String> otdUrl) {
-        if (otdUrl != null && otdUrl.isPresent()){
+        if (otdUrl != null && otdUrl.isPresent()) {
             String s = otdUrl.get();
-            if (!s.isBlank()){
+            if (!s.isBlank()) {
                 otdParserConnector.setServerBaseUrl(s);
             }
         }
@@ -149,7 +148,7 @@ public class InitializerService {
             entity.setStopTimes(new LinkedList<>());
 
             List<ShapePointEntity> shapePointEntities = shapePointsEntitiesHashMap.get(trip.getShapeId());
-            if(shapePointEntities!=null && !shapePointEntities.isEmpty()) {
+            if (shapePointEntities != null && !shapePointEntities.isEmpty()) {
                 for (ShapePointEntity shapePointEntity : shapePointEntities) {
                     shapePointEntity.getTrips().add(entity);
                     List<ShapePointEntity> shapePoints = entity.getShapePoints();
@@ -203,30 +202,33 @@ public class InitializerService {
         List<StopTimeEntity> stopTimeEntities = new ArrayList<>();
         List<StopTime> stopTimes = otdParserConnector.getAllStopTimes();
 
-        stopTimes.forEach(stopTime -> {
-            StopTimeEntity entity = new StopTimeEntity(stopTime);
+        if (stopTimes != null && !stopTimes.isEmpty()) {
+            stopTimes.forEach(stopTime -> {
+                StopTimeEntity entity = new StopTimeEntity(stopTime);
 
-            List<StopEntity> stopEntityList = stopsEntitiesHashMap.get(stopTime.getStopId());
-            if (stopEntityList != null) {
-                stopEntityList.forEach(
-                        filteredStopEntity -> {
-                            filteredStopEntity.getStopTimes().add(entity);
-                            entity.setStop(filteredStopEntity);
-                        });
-            }
+                List<StopEntity> stopEntityList = stopsEntitiesHashMap.get(stopTime.getStopId());
+                if (stopEntityList != null) {
+                    stopEntityList.forEach(
+                            filteredStopEntity -> {
+                                filteredStopEntity.getStopTimes().add(entity);
+                                entity.setStop(filteredStopEntity);
+                            });
+                }
 
-            List<TripEntity> tripEntityList = tripsEntitiesHashMap.get(stopTime.getTripId());
-            if (tripEntityList != null) {
-                tripEntityList.forEach(
-                        filteredTripEntity -> {
-                            filteredTripEntity.getStopTimes().add(entity);
-                            entity.setTrip(filteredTripEntity);
-                        });
-            }
+                List<TripEntity> tripEntityList = tripsEntitiesHashMap.get(stopTime.getTripId());
+                if (tripEntityList != null) {
+                    tripEntityList.forEach(
+                            filteredTripEntity -> {
+                                filteredTripEntity.getStopTimes().add(entity);
+                                entity.setTrip(filteredTripEntity);
+                            });
+                }
 
-            stopTimeEntities.add(entity);
-        });
-        allStopTimes = stopTimeEntities;
+                stopTimeEntities.add(entity);
+            });
+            allStopTimes = stopTimeEntities;
+        }
+
         System.out.println("All stop times initialized");
         return stopTimeEntities;
     }

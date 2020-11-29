@@ -18,7 +18,7 @@
         <repository>
             <id>github</id>
             <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/singaltanmay/deltransit</url>
+            <url>https://maven.pkg.github.com/delhitransit/delhitransit</url>
         </repository>
     </distributionManagement>
 

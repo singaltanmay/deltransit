@@ -5,6 +5,7 @@
 package com.delhitransit.core.model.entity;
 
 import com.delhitransit.core.model.parseable.Route;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,6 +42,7 @@ public class RouteEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
+    @JsonIgnore
     private long key;
 
     @Getter

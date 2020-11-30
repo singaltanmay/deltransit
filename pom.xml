@@ -15,7 +15,7 @@
     <description>Core services and APIs</description>
 
     <properties>
-        <repository>singaltanmay/deltransit</repository>
+        <repository>delhitransit/delhitransit</repository>
         <java.version>14</java.version>
     </properties>
 

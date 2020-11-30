@@ -5,6 +5,7 @@ import com.delhitransit.core.model.entity.ShapePointEntity;
 import com.delhitransit.core.model.entity.StopEntity;
 import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
+import com.delhitransit.core.model.response.ResponseRoutesBetween;
 import com.delhitransit.core.service.AppService;
 import com.delhitransit.core.service.RouteService;
 import com.delhitransit.core.service.ShapePointService;
@@ -273,6 +274,13 @@ public class DelhiTransitController {
                 HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         return createAppropriateResponseEntity(
                 stopTimeService.getAllStopTimes(createPageRequest(pageNumber, pageSize)));
+    }
+
+    @GetMapping("client/routes/between")
+    public List<ResponseRoutesBetween> getRoutesBetweenStopsFilteredByTime(
+            @RequestParam long source, @RequestParam long destination,
+            @RequestParam(required = false, name = "time") Optional<Long> time) {
+        return appService.getRoutesBetweenTwoStopsCustomResponse(source, destination, time.orElse(getSecondsSince12AM()));
     }
 
 }

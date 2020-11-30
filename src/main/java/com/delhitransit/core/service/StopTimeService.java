@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -34,5 +35,10 @@ public class StopTimeService {
 
     public List<StopTimeEntity> getAllStopTimesByStopIdAndArrivalTimeAfter(long stopId, long earliestArrivalTime) {
         return stopTimeRepository.findAllByStop_StopIdAndArrivalAfterOrderByArrival(stopId, earliestArrivalTime);
+    }
+
+    public static List<StopTimeEntity> sortStopTimesByStopArrivalTime(List<StopTimeEntity> stopTimes) {
+        stopTimes.sort(Comparator.comparingLong(StopTimeEntity::getArrival));
+        return stopTimes;
     }
 }

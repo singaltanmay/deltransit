@@ -5,6 +5,8 @@ import com.delhitransit.core.model.entity.ShapePointEntity;
 import com.delhitransit.core.model.entity.StopEntity;
 import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
+import com.delhitransit.core.model.response.ResponseRoutesBetween;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,10 +67,66 @@ public class AppService {
         return routes.parallelStream().collect(Collectors.toList());
     }
 
+    public List<ResponseRoutesBetween> getRoutesBetweenTwoStopsCustomResponse(
+            long sourceStopId, long destinationStopId, long time) {
+        List<StopTimeEntity> sourceStopTimes = stopTimeService.getAllStopTimesByStopId(sourceStopId);
+        List<StopTimeEntity> destinationStopTimes = stopTimeService.getAllStopTimesByStopId(destinationStopId);
+
+        HashMap<String, Long> sourceTrips = new HashMap<>();
+        for (StopTimeEntity stopTime : sourceStopTimes) {
+            sourceTrips.putIfAbsent(stopTime.getTrip().getTripId(), stopTime.getArrival());
+        }
+
+        HashSet<TripEntityEarliestTimeItem> candidateTrips = new HashSet<>();
+        StopTimeService.sortStopTimesByStopArrivalTime(destinationStopTimes);
+        for (StopTimeEntity stopTime : destinationStopTimes) {
+            TripEntity trip = stopTime.getTrip();
+            if (stopTime.getArrival() >= time && sourceTrips.containsKey(trip.getTripId()) &&
+                    sourceTrips.get(trip.getTripId()) <= stopTime.getArrival()) {
+                candidateTrips.add(
+                        new TripEntityEarliestTimeItem(trip, stopTime.getArrival(), stopTime.getArrivalString()));
+            }
+        }
+
+        HashSet<RouteEntity> routes = new HashSet<>();
+        candidateTrips.forEach(it -> routes.add(it.getTrip().getRoute()));
+
+        var result = new LinkedList<ResponseRoutesBetween>();
+
+        for (RouteEntity route : routes) {
+            var response = new ResponseRoutesBetween()
+                    .setLongName(route.getLongName())
+                    .setRouteId(route.getRouteId());
+
+            List<TripEntityEarliestTimeItem> routeTrips = new LinkedList<>();
+            candidateTrips.forEach(it -> {
+                if (it.getTrip().getRoute().getRouteId() == route.getRouteId()) {
+                    routeTrips.add(it);
+                }
+            });
+
+            var travelTime = tripService.getTripTravelTimeBetweenTwoStops(
+                    routeTrips.get(0).getTrip().getTripId(), sourceStopId, destinationStopId);
+            response.setTravelTime(travelTime);
+
+            final var busTimings = new LinkedList<String>();
+            for (int i = 0; i < Math.min(routeTrips.size(), 3); i++) {
+                final var item = routeTrips.get(i);
+                if (i == 0) response.setTripId(item.getTrip().getTripId());
+                busTimings.add(item.getEarliestTimeString());
+            }
+            response.setBusTimings(busTimings);
+
+            result.add(response);
+        }
+
+        return result;
+    }
+
     public List<ShapePointEntity> getShapePointsByTripId(String tripId) {
         TripEntity trip = tripService.getTripByTripId(tripId);
         List<ShapePointEntity> entities = trip != null ? trip.getShapePoints() : Collections.emptyList();
-        entities.sort(Comparator.comparingInt(ShapePointEntity::getSequence));
+        ShapePointService.sortShapePointsBySequence(entities);
         return entities;
     }
 
@@ -85,7 +145,7 @@ public class AppService {
     public List<StopEntity> getStopsByTripId(String tripId) {
         TripEntity trip = tripService.getTripByTripId(tripId);
         List<StopTimeEntity> stopTimes = trip.getStopTimes();
-        stopTimes.sort(Comparator.comparingLong(StopTimeEntity::getArrival));
+        StopTimeService.sortStopTimesByStopArrivalTime(stopTimes);
         List<StopEntity> stops = new LinkedList<>();
         stopTimes.forEach(it -> {
             StopEntity stop = it.getStop();
@@ -99,4 +159,45 @@ public class AppService {
         TripEntity trip = tripService.getTripByRouteId(routeId);
         return getStopsByTripId(trip.getTripId());
     }
+
+    private Queue<TripEntityEarliestTimeItem> sortEarliestTripsFromAStopOnRouteHeap(
+            List<TripEntity> trips, long stopId, long time) {
+        if (trips == null || trips.isEmpty()) return null;
+
+        final var heap = new PriorityQueue<>(Comparator.comparingLong(
+                TripEntityEarliestTimeItem::getEarliestTime));
+
+        trips.parallelStream().forEach(trip -> {
+            var stopTimes = trip.getStopTimes();
+            var stopTime = stopTimes.parallelStream()
+                                    .filter(it -> it.getStop().getStopId() == stopId).findAny();
+            if (stopTime.isPresent()) {
+                final var entity = stopTime.get();
+                var arrival = entity.getArrival();
+                if (arrival >= time) {
+                    heap.add(new TripEntityEarliestTimeItem(trip, arrival, entity.getArrivalString()));
+                }
+            }
+        });
+        return heap;
+    }
+
+    private static class TripEntityEarliestTimeItem {
+
+        @Getter
+        private final TripEntity trip;
+
+        @Getter
+        private final long earliestTime;
+
+        @Getter
+        private final String earliestTimeString;
+
+        public TripEntityEarliestTimeItem(TripEntity trip, long earliestTime, String earliestTimeString) {
+            this.trip = trip;
+            this.earliestTime = earliestTime;
+            this.earliestTimeString = earliestTimeString;
+        }
+    }
+
 }

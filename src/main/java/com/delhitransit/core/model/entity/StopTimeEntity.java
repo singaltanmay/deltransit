@@ -29,6 +29,7 @@ public class StopTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
+    @JsonIgnore
     private long key;
 
     @Getter

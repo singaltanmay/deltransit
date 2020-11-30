@@ -280,8 +280,7 @@ public class DelhiTransitController {
     public List<ResponseRoutesBetween> getRoutesBetweenStopsFilteredByTime(
             @RequestParam long source, @RequestParam long destination,
             @RequestParam(required = false, name = "time") Optional<Long> time) {
-        return appService.getClientQueries()
-                         .getRoutesBetweenTwoStops(source, destination, time.orElse(getSecondsSince12AM()));
+        return appService.getRoutesBetweenTwoStops(source, destination, time.orElse(getSecondsSince12AM()));
     }
 
 }

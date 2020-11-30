@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-//    Custom response class for endpoint /v1/routes/between?destination=dStopId&source=sStopId
+//  Custom response class for endpoint /v1/routes/between?destination=dStopId&source=sStopId
 public class ResponseRoutesBetween {
 
     @Getter

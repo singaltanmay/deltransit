@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.delhitransit</groupId>
     <artifactId>core</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <name>core</name>
     <description>Core services and APIs</description>
 

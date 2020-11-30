@@ -14,28 +14,25 @@
     <name>core</name>
     <description>Core services and APIs</description>
 
+    <properties>
+        <repository>singaltanmay/deltransit</repository>
+        <java.version>14</java.version>
+    </properties>
+
     <distributionManagement>
-        <site>
-            <id>repo</id>
-            <name>Delhi Transit</name>
-            <url>singaltanmay/deltransit</url>
-        </site>
         <repository>
             <id>github</id>
             <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/${pom.distributionManagement.site.url}</url>
+            <url>https://maven.pkg.github.com/${repository}</url>
         </repository>
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:git@github.com:${pom.distributionManagement.site.url}.git</connection>
-        <url>scm:git:git@github.com:${pom.distributionManagement.site.url}.git</url>
-        <developerConnection>scm:git:git@github.com:${pom.distributionManagement.site.url}.git</developerConnection>
+        <connection>scm:git:git@github.com:${repository}.git</connection>
+        <developerConnection>scm:git:git@github.com:${repository}.git</developerConnection>
+        <url>https://github.com/${repository}</url>
+        <tag>v${project.version}</tag>
     </scm>
-
-    <properties>
-        <java.version>14</java.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -143,25 +140,6 @@
                     <revisionOnScmFailure>unknownbuild</revisionOnScmFailure>
                 </configuration>
             </plugin>
-
-            <!--            <plugin>
-                            &lt;!&ndash; https://mvnrepository.com/artifact/org.codehaus.mojo/buildnumber-maven-plugin &ndash;&gt;
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>buildnumber-maven-plugin</artifactId>
-                            <version>1.4</version>
-                            <executions>
-                                <execution>
-                                    <phase>validate</phase>
-                                    <goals>
-                                        <goal>create</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                            <configuration>
-                                <doCheck>true</doCheck>
-                                <doUpdate>true</doUpdate>
-                            </configuration>
-                        </plugin>-->
 
         </plugins>
         <finalName>${project.artifactId}-${project.version}.${buildNumber}</finalName>

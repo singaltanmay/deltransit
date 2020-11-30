@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 @Service
@@ -107,24 +108,12 @@ public class AppService {
         return getStopsByTripId(trip.getTripId());
     }
 
-    public List<TripEntity> sortEarliestTripsFromAStopOnRoute(List<TripEntity> trips, long stopId, long time) {
+    public Queue<TripEntityEarliestTimeItem> sortEarliestTripsFromAStopOnRouteHeap(
+            List<TripEntity> trips, long stopId, long time) {
         if (trips == null || trips.isEmpty()) return null;
 
-        class HeapItem {
-
-            final TripEntity trip;
-
-            @Getter
-            final
-            long earliestTime;
-
-            public HeapItem(TripEntity trip, long earliestTime) {
-                this.trip = trip;
-                this.earliestTime = earliestTime;
-            }
-        }
-
-        final var heap = new PriorityQueue<HeapItem>(Comparator.comparingLong(HeapItem::getEarliestTime));
+        final var heap = new PriorityQueue<TripEntityEarliestTimeItem>(Comparator.comparingLong(
+                TripEntityEarliestTimeItem::getEarliestTime));
 
         for (TripEntity trip : trips) {
             List<StopTimeEntity> stopTimes = trip.getStopTimes();
@@ -133,10 +122,17 @@ public class AppService {
             if (stopTime.isPresent()) {
                 long arrival = stopTime.get().getArrival();
                 if (arrival >= time) {
-                    heap.add(new HeapItem(trip, arrival));
+                    heap.add(new TripEntityEarliestTimeItem(trip, arrival));
                 }
             }
         }
+        return heap;
+    }
+
+    public List<TripEntity> sortEarliestTripsFromAStopOnRoute(List<TripEntity> trips, long stopId, long time) {
+        if (trips == null || trips.isEmpty()) return null;
+
+        final var heap = sortEarliestTripsFromAStopOnRouteHeap(trips, stopId, time);
 
         var result = new LinkedList<TripEntity>();
         while (!heap.isEmpty()) {
@@ -144,41 +140,21 @@ public class AppService {
         }
 
         return result;
-
-//
-//        if (trips == null || trips.isEmpty()) return Collections.emptyList();
-//        trips.sort(
-//                trip -> {
-//                    List<StopTimeEntity> stopTimes = trip.getStopTimes();
-//                    StopTimeService.sortStopTimesByStopArrivalTime(stopTimes);
-//                    stopTimes.forEach(it -> {
-//                        long arrival = it.getArrival();
-//                        if (arrival > time && it.getStop().getStopId() == stopId) {
-//
-//                        }
-//                    });
-//                }
-//        );
     }
 
-//    public String getTripIdOfEarliestTripFromStop(List<TripEntity> trips, long stopId, long time) {
-//        if (trips == null || trips.isEmpty()) return null;
-//        AtomicReference<TripEntity> earliest = new AtomicReference<>();
-//        AtomicLong earliestTime = new AtomicLong();
-//        for (TripEntity trip : trips) {
-//            List<StopTimeEntity> stopTimes = trip.getStopTimes();
-//            var stopTime = stopTimes.stream().filter(it -> it.getStop().getStopId() == stopId)
-//                                    .findAny();
-//            if (stopTime.isPresent()) {
-//                long arrival = stopTime.get().getArrival();
-//                if (arrival >= time && arrival < earliestTime.get()) {
-//                    earliestTime.set(arrival);
-//                    earliest.set(trip);
-//                }
-//            }
-//        }
-//        return earliest.get().getTripId();
-//    }
+    static class TripEntityEarliestTimeItem {
+
+        final TripEntity trip;
+
+        @Getter
+        final
+        long earliestTime;
+
+        public TripEntityEarliestTimeItem(TripEntity trip, long earliestTime) {
+            this.trip = trip;
+            this.earliestTime = earliestTime;
+        }
+    }
 
     public class ClientQueries {
 

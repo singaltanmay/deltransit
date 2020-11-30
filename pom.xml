@@ -14,17 +14,25 @@
     <name>core</name>
     <description>Core services and APIs</description>
 
+    <properties>
+        <repository>delhitransit/delhitransit</repository>
+        <java.version>14</java.version>
+    </properties>
+
     <distributionManagement>
         <repository>
             <id>github</id>
             <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/delhitransit/delhitransit</url>
+            <url>https://maven.pkg.github.com/${repository}</url>
         </repository>
     </distributionManagement>
 
-    <properties>
-        <java.version>14</java.version>
-    </properties>
+    <scm>
+        <connection>scm:git:git@github.com:${repository}.git</connection>
+        <developerConnection>scm:git:git@github.com:${repository}.git</developerConnection>
+        <url>https://github.com/${repository}</url>
+        <tag>v${project.version}</tag>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -78,6 +86,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/buildnumber-maven-plugin -->
+        <dependency>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>buildnumber-maven-plugin</artifactId>
+            <version>1.4</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -97,12 +112,41 @@
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>com.delhitransit.core.CoreApplication</mainClass>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
+                        <manifestEntries>
+                            <Implementation-Build>$\{buildNumber}</Implementation-Build>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>buildnumber</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <format>{0,number}</format>
+                    <items>
+                        <item>buildNumber</item>
+                    </items>
+                    <doCheck>true</doCheck>
+                    <doUpdate>true</doUpdate>
+                    <revisionOnScmFailure>unknownbuild</revisionOnScmFailure>
+                </configuration>
+            </plugin>
+
         </plugins>
+        <finalName>${project.artifactId}-${project.version}.${buildNumber}</finalName>
     </build>
 
     <repositories>

@@ -67,7 +67,7 @@ public class AppService {
         return routes.parallelStream().collect(Collectors.toList());
     }
 
-    public List<ResponseRoutesBetween> getRoutesBetweenTwoStops(
+    public List<ResponseRoutesBetween> getRoutesBetweenTwoStopsCustomResponse(
             long sourceStopId, long destinationStopId, long time) {
         List<StopTimeEntity> sourceStopTimes = stopTimeService.getAllStopTimesByStopId(sourceStopId);
         List<StopTimeEntity> destinationStopTimes = stopTimeService.getAllStopTimesByStopId(destinationStopId);
@@ -182,7 +182,7 @@ public class AppService {
         return heap;
     }
 
-    private class TripEntityEarliestTimeItem {
+    private static class TripEntityEarliestTimeItem {
 
         @Getter
         private final TripEntity trip;

@@ -10,6 +10,7 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -99,7 +100,8 @@ public class AppService {
                     .setRouteId(route.getRouteId());
 
             List<TripEntityEarliestTimeItem> routeTrips = new LinkedList<>();
-            candidateTrips.forEach(it -> {
+            var candidateTripsArrayList = new ArrayList<>(candidateTrips);
+            candidateTripsArrayList.forEach(it -> {
                 if (it.getTrip().getRoute().getRouteId() == route.getRouteId()) {
                     routeTrips.add(it);
                 }
@@ -109,13 +111,18 @@ public class AppService {
                     routeTrips.get(0).getTrip().getTripId(), sourceStopId, destinationStopId);
             response.setTravelTime(travelTime);
 
-            final var busTimings = new LinkedList<String>();
-            for (int i = 0; i < Math.min(routeTrips.size(), 3); i++) {
+            Collections.sort(routeTrips);
+            final var busTimings = new LinkedList<TripEntityEarliestTimeItem>();
+            for (int i = 0; i < routeTrips.size(); i++) {
                 final var item = routeTrips.get(i);
                 if (i == 0) response.setTripId(item.getTrip().getTripId());
-                busTimings.add(item.getEarliestTimeString());
+                busTimings.add(item);
             }
-            response.setBusTimings(busTimings);
+            List<String> busTimingsStrings = new LinkedList<>();
+            for (int i = 0; i < Math.min(busTimings.size(), 3); i++) {
+                busTimingsStrings.add(busTimings.get(i).getEarliestTimeString());
+            }
+            response.setBusTimings(busTimingsStrings);
 
             result.add(response);
         }
@@ -182,7 +189,7 @@ public class AppService {
         return heap;
     }
 
-    private static class TripEntityEarliestTimeItem {
+    private static class TripEntityEarliestTimeItem implements Comparable<TripEntityEarliestTimeItem> {
 
         @Getter
         private final TripEntity trip;
@@ -197,6 +204,11 @@ public class AppService {
             this.trip = trip;
             this.earliestTime = earliestTime;
             this.earliestTimeString = earliestTimeString;
+        }
+
+        @Override
+        public int compareTo(TripEntityEarliestTimeItem o) {
+            return this.getEarliestTime() < o.getEarliestTime() ? -1 : 1;
         }
     }
 

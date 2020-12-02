@@ -6,6 +6,7 @@ import com.delhitransit.core.model.entity.StopEntity;
 import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
 import com.delhitransit.core.model.response.ResponseRoutesBetween;
+import com.delhitransit.core.model.response.ResponseStopDetails;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -147,6 +148,27 @@ public class AppService {
             routes.add(route);
         }
         return new LinkedList<>(routes);
+    }
+
+    public List<ResponseStopDetails> getRoutesByStopIdAndStopTimeArrivalTimeCustomResponse(long stopId, long arrivalTime){
+        List<StopTimeEntity> stopTimes = stopTimeService
+                .getAllStopTimesByStopIdAndArrivalTimeAfter(stopId, arrivalTime);
+        List<ResponseStopDetails> list = new LinkedList<>();
+        for (StopTimeEntity stopTime : stopTimes) {
+            TripEntity trip = stopTime.getTrip();
+            RouteEntity route = trip.getRoute();
+            String tripId = trip.getTripId();
+            ResponseStopDetails response = new ResponseStopDetails();
+            response.setRouteId(route.getRouteId())
+                    .setTripId(tripId)
+                    .setEarliestTime(stopTime.getArrival());
+            List<StopEntity> stops = getStopsByTripId(tripId);
+            int lastStopIndex = stops.size() - 1;
+            if(lastStopIndex >= 0)
+                response.setLastStopName(stops.get(lastStopIndex).getName());
+        }
+
+        return list;
     }
 
     public List<StopEntity> getStopsByTripId(String tripId) {

@@ -237,6 +237,12 @@ public class DelhiTransitController {
         }
     }
 
+    @GetMapping("stops/{stop}")
+    public Optional<StopEntity> getStopByStopId(
+            @PathVariable(name = "stop") long stopId) {
+        return stopService.getStopByStopId(stopId);
+    }
+
     @GetMapping("stops/nearby")
     public ResponseEntity<List<StopEntity>> getStopsNearLocation(
             @RequestParam(name = "lat") Optional<Double> latitude,
@@ -280,7 +286,8 @@ public class DelhiTransitController {
     public List<ResponseRoutesBetween> getRoutesBetweenStopsFilteredByTime(
             @RequestParam long source, @RequestParam long destination,
             @RequestParam(required = false, name = "time") Optional<Long> time) {
-        return appService.getRoutesBetweenTwoStopsCustomResponse(source, destination, time.orElse(getSecondsSince12AM()));
+        return appService.getRoutesBetweenTwoStopsCustomResponse(source, destination,
+                                                                 time.orElse(getSecondsSince12AM()));
     }
 
 }

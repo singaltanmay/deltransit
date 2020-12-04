@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface StopRepository extends JpaRepository<StopEntity, Long> {
 
@@ -19,5 +21,9 @@ public interface StopRepository extends JpaRepository<StopEntity, Long> {
 
     Page<StopEntity> findAllByNameContainsIgnoreCase(String preStopName, Pageable request);
 
-    Page<StopEntity> findAllByLatitudeBetweenAndLongitudeBetween(double lat1, double lat2, double lon1, double lon2, Pageable request);
+    Optional<StopEntity> findFirstByStopId(long stopId);
+
+    Page<StopEntity> findAllByLatitudeBetweenAndLongitudeBetween(
+            double lat1, double lat2, double lon1, double lon2, Pageable request);
+
 }

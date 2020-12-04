@@ -5,7 +5,6 @@
 package com.delhitransit.core.service;
 
 import com.delhitransit.core.model.entity.ShapePointEntity;
-import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.repository.ShapePointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

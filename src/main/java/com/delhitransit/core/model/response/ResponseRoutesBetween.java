@@ -2,7 +2,6 @@ package com.delhitransit.core.model.response;
 
 import lombok.Getter;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 

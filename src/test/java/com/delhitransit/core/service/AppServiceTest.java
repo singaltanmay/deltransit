@@ -7,6 +7,7 @@ import com.delhitransit.core.model.entity.StopEntity;
 import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
 import com.delhitransit.core.model.response.ResponseRoutesBetween;
+import com.delhitransit.core.model.response.ResponseStopDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -143,6 +144,20 @@ public class AppServiceTest {
     void getStopsByRouteIdTest() {
         List<StopEntity> stops = service.getStopsByRouteId(routeEntity.getRouteId());
         assertStopEntityListContainsStops(stops);
+    }
+
+    @Test
+    void getRoutesByStopArrivalTimeCustomResponseTest() {
+        List<ResponseStopDetails> response = service.getRoutesByStopArrivalTimeCustomResponse(
+                sourceStop.getStopId(), sourceStopTime.getArrival());
+        assertNotNull(response);
+        assertEquals(1,response.size());
+        ResponseStopDetails details = response.get(0);
+        assertEquals(routeEntity.getRouteId(),details.getRouteId());
+        assertEquals(routeEntity.getLongName(),details.getRouteLongName());
+        assertEquals(tripEntity.getTripId(),details.getTripId());
+        assertEquals(sourceStopTime.getArrival(),details.getEarliestTime());
+        assertEquals(destinationStop.getName(),details.getLastStopName());
     }
 
     private void assertStopEntityListContainsStops(List<StopEntity> stops) {

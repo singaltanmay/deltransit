@@ -6,7 +6,9 @@ import com.delhitransit.core.model.entity.StopEntity;
 import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
 import com.delhitransit.core.model.response.ResponseRoutesBetween;
+import com.delhitransit.core.model.response.ResponseStopDetails;
 import lombok.Getter;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.stream.Collectors;
@@ -147,6 +150,35 @@ public class AppService {
             routes.add(route);
         }
         return new LinkedList<>(routes);
+    }
+
+    public List<ResponseStopDetails> getRoutesByStopArrivalTimeCustomResponse(long stopId, long arrivalTime) {
+        var stopTimes = stopTimeService.getAllStopTimesByStopIdAndArrivalTimeAfter(stopId, arrivalTime);
+        var responseSet = new HashSet<ResponseStopDetails>();
+
+        for (StopTimeEntity stopTime : stopTimes) {
+            var trip = stopTime.getTrip();
+            var route = trip.getRoute();
+            var exist = responseSet.stream().filter(it -> it.getRouteId() == route.getRouteId()).findAny();
+            if (exist.isPresent()) {
+                var item = exist.get();
+                if (stopTime.getArrival() < item.getEarliestTime()) {
+                    item.setTripId(trip.getTripId())
+                        .setEarliestTime(stopTime.getArrival());
+                }
+            } else {
+                var stops = StopTimeService.sortStopTimesByStopArrivalTime(trip.getStopTimes());
+                StopTimeEntity lastStop = stops.size() > 0 ? stops.get(stops.size() - 1) : null;
+                var details = new ResponseStopDetails()
+                        .setRouteId(route.getRouteId())
+                        .setRouteLongName(route.getLongName())
+                        .setEarliestTime(stopTime.getArrival())
+                        .setTripId(trip.getTripId())
+                        .setLastStopName(lastStop != null ? lastStop.getStop().getName() : Strings.EMPTY);
+                responseSet.add(details);
+            }
+        }
+        return new ArrayList<>(responseSet);
     }
 
     public List<StopEntity> getStopsByTripId(String tripId) {

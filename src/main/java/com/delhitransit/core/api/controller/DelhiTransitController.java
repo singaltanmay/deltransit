@@ -296,7 +296,7 @@ public class DelhiTransitController {
             @PathVariable("stop") long stopId,
             @RequestParam(required = false, name = "time") Optional<Long> time
     ) {
-        return appService.getRoutesByStopIdAndStopTimeArrivalTimeCustomResponse(
+        return appService.getRoutesByStopArrivalTimeCustomResponse(
                 stopId, time.orElse(getSecondsSince12AM()));
     }
 

@@ -5,7 +5,7 @@ import lombok.Getter;
 public class ResponseStopDetails {
 
     @Getter
-    private String longName;
+    private String routeLongName;
 
     @Getter
     private long routeId;
@@ -19,8 +19,8 @@ public class ResponseStopDetails {
     @Getter
     private long earliestTime;
 
-    public ResponseStopDetails setLongName(String longName) {
-        this.longName = longName;
+    public ResponseStopDetails setRouteLongName(String routeLongName) {
+        this.routeLongName = routeLongName;
         return this;
     }
 

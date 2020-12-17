@@ -178,7 +178,9 @@ public class AppService {
                 responseSet.add(details);
             }
         }
-        return new ArrayList<>(responseSet);
+        ArrayList<ResponseStopDetails> result = new ArrayList<>(responseSet);
+        Collections.sort(result);
+        return result;
     }
 
     public List<StopEntity> getStopsByTripId(String tripId) {

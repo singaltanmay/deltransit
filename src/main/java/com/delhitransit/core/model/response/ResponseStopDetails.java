@@ -2,7 +2,7 @@ package com.delhitransit.core.model.response;
 
 import lombok.Getter;
 
-public class ResponseStopDetails {
+public class ResponseStopDetails implements Comparable<ResponseStopDetails>{
 
     @Getter
     private String routeLongName;
@@ -42,5 +42,10 @@ public class ResponseStopDetails {
     public ResponseStopDetails setEarliestTime(long earliestTime) {
         this.earliestTime = earliestTime;
         return this;
+    }
+
+    @Override
+    public int compareTo(ResponseStopDetails o) {
+        return this.getEarliestTime() < o.getEarliestTime() ? -1 : 1;
     }
 }

@@ -7,6 +7,7 @@ import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
 import com.delhitransit.core.model.response.ResponseRoutesBetween;
 import com.delhitransit.core.model.response.ResponseStopDetails;
+import com.delhitransit.core.model.response.ResponseStopsByTrip;
 import lombok.Getter;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.stream.Collectors;
@@ -194,6 +194,24 @@ public class AppService {
             stops.add(stop);
         });
         return stops;
+    }
+
+    public List<ResponseStopsByTrip> getStopsByTripIdCustomRepoonse(String tripId) {
+        TripEntity trip = tripService.getTripByTripId(tripId);
+        List<StopTimeEntity> stopTimes = trip.getStopTimes();
+        StopTimeService.sortStopTimesByStopArrivalTime(stopTimes);
+        List<ResponseStopsByTrip> result = new LinkedList<>();
+        stopTimes.forEach(it -> {
+            StopEntity stop = it.getStop();
+            result.add(new ResponseStopsByTrip(
+                    stop.getStopId(),
+                    stop.getName(),
+                    stop.getLatitude(),
+                    stop.getLongitude(),
+                    tripId,
+                    it.getArrival()));
+        });
+        return result;
     }
 
     public List<StopEntity> getStopsByRouteId(long routeId) {

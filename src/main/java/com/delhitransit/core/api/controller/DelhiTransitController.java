@@ -7,6 +7,7 @@ import com.delhitransit.core.model.entity.StopTimeEntity;
 import com.delhitransit.core.model.entity.TripEntity;
 import com.delhitransit.core.model.response.ResponseRoutesBetween;
 import com.delhitransit.core.model.response.ResponseStopDetails;
+import com.delhitransit.core.model.response.ResponseStopsByTrip;
 import com.delhitransit.core.service.AppService;
 import com.delhitransit.core.service.RouteService;
 import com.delhitransit.core.service.ShapePointService;
@@ -298,6 +299,12 @@ public class DelhiTransitController {
     ) {
         return appService.getRoutesByStopArrivalTimeCustomResponse(
                 stopId, time.orElse(getSecondsSince12AM()));
+    }
+
+    @GetMapping("client/stops/trip/{trip}")
+    public List<ResponseStopsByTrip> getStopsByTripIdCustomResponse(
+            @PathVariable(name = "trip") String tripId) {
+        return appService.getStopsByTripIdCustomRepoonse(tripId);
     }
 
 }

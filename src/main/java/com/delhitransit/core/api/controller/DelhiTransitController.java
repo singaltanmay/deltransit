@@ -255,10 +255,9 @@ public class DelhiTransitController {
         if (latitude != null && latitude.isPresent() && longitude != null && longitude.isPresent()) {
             if (isPageParamsInvalid(pageNumber, pageSize)) return new ResponseEntity<>(
                     HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
-            return createAppropriateResponseEntity(stopService.getStopsNearLocation(latitude.get(), longitude.get(),
-                                                                                    distance.orElse(null),
-                                                                                    createPageRequest(pageNumber,
-                                                                                                      pageSize)));
+            return createAppropriateResponseEntity(stopService.getStopsNearLocation(
+                    latitude.get(), longitude.get(), distance.orElse(null),
+                    createPageRequest(pageNumber, pageSize)));
         } else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
@@ -272,6 +271,13 @@ public class DelhiTransitController {
     public List<StopEntity> getStopsByTripId(
             @PathVariable(name = "trip") String tripId) {
         return appService.getStopsByTripId(tripId);
+    }
+
+    @GetMapping("stops/source/{stop}")
+    public List<StopEntity> getStopsReachableFromStop(
+            @PathVariable(name = "stop") long stopId,
+            @RequestParam(required = false, name = "time") Optional<Long> time) {
+        return appService.getStopsReachableFromStop(stopId, time.orElse(getSecondsSince12AM()));
     }
 
     @GetMapping("stopTimes")

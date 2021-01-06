@@ -52,10 +52,7 @@ public class AppService {
         List<StopTimeEntity> sourceStopTimes = stopTimeService.getAllStopTimesByStopId(sourceStopId);
         List<StopTimeEntity> destinationStopTimes = stopTimeService.getAllStopTimesByStopId(destinationStopId);
 
-        HashMap<String, Long> sourceTrips = new HashMap<>();
-        for (StopTimeEntity stopTime : sourceStopTimes) {
-            sourceTrips.putIfAbsent(stopTime.getTrip().getTripId(), stopTime.getArrival());
-        }
+        HashMap<String, Long> sourceTrips = getTripsOriginatingFromStopTimesHashMap(sourceStopTimes);
 
         HashSet<TripEntity> candidateTrips = new HashSet<>();
         for (StopTimeEntity stopTime : destinationStopTimes) {
@@ -76,10 +73,7 @@ public class AppService {
         List<StopTimeEntity> sourceStopTimes = stopTimeService.getAllStopTimesByStopId(sourceStopId);
         List<StopTimeEntity> destinationStopTimes = stopTimeService.getAllStopTimesByStopId(destinationStopId);
 
-        HashMap<String, Long> sourceTrips = new HashMap<>();
-        for (StopTimeEntity stopTime : sourceStopTimes) {
-            sourceTrips.putIfAbsent(stopTime.getTrip().getTripId(), stopTime.getArrival());
-        }
+        HashMap<String, Long> sourceTrips = getTripsOriginatingFromStopTimesHashMap(sourceStopTimes);
 
         HashSet<TripEntityEarliestTimeItem> candidateTrips = new HashSet<>();
         StopTimeService.sortStopTimesByStopArrivalTime(destinationStopTimes);
@@ -131,6 +125,14 @@ public class AppService {
         }
 
         return result;
+    }
+
+    private HashMap<String, Long> getTripsOriginatingFromStopTimesHashMap(List<StopTimeEntity> sourceStopTimes) {
+        HashMap<String, Long> sourceTrips = new HashMap<>();
+        for (StopTimeEntity stopTime : sourceStopTimes) {
+            sourceTrips.putIfAbsent(stopTime.getTrip().getTripId(), stopTime.getArrival());
+        }
+        return sourceTrips;
     }
 
     public List<ShapePointEntity> getShapePointsByTripId(String tripId) {
@@ -239,6 +241,24 @@ public class AppService {
             }
         });
         return heap;
+    }
+
+    public List<StopEntity> getStopsReachableFromStop(long source, long time) {
+        List<StopTimeEntity> sourceStopTimes = stopTimeService.getAllStopTimesByStopId(source);
+        HashSet<TripEntity> sourceTrips = new HashSet<>();
+        for (StopTimeEntity stopTime : sourceStopTimes) {
+            sourceTrips.add(stopTime.getTrip());
+        }
+        HashSet<StopEntity> candidateStops = new HashSet<>();
+        HashSet<RouteEntity> visitedRoutes = new HashSet<>();
+        for (TripEntity tripEntity : sourceTrips) {
+            RouteEntity route = tripEntity.getRoute();
+            if (!visitedRoutes.contains(route)) {
+                candidateStops.addAll(getStopsByTripId(tripEntity.getTripId()));
+                visitedRoutes.add(route);
+            }
+        }
+        return new ArrayList<>(candidateStops);
     }
 
     private static class TripEntityEarliestTimeItem implements Comparable<TripEntityEarliestTimeItem> {

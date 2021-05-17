@@ -1,5 +1,6 @@
 package com.delhitransit.core.api.controller;
 
+import com.delhitransit.core.model.entity.BusPositionEntity;
 import com.delhitransit.core.model.entity.RouteEntity;
 import com.delhitransit.core.model.entity.ShapePointEntity;
 import com.delhitransit.core.model.entity.StopEntity;
@@ -9,6 +10,7 @@ import com.delhitransit.core.model.response.ResponseRoutesBetween;
 import com.delhitransit.core.model.response.ResponseStopDetails;
 import com.delhitransit.core.model.response.ResponseStopsByTrip;
 import com.delhitransit.core.service.AppService;
+import com.delhitransit.core.service.RealtimeService;
 import com.delhitransit.core.service.RouteService;
 import com.delhitransit.core.service.ShapePointService;
 import com.delhitransit.core.service.StopService;
@@ -311,6 +313,11 @@ public class DelhiTransitController {
     public List<ResponseStopsByTrip> getStopsByTripIdCustomResponse(
             @PathVariable(name = "trip") String tripId) {
         return appService.getStopsByTripIdCustomRepoonse(tripId);
+    }
+
+    @GetMapping("realtime/update")
+    public List<BusPositionEntity> getRealtimeUpdate(){
+        return new RealtimeService().fetchUpdate();
     }
 
 }

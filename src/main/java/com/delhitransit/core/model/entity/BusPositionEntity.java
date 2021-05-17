@@ -7,12 +7,16 @@ package com.delhitransit.core.model.entity;
 import com.delhitransit.core.GtfsRealtime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+@Entity
+@NoArgsConstructor
 public class BusPositionEntity {
 
     @Id
@@ -43,7 +47,7 @@ public class BusPositionEntity {
     @Getter
     private long timestamp;
 
-    public BusPositionEntity parseFrom(GtfsRealtime.FeedEntity entity){
+    public BusPositionEntity parseFrom(GtfsRealtime.FeedEntity entity) {
         this.vehicleID = entity.getId();
 
         GtfsRealtime.VehiclePosition vehicle = entity.getVehicle();
